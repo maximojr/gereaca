@@ -33,7 +33,7 @@ public class GereAcademia extends ApplicationAdapter {
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));	
 		
 		final TextButton b = new TextButton("teste chamada server", skin);
-		
+		b.setWidth(500);
 		b.addListener(new ClickListener(){
 			
 			public void clicked(InputEvent event, float x, float y) {
