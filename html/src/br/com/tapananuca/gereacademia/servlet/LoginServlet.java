@@ -3,6 +3,7 @@ package br.com.tapananuca.gereacademia.servlet;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -10,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import br.com.tapananuca.gereacademia.comunicacao.GAResponse;
+import br.com.tapananuca.gereacademia.model.Conexao;
+import br.com.tapananuca.gereacademia.model.Pessoa;
 
 import com.badlogic.gdx.utils.Json;
 
@@ -31,6 +34,14 @@ public class LoginServlet extends HttpServlet{
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		
+		Pessoa p = new Pessoa();
+		p.setNome(req.getParameter("user"));
+		p.setEmail(req.getParameter("user") + "@" + req.getParameter("user"));
+		
+		EntityManager em = new Conexao().getEntityManager();
+		em.getTransaction().begin();
+		em.getTransaction().commit();
 		
 		OutputStream out = resp.getOutputStream();
 		

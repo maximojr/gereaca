@@ -51,7 +51,7 @@ public class LoginScreen extends Tela {
 			public void clicked(InputEvent event, float x, float y) {
 				
 				HttpRequest h = new HttpRequest(HttpMethods.POST);
-				h.setUrl("https://gereacademia.herokuapp.com/login");
+				h.setUrl("http://gereacademia.herokuapp.com/login");
 				
 				StringBuffer sb = new StringBuffer();
 				
