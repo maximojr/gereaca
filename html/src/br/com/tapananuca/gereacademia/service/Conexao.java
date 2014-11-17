@@ -1,4 +1,4 @@
-package br.com.tapananuca.gereacademia.model;
+package br.com.tapananuca.gereacademia.service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;

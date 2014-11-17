@@ -1,26 +1,20 @@
 package br.com.tapananuca.gereacademia.telas;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.Map;
-
+import br.com.tapananuca.gereacademia.Utils;
 import br.com.tapananuca.gereacademia.comunicacao.GAResponse;
+import br.com.tapananuca.gereacademia.comunicacao.LoginDTO;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
-import com.badlogic.gdx.net.HttpParametersUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Json;
 
 
 public class LoginScreen extends Tela {
@@ -50,43 +44,31 @@ public class LoginScreen extends Tela {
 			
 			public void clicked(InputEvent event, float x, float y) {
 				
-				HttpRequest h = new HttpRequest(HttpMethods.POST);
-				h.setUrl("http://gereacademia.herokuapp.com/login");
+				final Utils utilsInstance = Utils.getInstance();
 				
-				StringBuffer sb = new StringBuffer();
+				final LoginDTO loginDTO = new LoginDTO();
+				loginDTO.setUsuario(campoUsuario.getText());
+				loginDTO.setSenha(utilsInstance.criptografar(campoSenha.getText()));
 				
-				try {
-					MessageDigest md = MessageDigest.getInstance("MD5");
-					md.update(campoSenha.getText().getBytes());
-					
-					byte byteData[] = md.digest();
-					 
-					for (int i = 0; i < byteData.length; i++) {
-						sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
-					}
-				} catch (NoSuchAlgorithmException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				final HttpRequest request = utilsInstance.criarRequest("login", loginDTO);
 				
-				Map<String, String> parameters = new HashMap<String, String>();
-				parameters.put("user", campoUsuario.getText());
-				parameters.put("password", sb.toString());
-				
-				h.setContent(HttpParametersUtils.convertHttpParameters(parameters));
-				
-				Gdx.net.sendHttpRequest(h, new HttpResponseListener() {
+				Gdx.net.sendHttpRequest(request, new HttpResponseListener() {
 					
 					@Override
 					public void handleHttpResponse(HttpResponse httpResponse) {
 						
 						try {
-							Json json = new Json();
-							GAResponse resp = json.fromJson(GAResponse.class, httpResponse.getResultAsString());
-							b.setText(resp.getToken() + ": " + resp.getMsg());
+							
+							final GAResponse resp = utilsInstance.fromJson(GAResponse.class, httpResponse.getResultAsString());
+							
+							final String sessionId = resp.getSessionId() == null ? "" : resp.getSessionId();
+							
+							utilsInstance.setSessionId(sessionId);
+							
+							b.setText(resp.getMsg() + " - " + sessionId);
 						} catch (Exception e) {
 							
-							b.setText("Erro ao tentar login: " + e.getMessage()	);
+							b.setText("Erro ao tentar login: " + e.getMessage());
 						}
 					}
 					

@@ -13,43 +13,27 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Table(name="PESSOA")
-public class Pessoa {
+@Table(name="USUARIO")
+public class Usuario {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pessoa_seq_gen")
-	@SequenceGenerator(name = "pessoa_seq_gen", sequenceName = "pessoa_id_seq", 
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usuario_seq_gen")
+	@SequenceGenerator(name = "usuario_seq_gen", sequenceName = "usuario_id_seq", 
 					   initialValue = 1, allocationSize = 1)
-	@Column(name="ID")
 	private Long id;
-	
-	@Column(name="NOME")
-	private String nome;
-	
-	@Column(name="SEXO")
-	private Character sexo;
 	
 	@Column(name="EMAIL")
 	private String email;
 	
-	@Temporal(TemporalType.DATE)
-	@Column(name="ANIVERSARIO")
-	private Date aniversario;
+	@Column(name="NOME")
+	private String nome;
 	
-	@Temporal(TemporalType.DATE)
-	@Column(name="INICIO")
-	private Date inicio;
+	@Column(name="SENHA")
+	private String senha;
 	
-	@Column(name="ATIVO")
-	private boolean ativo;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="ULTIMO_ACESSO")
+	private Date ultimoAcesso;
 
 	public String getNome() {
 		return nome;
@@ -65,5 +49,21 @@ public class Pessoa {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getSenha() {
+		return senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
+
+	public Date getUltimoAcesso() {
+		return ultimoAcesso;
+	}
+
+	public void setUltimoAcesso(Date ultimoAcesso) {
+		this.ultimoAcesso = ultimoAcesso;
 	}
 }

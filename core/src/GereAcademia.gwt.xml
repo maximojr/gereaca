@@ -2,4 +2,9 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit trunk//EN" "http://google-web-toolkit.googlecode.com/svn/trunk/distro-source/core/src/gwt-module.dtd">
 <module>
 	<source path="br/com/tapananuca/gereacademia" />
+	
+	<extend-configuration-property name="gdx.reflect.include" value="br.com.tapananuca.gereacademia.comunicacao" />
+	
+	<!-- cria projeto apenas para o chrome, remover depois -->
+	<set-property name="user.agent" value="safari" />
 </module>

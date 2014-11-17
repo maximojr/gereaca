@@ -2,14 +2,16 @@ package br.com.tapananuca.gereacademia.comunicacao;
 
 public class GAResponse {
 
-	private String token, msg;
+	private String sessionId, msg;
+	
+	private boolean sucesso = true;
 
-	public String getToken() {
-		return token;
+	public String getSessionId() {
+		return sessionId;
 	}
 
-	public void setToken(String token) {
-		this.token = token;
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
 	}
 
 	public String getMsg() {
@@ -18,5 +20,13 @@ public class GAResponse {
 
 	public void setMsg(String msg) {
 		this.msg = msg;
+	}
+
+	public boolean isSucesso() {
+		return sucesso;
+	}
+
+	public void setSucesso(boolean sucesso) {
+		this.sucesso = sucesso;
 	}
 }
