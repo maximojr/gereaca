@@ -7,6 +7,8 @@ import br.com.tapananuca.gereacademia.comunicacao.GARequest;
 
 import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.Net.HttpRequest;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldFilter;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -92,4 +94,29 @@ public class Utils {
 			utils.sessionId = sessionId;
 		}
 	}
+	
+	public final TextFieldFilter currencyFilter = new TextFieldFilter() {
+		
+		@Override
+		public boolean acceptChar(TextField textField, char c) {
+			
+			switch(c){
+				case '0':
+				case '1':
+				case '2':
+				case '3':
+				case '4':
+				case '5':
+				case '6':
+				case '7':
+				case '8':
+				case '9':
+				case ',':
+				case '.':
+					return true;
+			}
+			
+			return false;
+		}
+	};
 }

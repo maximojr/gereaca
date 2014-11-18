@@ -1,15 +1,16 @@
 package br.com.tapananuca.gereacademia.telas;
 
-import com.badlogic.gdx.ApplicationListener;
+import br.com.tapananuca.gereacademia.GereAcademia;
+
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
 public abstract class Tela implements Screen {
 
-	protected ApplicationListener applicationListener;
+	protected GereAcademia applicationListener;
 	protected Stage stage;
 	
-	public Tela(ApplicationListener applicationListener){
+	public Tela(GereAcademia applicationListener){
 		this.applicationListener = applicationListener;
 		this.stage = new Stage();
 	}
