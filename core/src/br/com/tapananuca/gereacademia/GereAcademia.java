@@ -3,6 +3,8 @@ package br.com.tapananuca.gereacademia;
 import java.io.IOException;
 
 import br.com.tapananuca.gereacademia.telas.LoginScreen;
+import br.com.tapananuca.gereacademia.telas.MenuPrincipalScreen;
+import br.com.tapananuca.gereacademia.telas.Tela;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -12,7 +14,7 @@ import com.badlogic.gdx.utils.PropertiesUtils;
 
 public class GereAcademia extends ApplicationAdapter {
 	
-	private LoginScreen loginScreen;
+	private Tela telaAtual;
 	
 	@Override
 	public void create () {
@@ -28,18 +30,23 @@ public class GereAcademia extends ApplicationAdapter {
 			e.printStackTrace();
 		}
 		
-		loginScreen = new LoginScreen(this);
+		telaAtual = new MenuPrincipalScreen(this);
 	}
 
 	@Override
 	public void render () {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		loginScreen.render(Gdx.graphics.getDeltaTime());
+		telaAtual.render(Gdx.graphics.getDeltaTime());
 	}
 	
 	@Override
 	public void dispose(){
-		loginScreen.dispose();
+		telaAtual.dispose();
+	}
+
+	public void setTelaAtual(Tela telaAtual) {
+		this.telaAtual = telaAtual;
+		this.telaAtual.show();
 	}
 }
