@@ -3,7 +3,6 @@ package br.com.tapananuca.gereacademia;
 import java.io.IOException;
 
 import br.com.tapananuca.gereacademia.telas.LoginScreen;
-import br.com.tapananuca.gereacademia.telas.MenuPrincipalScreen;
 import br.com.tapananuca.gereacademia.telas.Tela;
 
 import com.badlogic.gdx.ApplicationAdapter;
@@ -30,7 +29,7 @@ public class GereAcademia extends ApplicationAdapter {
 			e.printStackTrace();
 		}
 		
-		telaAtual = new MenuPrincipalScreen(this);
+		telaAtual = new LoginScreen(this);
 	}
 
 	@Override

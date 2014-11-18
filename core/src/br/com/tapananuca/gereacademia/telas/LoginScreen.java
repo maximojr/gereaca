@@ -44,6 +44,7 @@ public class LoginScreen extends Tela {
 		table.add(label).right().padBottom(40);
 		
 		final TextField campoSenha = new TextField("", skin);
+		campoSenha.setPasswordMode(true);
 		table.add(campoSenha).left().padBottom(40).row();
 		
 		final Label rodape = new Label("Insira usuário e senha para entrar", skin);
@@ -90,18 +91,6 @@ public class LoginScreen extends Tela {
 							} else {
 								
 								rodape.setText(resp.getMsg());
-								
-								//TODO remover
-								Gdx.app.postRunnable(new Runnable() {
-									
-									@Override
-									public void run() {
-										
-										final GereAcademia gereAcademia = LoginScreen.this.applicationListener;
-										final MenuPrincipalScreen menuPrincipalScreen = new MenuPrincipalScreen(gereAcademia);
-										gereAcademia.setTelaAtual(menuPrincipalScreen);
-									}
-								});
 							}
 							
 						} catch (Exception e) {

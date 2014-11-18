@@ -119,4 +119,76 @@ public class Utils {
 			return false;
 		}
 	};
+	
+	public final TextFieldFilter numbersOnlyFilter = new TextFieldFilter() {
+		
+		@Override
+		public boolean acceptChar(TextField textField, char c) {
+			
+			switch(c){
+				case '0':
+				case '1':
+				case '2':
+				case '3':
+				case '4':
+				case '5':
+				case '6':
+				case '7':
+				case '8':
+				case '9':
+					return true;
+			}
+			
+			return false;
+		}
+	};
+	
+	public final TextFieldFilter dateFilter = new TextFieldFilter() {
+		
+		@Override
+		public boolean acceptChar(TextField textField, char c) {
+			
+			switch(c){
+				case '0':
+				case '1':
+				case '2':
+				case '3':
+				case '4':
+				case '5':
+				case '6':
+				case '7':
+				case '8':
+				case '9':
+					return true;
+			}
+			
+			return false;
+		}
+	};
+	
+	public final TextFieldFilter phoneFilter = new TextFieldFilter() {
+		
+		@Override
+		public boolean acceptChar(TextField textField, char c) {
+			
+			switch(c){
+				case '0':
+				case '1':
+				case '2':
+				case '3':
+				case '4':
+				case '5':
+				case '6':
+				case '7':
+				case '8':
+				case '9':
+				case '(':
+				case ')':
+				case '-':
+					return true;
+			}
+			
+			return false;
+		}
+	};
 }

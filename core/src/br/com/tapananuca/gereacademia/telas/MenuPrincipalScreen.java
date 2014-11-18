@@ -30,16 +30,26 @@ public class MenuPrincipalScreen extends Tela {
 		final Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		
 		final Table table = new Table();
-		
-		//table.debugAll();
+		table.debugAll();
 		stage.addActor(table);
 		table.setSkin(skin);
 		table.setFillParent(true);
 		table.top();
 		
-		TextButton button = new TextButton("A", skin);
-		button.setSize(1000, 1000);
-		table.add(button).colspan(3).row().padTop(50);
+		final TextButton cadastrarPessoaButton = new TextButton("Cadastrar Pessoa", skin);
+		cadastrarPessoaButton.addListener(new ClickListener(){
+
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				
+				final GereAcademia gereAcademia = MenuPrincipalScreen.this.applicationListener;
+				final CadastroPessoaScreen cadastroPessoaScreen = new CadastroPessoaScreen(gereAcademia);
+				gereAcademia.setTelaAtual(cadastroPessoaScreen);
+			}
+			
+		});
+		cadastrarPessoaButton.setSize(1000, 1000);
+		table.add(cadastrarPessoaButton).colspan(3).row().padTop(50);
 		
 		table.add(new Label("A receber", skin)).colspan(3).row();
 		
@@ -117,34 +127,40 @@ public class MenuPrincipalScreen extends Tela {
 		
 		table.row().padTop(50);
 		
-		table.add(new Label("Aniversariantes", skin)).colspan(3).row();
-		table.add(new Label("Nome", skin));
-		table.add(new Label("Dia", skin));
+		final Table wrapAniversarios = new Table();
 		
-		table.row().padTop(10);
+		table.add(wrapAniversarios).colspan(3).fill();
+		
+		wrapAniversarios.add(new Label("Aniversariantes", skin)).colspan(3).row();
+		final Label nomeAnim = new Label("Nome", skin);
+		nomeAnim.setAlignment(Align.center);
+		wrapAniversarios.add(nomeAnim).width(300);
+		wrapAniversarios.add(new Label("Dia", skin));
+		
+		wrapAniversarios.row().padTop(10);
 		
 		for (int index = 0 ; index < 10 ; index++){
 			
 			if (index % 2 == 0){
 				
-				table.add(new Label("Pessoa " + index, skin)).left();
-				table.add(new Label("99/99/9999", skin));
+				wrapAniversarios.add(new Label("Pessoa " + index, skin)).left();
+				wrapAniversarios.add(new Label("99/99/9999", skin));
 			} else {
 				
 				Table inTable = new Table();
 				inTable.setBackground(cinza);
 				
 				inTable.add(new Label("Pessoa " + index, skin)).left();
-				table.add(inTable.left()).fill();
+				wrapAniversarios.add(inTable.left()).fill();
 				
 				inTable = new Table();
 				inTable.setBackground(cinza);
 				
 				inTable.add(new Label("99/99/9999", skin));
-				table.add(inTable.center()).fill();
+				wrapAniversarios.add(inTable.center()).fill();
 			}
 			
-			table.row();
+			wrapAniversarios.row();
 		}
 		
 		TextButton paginaAnteriorAniversarios = new TextButton("<<", skin);
@@ -168,7 +184,7 @@ public class MenuPrincipalScreen extends Tela {
 		final Table paginacaoTableAniversarios = new Table();
 		paginacaoTableAniversarios.add(paginaAnteriorAniversarios,proximaPaginaAniversarios);
 		
-		table.add(paginacaoTableAniversarios).left().padTop(10);
+		wrapAniversarios.add(paginacaoTableAniversarios).left().padTop(10);
 		
 		Gdx.input.setInputProcessor(stage);
 	}
