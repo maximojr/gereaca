@@ -45,6 +45,7 @@ public class LoginScreen extends Tela {
 		
 		final TextField campoSenha = new TextField("", skin);
 		campoSenha.setPasswordMode(true);
+		campoSenha.setPasswordCharacter('*');
 		table.add(campoSenha).left().padBottom(40).row();
 		
 		final Label rodape = new Label("Insira usuário e senha para entrar", skin);
