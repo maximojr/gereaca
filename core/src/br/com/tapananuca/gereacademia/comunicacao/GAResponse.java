@@ -1,6 +1,6 @@
 package br.com.tapananuca.gereacademia.comunicacao;
 
-public class GAResponse {
+public class GAResponse implements JsonSerializer{
 
 	private String sessionId, msg;
 	
@@ -28,5 +28,32 @@ public class GAResponse {
 
 	public void setSucesso(boolean sucesso) {
 		this.sucesso = sucesso;
+	}
+
+	@Override
+	public String toJson() {
+		
+		final StringBuilder json = new StringBuilder("{");
+		
+		json.append("sucesso:").append(sucesso);
+		
+		if (sessionId != null){
+			
+			json.append(",")
+				.append("sessionId:")
+				.append(sessionId);
+		}
+		
+		if (msg != null){
+			
+			json.append(",")
+				.append("msg:")
+				.append("\"")
+				.append(msg)
+				.append("\"");
+		}
+		
+		json.append("}");
+		return json.toString();
 	}
 }

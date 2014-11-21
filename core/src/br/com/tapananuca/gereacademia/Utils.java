@@ -1,14 +1,23 @@
 package br.com.tapananuca.gereacademia;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import br.com.tapananuca.gereacademia.comunicacao.GARequest;
+import br.com.tapananuca.gereacademia.comunicacao.JsonSerializer;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.Net.HttpRequest;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldFilter;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -67,8 +76,9 @@ public class Utils {
 		return json.fromJson(clazz, jsonString);
 	}
 	
-	public String toJson(Object object){
-		return json.toJson(object);
+	public String toJson(JsonSerializer jsonSerializer){
+		
+		return jsonSerializer.toJson();
 	}
 	
 	public HttpRequest criarRequest(String url, GARequest parametros){
@@ -95,6 +105,48 @@ public class Utils {
 		}
 	}
 	
+	public String formatCurrency(BigDecimal valor){
+		
+		if (valor == null){
+			
+			return "0,00";
+		}
+		
+		valor = valor.setScale(2, RoundingMode.HALF_UP);
+		
+		return valor.toString().replace(",", "").replace(".", ",");
+	}
+	
+	public BigDecimal StringToCurrency(String valor){
+		
+		if (valor == null || valor.trim().isEmpty()){
+			
+			return BigDecimal.ZERO;
+		}
+		
+		return new BigDecimal(valor.replace(",", "."));
+	}
+	
+	public void mostarAlerta(String titulo, String msg, Stage stage, Skin skin){
+		
+		final Window window = new Window(titulo == null ? "--- --- ---" : titulo, skin);
+		window.setWidth(Gdx.graphics.getWidth());
+		window.add(msg);
+		window.addListener(new ClickListener(){
+			
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				window.remove();
+			}
+		});
+		//window.pack();
+		window.setPosition(
+				(Gdx.graphics.getWidth() / 2) - (window.getWidth() / 2) ,
+				(Gdx.graphics.getHeight() / 2) - (window.getHeight() / 2));
+		
+		stage.addActor(window);
+	}
+	
 	public final TextFieldFilter currencyFilter = new TextFieldFilter() {
 		
 		@Override
@@ -112,7 +164,6 @@ public class Utils {
 				case '8':
 				case '9':
 				case ',':
-				case '.':
 					return true;
 			}
 			
@@ -159,6 +210,7 @@ public class Utils {
 				case '7':
 				case '8':
 				case '9':
+				case '/':
 					return true;
 			}
 			

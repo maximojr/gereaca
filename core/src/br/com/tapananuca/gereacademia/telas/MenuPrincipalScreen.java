@@ -30,7 +30,7 @@ public class MenuPrincipalScreen extends Tela {
 		final Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		
 		final Table table = new Table();
-		table.debugAll();
+		//table.debugAll();
 		stage.addActor(table);
 		table.setSkin(skin);
 		table.setFillParent(true);

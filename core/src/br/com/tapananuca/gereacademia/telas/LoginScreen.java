@@ -48,8 +48,6 @@ public class LoginScreen extends Tela {
 		campoSenha.setPasswordCharacter('*');
 		table.add(campoSenha).left().padBottom(40).row();
 		
-		final Label rodape = new Label("Insira usuário e senha para entrar", skin);
-		
 		final TextButton b = new TextButton("Login", skin);
 		b.setWidth(300);
 		b.addListener(new ClickListener(){
@@ -76,7 +74,6 @@ public class LoginScreen extends Tela {
 							if (resp.isSucesso()){
 								
 								utilsInstance.setSessionId(resp.getSessionId());
-								rodape.setText("Logado");
 								
 								Gdx.app.postRunnable(new Runnable() {
 									
@@ -91,12 +88,12 @@ public class LoginScreen extends Tela {
 								
 							} else {
 								
-								rodape.setText(resp.getMsg());
+								utilsInstance.mostarAlerta("Atenção", resp.getMsg(), stage, skin);
 							}
 							
 						} catch (Exception e) {
 							
-							rodape.setText("Erro ao tentar login: " + e.getMessage());
+							utilsInstance.mostarAlerta("Erro", e.getMessage(), stage, skin);
 							e.printStackTrace();
 						}
 					}
@@ -104,22 +101,19 @@ public class LoginScreen extends Tela {
 					@Override
 					public void failed(Throwable t) {
 						
-						rodape.setText("fail: " + t.getMessage());
+						utilsInstance.mostarAlerta("Erro", t.getMessage(), stage, skin);
 					}
 					
 					@Override
 					public void cancelled() {
 						
-						rodape.setText("foi cancelado");
+						utilsInstance.mostarAlerta(null, "Solicitação ao servidor cancelada.", stage, skin);
 					}
 				});
 			}
 		});
 		
 		table.add(b).colspan(2).padBottom(40).row();
-		
-		table.add(rodape).colspan(2);
-		
 		
 		Gdx.input.setInputProcessor(stage);
 	}

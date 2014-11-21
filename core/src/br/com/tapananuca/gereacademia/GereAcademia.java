@@ -45,6 +45,7 @@ public class GereAcademia extends ApplicationAdapter {
 	}
 
 	public void setTelaAtual(Tela telaAtual) {
+		this.telaAtual.dispose();
 		this.telaAtual = telaAtual;
 		this.telaAtual.show();
 	}

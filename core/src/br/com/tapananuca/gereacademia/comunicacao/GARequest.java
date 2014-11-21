@@ -1,5 +1,6 @@
 package br.com.tapananuca.gereacademia.comunicacao;
 
-public interface GARequest {
+
+public interface GARequest extends JsonSerializer{
 
 }

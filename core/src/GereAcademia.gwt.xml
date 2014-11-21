@@ -5,6 +5,8 @@
 	
 	<extend-configuration-property name="gdx.reflect.include" value="br.com.tapananuca.gereacademia.comunicacao" />
 	
+	<extend-configuration-property name="gdx.reflect.include" value="java.lang" />
+	
 	<!-- cria projeto apenas para o chrome, remover depois -->
 	<set-property name="user.agent" value="safari" />
 </module>
