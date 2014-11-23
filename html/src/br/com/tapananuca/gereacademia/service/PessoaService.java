@@ -10,6 +10,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import br.com.tapananuca.gereacademia.comunicacao.PessoaDTO;
+import br.com.tapananuca.gereacademia.model.Pagamento;
 import br.com.tapananuca.gereacademia.model.Pessoa;
 
 public class PessoaService {
@@ -63,6 +64,14 @@ public class PessoaService {
 		if (pessoa.getId() == null){
 			
 			em.persist(pessoa);
+			
+			final Pagamento pagamento = new Pagamento();
+			pagamento.setPessoa(pessoa);
+			pagamento.setValorDevido(pessoa.getValorMensal());
+			pagamento.setDataReferente(new Date());
+			
+			em.persist(pagamento);
+			
 		} else {
 			
 			pessoa = em.merge(pessoa);

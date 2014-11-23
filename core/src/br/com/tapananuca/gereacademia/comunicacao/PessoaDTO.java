@@ -216,7 +216,9 @@ public class PessoaDTO implements GARequest {
 			
 			json.append(json.length() == 1 ? "" : ",")
 				.append("telefone:")
-		    	.append(telefone);
+				.append("\"")
+		    	.append(telefone)
+		    	.append("\"");
 		}
 		
 		json.append("}");

@@ -140,6 +140,7 @@ public class Utils {
 			}
 		});
 		//window.pack();
+		window.setHeight(window.getPrefHeight());
 		window.setPosition(
 				(Gdx.graphics.getWidth() / 2) - (window.getWidth() / 2) ,
 				(Gdx.graphics.getHeight() / 2) - (window.getHeight() / 2));
