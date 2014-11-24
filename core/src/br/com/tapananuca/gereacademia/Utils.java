@@ -148,6 +148,40 @@ public class Utils {
 		stage.addActor(window);
 	}
 	
+	public void addStringToJson(StringBuilder json, String nomeCampo, String valor){
+		
+		if (json == null){
+			
+			return;
+		}
+		
+		if (valor != null && !valor.isEmpty()){
+			
+			json.append(json.length() == 1 ? "" : ",")
+				.append(nomeCampo)
+				.append(":")
+				.append("\"")
+				.append(valor)
+				.append("\"");
+		}
+	}
+	
+	public void addNumberToJson(StringBuilder json, String nomeCampo, Number valor){
+		
+		if (json == null){
+			
+			return;
+		}
+		
+		if (valor != null){
+			
+			json.append(json.length() == 1 ? "" : ",")
+				.append(nomeCampo)
+				.append(":")
+				.append(valor);
+		}
+	}
+	
 	public final TextFieldFilter currencyFilter = new TextFieldFilter() {
 		
 		@Override

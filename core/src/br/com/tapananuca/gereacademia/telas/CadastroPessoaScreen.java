@@ -9,6 +9,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class CadastroPessoaScreen extends Tela {
@@ -32,8 +34,7 @@ public class CadastroPessoaScreen extends Tela {
 	//campos dados cadastrais
 	private TextField nome;
 	private TextField dataNasc;
-	private TextField peso;
-	private SelectBox<String> listEstadoCivil;
+	private SelectBox<EstadoCivil> listEstadoCivil;
 	private SelectBox<Character> listSexo;
 	private TextField endereco;
 	private TextField numero;
@@ -75,7 +76,7 @@ public class CadastroPessoaScreen extends Tela {
 	private SelectBox<String> periodoExame;
 	
 	//campos medidas
-	private TextField dataReferente;
+	private SelectBox<String> dataReferente;
 	private TextField pesoCorporal;
 	private TextField altura;
 	private TextField pesoMagro;
@@ -152,7 +153,6 @@ public class CadastroPessoaScreen extends Tela {
 		this.pessoaEdicaoId = pessoaDTO.getId() == null ? null : Long.valueOf(pessoaDTO.getId());
 		this.nome.setText(pessoaDTO.getNome());
 		this.dataNasc.setText(pessoaDTO.getDataNascimento());
-		this.peso.setText(pessoaDTO.getPeso() == null ? "" : pessoaDTO.getPeso().toString());
 		this.listSexo.setSelected(pessoaDTO.getSexo());
 		this.endereco.setText(pessoaDTO.getEndereco());
 		this.numero.setText(pessoaDTO.getNumero() == null ? "" : pessoaDTO.getNumero().toString());
@@ -162,16 +162,15 @@ public class CadastroPessoaScreen extends Tela {
 		this.valorMensal.setText(pessoaDTO.getValorMensal().toString());
 	}
 	
-	private void salvarDadosBasicos(){
+	private void salvarDadosCadastrais(){
 		
 		final PessoaDTO pessoaDTO = new PessoaDTO();
 		pessoaDTO.setId(this.pessoaEdicaoId);
 		pessoaDTO.setNome(this.nome.getText());
 		pessoaDTO.setDataNascimento(this.dataNasc.getText());
-		pessoaDTO.setPeso(this.peso.getText().isEmpty() ? null : Float.valueOf(this.peso.getText().replace(",", ".")));
 		pessoaDTO.setSexo(this.listSexo.getSelected().toString().charAt(0));
 		pessoaDTO.setEndereco(this.endereco.getText());
-		pessoaDTO.setNumero(this.numero.getText().isEmpty() ? null : Integer.valueOf(this.numero.getText()));
+		pessoaDTO.setNumero(this.numero.getText());
 		pessoaDTO.setBairro(this.bairro.getText());
 		pessoaDTO.setTelefone(this.telefone.getText());
 		pessoaDTO.setEmail(this.email.getText());
@@ -238,7 +237,6 @@ public class CadastroPessoaScreen extends Tela {
 		inTableDataNasc.setSkin(skin);
 		
 		inTableDataNasc.add("Data nasc.:").left();
-		inTableDataNasc.add("Peso:").padLeft(10).left();
 		inTableDataNasc.add("Estado cívil:").padLeft(10).left();
 		inTableDataNasc.add("Sexo").left().padLeft(10).row();
 		
@@ -247,13 +245,8 @@ public class CadastroPessoaScreen extends Tela {
 		inTableDataNasc.add(dataNasc).left();
 		elementosFocaveis.add(dataNasc);
 		
-		peso = new TextField("", skin);
-		peso.setTextFieldFilter(utils.currencyFilter);
-		inTableDataNasc.add(peso).padLeft(10);
-		elementosFocaveis.add(peso);
-		
-		listEstadoCivil = new SelectBox<String>(skin);
-		listEstadoCivil.setItems("Solteiro(a)", "Casado(a)", "Divorciado(a)", "Viúvo(a)");
+		listEstadoCivil = new SelectBox<EstadoCivil>(skin);
+		listEstadoCivil.setItems(EstadoCivil.values());
 		inTableDataNasc.add(listEstadoCivil).padLeft(10);
 		
 		listSexo = new SelectBox<Character>(skin);
@@ -320,7 +313,7 @@ public class CadastroPessoaScreen extends Tela {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				
-				CadastroPessoaScreen.this.salvarDadosBasicos();
+				CadastroPessoaScreen.this.salvarDadosCadastrais();
 			}
 		});
 		
@@ -444,6 +437,7 @@ public class CadastroPessoaScreen extends Tela {
 		inTable.add("A cada: ").left();
 		
 		qtdTempoPeriodoExame = new TextField("", skin);
+		qtdTempoPeriodoExame.setTextFieldFilter(utils.numbersOnlyFilter);
 		inTable.add(qtdTempoPeriodoExame).left();
 		
 		periodoExame = new SelectBox<String>(skin);
@@ -459,28 +453,28 @@ public class CadastroPessoaScreen extends Tela {
 		
 		final Table conteudo = new Table(skin);
 		
-		conteudo.add("Medidas Antropométricas:").left().row();
-		
 		Table inTable = new Table(skin);
 		inTable.add("Data referente: ").left();
 		
-		dataReferente = new TextField("", skin);
-		dataReferente.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(dataReferente).left();
-		
-		final TextButton pesquisarMedidasPorData = new TextButton("Pesquisar", skin);
-		pesquisarMedidasPorData.addListener(new ClickListener(){
-
+		dataReferente = new SelectBox<String>(skin);
+//		Date d = new Date(TimeUtils.millis());
+//		final String data = d.getDate() + "/" + (d.getMonth() + 1) + "/" + (d.getYear() + 1900);
+//		dataReferente.setItems(data);
+		dataReferente.addListener(new ChangeListener() {
+			
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				// TODO Auto-generated method stub
+			public void changed(ChangeEvent event, Actor actor) {
 				
+				// TODO Auto-generated method stub
+				System.out.println(dataReferente.getSelected());
 			}
 		});
 		
-		inTable.add(pesquisarMedidasPorData);
+		inTable.add(dataReferente).left();
 		
 		conteudo.add(inTable).left().row();
+		
+		conteudo.add("Medidas Antropométricas:").left().padTop(15).row();
 		
 		inTable = new Table(skin);
 		inTable.add("Peso corporal:").left();

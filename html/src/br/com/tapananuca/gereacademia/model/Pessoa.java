@@ -13,6 +13,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import br.com.tapananuca.gereacademia.telas.EstadoCivil;
+
 /**
  * Dados referentes a endereço e telefone deviam estar tabelas separadas,
  * mas por enquanto não há necessidade
@@ -63,9 +65,9 @@ public class Pessoa {
 	@Column(name="TELEFONE")
 	private String telefone;
 	
-	@Column(name="PESO")
-	private Float peso;
-
+	@Column(name="ESTADO_CIVIL")
+	private EstadoCivil estadoCivil;
+	
 	public Long getId() {
 		return id;
 	}

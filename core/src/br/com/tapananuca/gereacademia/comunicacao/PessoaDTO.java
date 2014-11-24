@@ -1,5 +1,8 @@
 package br.com.tapananuca.gereacademia.comunicacao;
 
+import br.com.tapananuca.gereacademia.Utils;
+import br.com.tapananuca.gereacademia.telas.EstadoCivil;
+
 
 
 public class PessoaDTO implements GARequest {
@@ -8,25 +11,50 @@ public class PessoaDTO implements GARequest {
 	
 	private String nome;
 	
-	private Float peso;
-	
 	private Character sexo;
 	
 	private String email;
 	
 	private String dataNascimento;
 	
-	private String inicio;
+	private String dataInicio;
 	
 	private Float valorMensal;
 	
 	private String endereco;
 	
-	private Integer numero;
+	private String numero;
 	
 	private String bairro;
 	
 	private String telefone;
+	
+	private EstadoCivil estadoCivil;
+	
+	@Override
+	public String toJson() {
+		
+		final Utils utils = Utils.getInstance();
+		
+		final StringBuilder json = new StringBuilder("{");
+		
+		utils.addNumberToJson(json, "id", id);
+		utils.addStringToJson(json, "nome", nome);
+		utils.addStringToJson(json, "sexo", String.valueOf(sexo));
+		utils.addStringToJson(json, "email", email);
+		utils.addStringToJson(json, "dataNascimento", dataNascimento);
+		utils.addStringToJson(json, "dataInicio", dataInicio);
+		utils.addNumberToJson(json, "valorMensal", valorMensal);
+		utils.addStringToJson(json, "endereco", endereco);
+		utils.addStringToJson(json, "numero", numero);
+		utils.addStringToJson(json, "bairro", bairro);
+		utils.addStringToJson(json, "telefone", telefone);
+		utils.addStringToJson(json, "estadoCivil", estadoCivil.name());
+		
+		json.append("}");
+		
+		return json.toString();
+	}
 
 	public Long getId() {
 		return id;
@@ -42,14 +70,6 @@ public class PessoaDTO implements GARequest {
 
 	public void setNome(String nome) {
 		this.nome = nome;
-	}
-
-	public Float getPeso() {
-		return peso;
-	}
-
-	public void setPeso(Float peso) {
-		this.peso = peso;
 	}
 
 	public Character getSexo() {
@@ -76,12 +96,12 @@ public class PessoaDTO implements GARequest {
 		this.dataNascimento = dataNascimento;
 	}
 
-	public String getInicio() {
-		return inicio;
+	public String getDataInicio() {
+		return dataInicio;
 	}
 
-	public void setInicio(String inicio) {
-		this.inicio = inicio;
+	public void setDataInicio(String dataInicio) {
+		this.dataInicio = dataInicio;
 	}
 
 	public Float getValorMensal() {
@@ -100,11 +120,11 @@ public class PessoaDTO implements GARequest {
 		this.endereco = endereco;
 	}
 
-	public Integer getNumero() {
+	public String getNumero() {
 		return numero;
 	}
 
-	public void setNumero(Integer numero) {
+	public void setNumero(String numero) {
 		this.numero = numero;
 	}
 
@@ -124,105 +144,11 @@ public class PessoaDTO implements GARequest {
 		this.telefone = telefone;
 	}
 
-	@Override
-	public String toJson() {
-		
-		final StringBuilder json = new StringBuilder("{");
-		
-		if (id != null){
-			
-			json.append("id")
-				.append(":")
-				.append(id);
-		}
-		
-		if (nome != null){
-			
-			json.append(json.length() == 1 ? "" : ",")
-				.append("nome:")
-		    	.append("\"")
-		    	.append(nome)
-		    	.append("\"");
-		}
-		
-		if (peso != null){
-			
-			json.append(json.length() == 1 ? "" : ",")
-				.append("peso:")
-		    	.append(peso);
-		}
-		
-		if (sexo != null){
-			
-			json.append(json.length() == 1 ? "" : ",")
-				.append("sexo:")
-		    	.append(sexo);
-		}
-		
-		if (email != null){
-			
-			json.append(json.length() == 1 ? "" : ",")
-				.append("email:")
-		    	.append(email);
-		}
-		
-		if (dataNascimento != null){
-			
-			json.append(json.length() == 1 ? "" : ",")
-				.append("dataNascimento:")
-		    	.append(dataNascimento);
-		}
-		
-		if (inicio != null){
-			
-			json.append(json.length() == 1 ? "" : ",")
-				.append("inicio:")
-		    	.append(inicio);
-		}
-		
-		if (valorMensal != null){
-			
-			json.append(json.length() == 1 ? "" : ",")
-				.append("valorMensal:")
-		    	.append(valorMensal);
-		}
-		
-		if (endereco != null){
-			
-			json.append(json.length() == 1 ? "" : ",")
-				.append("endereco:")
-		    	.append("\"")
-		    	.append(endereco)
-		    	.append("\"");
-		}
-		
-		if (numero != null){
-			
-			json.append(json.length() == 1 ? "" : ",")
-				.append("numero:")
-		    	.append(numero);
-		}
-		
-		if (bairro != null){
-			
-			json.append(json.length() == 1 ? "" : ",")
-				.append("bairro:")
-		    	.append("\"")
-		    	.append(bairro)
-		    	.append("\"");
-		}
-		
-		if (telefone != null){
-			
-			json.append(json.length() == 1 ? "" : ",")
-				.append("telefone:")
-				.append("\"")
-		    	.append(telefone)
-		    	.append("\"");
-		}
-		
-		json.append("}");
-		
-		return json.toString();
+	public EstadoCivil getEstadoCivil() {
+		return estadoCivil;
+	}
+
+	public void setEstadoCivil(EstadoCivil estadoCivil) {
+		this.estadoCivil = estadoCivil;
 	}
 }
