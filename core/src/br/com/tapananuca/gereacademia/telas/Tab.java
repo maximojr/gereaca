@@ -5,12 +5,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class Tab {
 
-	private TextButton botao;
+	private Button botao;
 	
 	private Table conteudo;
 	
@@ -18,9 +17,9 @@ public class Tab {
 	
 	private TabbedPanel tabbedPanel;
 	
-	public Tab(String titulo, Table conteudo, Skin skin, int alinhamento){
+	public Tab(Button botao, Table conteudo, Skin skin, int alinhamento){
 		
-		this.botao = new TextButton(titulo, skin, "toggle");
+		this.botao = botao;
 		this.botao.addListener(new ClickListener(){
 
 			@Override
@@ -41,7 +40,7 @@ public class Tab {
 		return botao;
 	}
 
-	public void setBotao(TextButton botao) {
+	public void setBotao(Button botao) {
 		this.botao = botao;
 	}
 

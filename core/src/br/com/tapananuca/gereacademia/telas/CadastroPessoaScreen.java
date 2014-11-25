@@ -319,7 +319,16 @@ public class CadastroPessoaScreen extends Tela {
 		
 		conteudo.add(botaoSalvar).left().row().padTop(20);
 		
-		return new Tab("Dados básicos", conteudo, skin, Align.topLeft);
+		final TextButton botao = new TextButton("Dados básicos", skin, "toggle");
+		botao.addListener(new ClickListener(){
+
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				// TODO Auto-generated method stub
+			}
+		});
+		
+		return new Tab(botao, conteudo, skin, Align.topLeft);
 	}
 	
 	private Tab montarObjetivos(){
@@ -354,7 +363,16 @@ public class CadastroPessoaScreen extends Tela {
 		checkEmagrecimento = new CheckBox("Emagrecimento", skin);
 		conteudo.add(checkEmagrecimento);
 		
-		return new Tab("Objetivos", conteudo, skin, Align.center);
+		final TextButton botao = new TextButton("Objetivos", skin, "toggle");
+		botao.addListener(new ClickListener(){
+
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				// TODO Auto-generated method stub
+			}
+		});
+		
+		return new Tab(botao, conteudo, skin, Align.center);
 	}
 	
 	private Tab montarHistoriaPatologica() {
@@ -409,7 +427,16 @@ public class CadastroPessoaScreen extends Tela {
 		
 		conteudo.add(rightTable).padLeft(10).top();
 		
-		return new Tab("História patológica", conteudo, skin, Align.topLeft);
+		final TextButton botao = new TextButton("História patológica", skin, "toggle");
+		botao.addListener(new ClickListener(){
+
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				// TODO Auto-generated method stub
+			}
+		});
+		
+		return new Tab(botao, conteudo, skin, Align.topLeft);
 	}
 	
 	private Tab montarHabitos() {
@@ -446,7 +473,16 @@ public class CadastroPessoaScreen extends Tela {
 		
 		conteudo.add(inTable).left();
 		
-		return new Tab("Hábitos", conteudo, skin, Align.center);
+		final TextButton botao = new TextButton("Hábitos", skin, "toggle");
+		botao.addListener(new ClickListener(){
+
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				// TODO Auto-generated method stub
+			}
+		});
+		
+		return new Tab(botao, conteudo, skin, Align.center);
 	}
 	
 	private Tab montarMedidas() {
@@ -466,7 +502,6 @@ public class CadastroPessoaScreen extends Tela {
 			public void changed(ChangeEvent event, Actor actor) {
 				
 				// TODO Auto-generated method stub
-				System.out.println(dataReferente.getSelected());
 			}
 		});
 		
@@ -634,6 +669,15 @@ public class CadastroPessoaScreen extends Tela {
 		
 		conteudo.add(inTable).left().row();
 		
-		return new Tab("Medidas", conteudo, skin, Align.topLeft);
+		final TextButton botao = new TextButton("Medidas", skin, "toggle");
+		botao.addListener(new ClickListener(){
+
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				// TODO Auto-generated method stub
+			}
+		});
+		
+		return new Tab(botao, conteudo, skin, Align.topLeft);
 	}
 }
