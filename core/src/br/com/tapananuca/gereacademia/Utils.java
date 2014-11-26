@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 import br.com.tapananuca.gereacademia.comunicacao.GARequest;
 import br.com.tapananuca.gereacademia.comunicacao.JsonSerializer;
@@ -25,7 +28,35 @@ public class Utils {
 	
 	private static Utils utils;
 
-	public String WEB_APP_END_POINT = "web.app.endpoint";
+	public static final String WEB_APP_END_POINT = "web.app.endpoint";
+	
+	public static final String URL_LOGIN = "/login";
+	
+	public static final String URL_PESSOA = "/pessoa";
+	
+	public static final String URL_PESSOA_A_RECEBER = URL_PESSOA + "/receber";
+	
+	public static final String URL_PESSOA_PAGAR = URL_PESSOA + "/pagar";
+	
+	public static final String URL_PESSOA_DADOS_BASICOS = URL_PESSOA + "/basicos";
+	
+	public static final String URL_PESSOA_DADOS_BASICOS_SALVAR = URL_PESSOA_DADOS_BASICOS + "/salvar";
+	
+	public static final String URL_PESSOA_OBJETIVOS = URL_PESSOA + "/objetivo";
+	
+	public static final String URL_PESSOA_OBJETIVOS_SALVAR = URL_PESSOA_OBJETIVOS + "/salvar";
+	
+	public static final String URL_PESSOA_HIST_PAT = URL_PESSOA + "/histpat";
+	
+	public static final String URL_PESSOA_HIST_PAT_SALVAR = URL_PESSOA_HIST_PAT + "/salvar";
+	
+	public static final String URL_PESSOA_HABITOS = URL_PESSOA + "/habito";
+	
+	public static final String URL_PESSOA_HABITO_SALVAR = URL_PESSOA_HABITOS + "/salvar";
+	
+	public static final String URL_PESSOA_MEDIDAS = URL_PESSOA + "/medida";
+	
+	public static final String URL_PESSOA_MEDIDAS_SALVAR = URL_PESSOA_MEDIDAS + "/salvar";
 	
 	private final Json json = new Json();
 	
@@ -180,6 +211,46 @@ public class Utils {
 				.append(":")
 				.append(valor);
 		}
+	}
+	
+	public <T extends JsonSerializer> void addGARequestCollectionToJson(StringBuilder json, String nomeCampo, Collection<T> collection){
+		
+		json.append(nomeCampo)
+			.append(":[");
+		
+		final Iterator<T> ite = collection.iterator();
+		
+		while (ite.hasNext()){
+			
+			json.append(ite.next().toJson());
+			
+			if (ite.hasNext()){
+				
+				json.append(",");
+			}
+		}
+		
+		json.append("]");
+	}
+	
+	public <T extends Object> void addCollectionToJson(StringBuilder json, String nomeCampo, List<T> collection){
+		
+		json.append(nomeCampo)
+			.append(":[");
+		
+		final Iterator<T> ite = collection.iterator();
+		
+		while (ite.hasNext()){
+			
+			json.append(ite.next().toString());
+			
+			if (ite.hasNext()){
+				
+				json.append(",");
+			}
+		}
+		
+		json.append("]");
 	}
 	
 	public final TextFieldFilter currencyFilter = new TextFieldFilter() {

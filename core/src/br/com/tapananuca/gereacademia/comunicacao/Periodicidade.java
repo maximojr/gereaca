@@ -1,4 +1,4 @@
-package br.com.tapananuca.gereacademia.telas;
+package br.com.tapananuca.gereacademia.comunicacao;
 
 public enum Periodicidade {
 
@@ -16,7 +16,7 @@ public enum Periodicidade {
 		this.peso = peso;
 	}
 	
-	public String toString(){
+	public String getDescricao(){
 		
 		return this.descricao;
 	}
@@ -30,7 +30,7 @@ public enum Periodicidade {
 		
 		for (Periodicidade e : Periodicidade.values()){
 			
-			if (e.toString().equals(value)){
+			if (e.getDescricao().equals(value)){
 				
 				return e;
 			}

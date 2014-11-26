@@ -1,7 +1,6 @@
 package br.com.tapananuca.gereacademia.comunicacao;
 
 import br.com.tapananuca.gereacademia.Utils;
-import br.com.tapananuca.gereacademia.telas.Dieta;
 
 public class HabitosDTO implements GARequest {
 

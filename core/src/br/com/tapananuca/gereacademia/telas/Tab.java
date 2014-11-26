@@ -1,11 +1,11 @@
 package br.com.tapananuca.gereacademia.telas;
 
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 public class Tab {
 
@@ -20,10 +20,10 @@ public class Tab {
 	public Tab(Button botao, Table conteudo, Skin skin, int alinhamento){
 		
 		this.botao = botao;
-		this.botao.addListener(new ClickListener(){
-
+		this.botao.addListener(new ChangeListener() {
+			
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
+			public void changed(ChangeEvent event, Actor actor) {
 				
 				Tab.this.tabbedPanel.botaoClick(Tab.this);
 			}

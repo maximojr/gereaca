@@ -16,7 +16,7 @@ import br.com.tapananuca.gereacademia.comunicacao.LoginDTO;
 import br.com.tapananuca.gereacademia.model.Usuario;
 import br.com.tapananuca.gereacademia.service.UsuarioService;
 
-@WebServlet(name="login", urlPatterns="/login")
+@WebServlet(name="login", urlPatterns=Utils.URL_LOGIN)
 public class LoginServlet extends HttpServlet{
 
 	/**
@@ -56,7 +56,7 @@ public class LoginServlet extends HttpServlet{
 		} else {
 			
 			ga.setSucesso(false);
-			ga.setMsg("Usu·rio e/ou senha incorreto(s)");
+			ga.setMsg("Usu√°rio e/ou senha incorreto(s)");
 		}
 		
 		final OutputStream out = resp.getOutputStream();

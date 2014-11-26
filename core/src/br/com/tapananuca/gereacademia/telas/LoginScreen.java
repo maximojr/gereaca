@@ -9,13 +9,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 
 public class LoginScreen extends Tela {
@@ -34,7 +34,7 @@ public class LoginScreen extends Tela {
 		table.setFillParent(true);
 		table.center();
 		
-		Label label = new Label("Usu·rio: ", skin);
+		Label label = new Label("Usu√°rio: ", skin);
 		table.add(label).right().padBottom(20);
 		
 		final TextField campoUsuario = new TextField("", skin);
@@ -49,10 +49,9 @@ public class LoginScreen extends Tela {
 		table.add(campoSenha).left().padBottom(40).row();
 		
 		final TextButton b = new TextButton("Login", skin);
-		b.setWidth(300);
-		b.addListener(new ClickListener(){
+		b.addListener(new ChangeListener(){
 			
-			public void clicked(InputEvent event, float x, float y) {
+			public void changed(ChangeEvent event, Actor actor) {
 				
 				final Utils utilsInstance = Utils.getInstance();
 				
@@ -60,7 +59,7 @@ public class LoginScreen extends Tela {
 				loginDTO.setUsuario(campoUsuario.getText());
 				loginDTO.setSenha(utilsInstance.criptografar(campoSenha.getText()));
 				
-				final HttpRequest request = utilsInstance.criarRequest("login", loginDTO);
+				final HttpRequest request = utilsInstance.criarRequest(Utils.URL_LOGIN, loginDTO);
 				
 				Gdx.net.sendHttpRequest(request, new HttpResponseListener() {
 					
@@ -83,12 +82,14 @@ public class LoginScreen extends Tela {
 										final GereAcademia gereAcademia = LoginScreen.this.applicationListener;
 										final MenuPrincipalScreen menuPrincipalScreen = new MenuPrincipalScreen(gereAcademia);
 										gereAcademia.setTelaAtual(menuPrincipalScreen);
+										
+										menuPrincipalScreen.carregarPagamentosAReceber(1, null);
 									}
 								});
 								
 							} else {
 								
-								utilsInstance.mostarAlerta("AtenÁ„o", resp.getMsg(), stage, skin);
+								utilsInstance.mostarAlerta("Aten√ß√£o", resp.getMsg(), stage, skin);
 							}
 							
 						} catch (Exception e) {
@@ -107,7 +108,7 @@ public class LoginScreen extends Tela {
 					@Override
 					public void cancelled() {
 						
-						utilsInstance.mostarAlerta(null, "SolicitaÁ„o ao servidor cancelada.", stage, skin);
+						utilsInstance.mostarAlerta(null, "Solicita√ß√£o ao servidor cancelada.", stage, skin);
 					}
 				});
 			}

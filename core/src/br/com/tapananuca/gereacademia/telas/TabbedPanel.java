@@ -37,11 +37,11 @@ public class TabbedPanel extends Table {
 	
 	public void addTab(Tab tab){
 		
+		tab.setTabbedPanel(this);
+		
 		this.tabs.add(tab);
 		this.tabelaBotoes.add(tab.getBotao());
 		this.grupoBotoes.add(tab.getBotao());
-		
-		tab.setTabbedPanel(this);
 		
 		if (this.tabs.size() == 1){
 			

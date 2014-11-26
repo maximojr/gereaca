@@ -1,8 +1,8 @@
-package br.com.tapananuca.gereacademia.telas;
+package br.com.tapananuca.gereacademia.comunicacao;
 
 public enum Dieta {
 
-	NAO_FAZ_DIETA("Não faz dieta"),
+	NAO_FAZ_DIETA("NÃ£o faz dieta"),
 	PERDER_PESO("Para perder peso"),
 	GANHAR_PESO("Para ganhar peso");
 	
@@ -13,7 +13,7 @@ public enum Dieta {
 		this.descricao = descricao;
 	}
 	
-	public String toString(){
+	public String getDescricao(){
 		
 		return this.descricao;
 	}
@@ -22,7 +22,7 @@ public enum Dieta {
 		
 		for (Dieta e : Dieta.values()){
 			
-			if (e.toString().equals(value)){
+			if (e.getDescricao().equals(value)){
 				
 				return e;
 			}

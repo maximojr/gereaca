@@ -2,6 +2,7 @@ package br.com.tapananuca.gereacademia.telas;
 
 import br.com.tapananuca.gereacademia.GereAcademia;
 import br.com.tapananuca.gereacademia.Utils;
+import br.com.tapananuca.gereacademia.comunicacao.EstadoCivil;
 import br.com.tapananuca.gereacademia.comunicacao.GAResponse;
 import br.com.tapananuca.gereacademia.comunicacao.PessoaDTO;
 
@@ -34,7 +35,7 @@ public class CadastroPessoaScreen extends Tela {
 	//campos dados cadastrais
 	private TextField nome;
 	private TextField dataNasc;
-	private SelectBox<EstadoCivil> listEstadoCivil;
+	private SelectBox<String> listEstadoCivil;
 	private SelectBox<Character> listSexo;
 	private TextField endereco;
 	private TextField numero;
@@ -55,7 +56,7 @@ public class CadastroPessoaScreen extends Tela {
 	private CheckBox checkHipertrofia;
 	private CheckBox checkEmagrecimento;
 	
-	//campos história patologica
+	//campos histÃ³ria patologica
 	private TextArea cirurgias;
 	private TextArea sintomasDoencas;
 	private TextArea medicamentos;
@@ -66,7 +67,7 @@ public class CadastroPessoaScreen extends Tela {
 	private CheckBox cardiopatia;
 	private CheckBox hipertensao;
 	
-	//campos hábitos
+	//campos hÃ¡bitos
 	private SelectBox<String> dieta;
 	
 	private TextField atividadeFisica;
@@ -175,8 +176,10 @@ public class CadastroPessoaScreen extends Tela {
 		pessoaDTO.setTelefone(this.telefone.getText());
 		pessoaDTO.setEmail(this.email.getText());
 		pessoaDTO.setValorMensal(Float.valueOf(this.valorMensal.getText().replace(",", ".")));
+		pessoaDTO.setEstadoCivil(EstadoCivil.getEnumByValue(this.listEstadoCivil.getSelected()));
+		pessoaDTO.setDataInicio(this.dataInicio.getText());
 		
-		final HttpRequest httpRequest = utils.criarRequest("salvarPessoa", pessoaDTO);
+		final HttpRequest httpRequest = utils.criarRequest(Utils.URL_PESSOA_DADOS_BASICOS_SALVAR, pessoaDTO);
 		
 		Gdx.net.sendHttpRequest(httpRequest, new HttpResponseListener() {
 			
@@ -190,7 +193,7 @@ public class CadastroPessoaScreen extends Tela {
 					utils.mostarAlerta(null, "Dados salvos com sucesso.", stage, skin);
 				} else {
 					
-					utils.mostarAlerta("Atenção:", resp.getMsg(), stage, skin);
+					utils.mostarAlerta("AtenÃ§Ã£o:", resp.getMsg(), stage, skin);
 				}
 			}
 			
@@ -203,7 +206,7 @@ public class CadastroPessoaScreen extends Tela {
 			@Override
 			public void cancelled() {
 				
-				utils.mostarAlerta(null, "Solicitação ao servidor cancelada.", stage, skin);
+				utils.mostarAlerta(null, "SolicitaÃ§Ã£o ao servidor cancelada.", stage, skin);
 			}
 		});
 	}
@@ -221,11 +224,12 @@ public class CadastroPessoaScreen extends Tela {
 		elementosFocaveis.add(nome);
 		
 		final TextButton pesquisar = new TextButton("Pesquisar", skin);
-		pesquisar.addListener(new ClickListener(){
+		pesquisar.addListener(new ChangeListener(){
 
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
+			public void changed(ChangeEvent event, Actor actor) {
 				// TODO Auto-generated method stub
+				
 			}
 		});
 		
@@ -237,7 +241,7 @@ public class CadastroPessoaScreen extends Tela {
 		inTableDataNasc.setSkin(skin);
 		
 		inTableDataNasc.add("Data nasc.:").left();
-		inTableDataNasc.add("Estado cívil:").padLeft(10).left();
+		inTableDataNasc.add("Estado cÃ­vil:").padLeft(10).left();
 		inTableDataNasc.add("Sexo").left().padLeft(10).row();
 		
 		dataNasc = new TextField("", skin);
@@ -245,8 +249,16 @@ public class CadastroPessoaScreen extends Tela {
 		inTableDataNasc.add(dataNasc).left();
 		elementosFocaveis.add(dataNasc);
 		
-		listEstadoCivil = new SelectBox<EstadoCivil>(skin);
-		listEstadoCivil.setItems(EstadoCivil.values());
+		listEstadoCivil = new SelectBox<String>(skin);
+		final String[] es = new String[EstadoCivil.values().length];
+		
+		int index = 0;
+		for (EstadoCivil e : EstadoCivil.values()){
+			es[index] = e.getDescricao();
+			index++;
+		}
+		
+		listEstadoCivil.setItems(es);
 		inTableDataNasc.add(listEstadoCivil).padLeft(10);
 		
 		listSexo = new SelectBox<Character>(skin);
@@ -257,8 +269,8 @@ public class CadastroPessoaScreen extends Tela {
 		
 		final Table inTableEndereco = new Table(skin);
 		
-		inTableEndereco.add("Endereço:").left();
-		inTableEndereco.add("Número:").padLeft(10).left().row();
+		inTableEndereco.add("EndereÃ§o:").left();
+		inTableEndereco.add("NÃºmero:").padLeft(10).left().row();
 		
 		endereco = new TextField("", skin);
 		inTableEndereco.add(endereco).width(400).left();
@@ -282,7 +294,7 @@ public class CadastroPessoaScreen extends Tela {
 		
 		inTableTelefone.add("Telefone:").left();
 		inTableTelefone.add("E-mail").padLeft(10).left();
-		inTableTelefone.add("Data início:").padLeft(10).left().row();
+		inTableTelefone.add("Data inÃ­cio:").padLeft(10).left().row();
 		
 		telefone = new TextField("", skin);
 		telefone.setTextFieldFilter(utils.phoneFilter);
@@ -319,12 +331,13 @@ public class CadastroPessoaScreen extends Tela {
 		
 		conteudo.add(botaoSalvar).left().row().padTop(20);
 		
-		final TextButton botao = new TextButton("Dados básicos", skin, "toggle");
-		botao.addListener(new ClickListener(){
+		final TextButton botao = new TextButton("Dados bÃ¡sicos", skin, "toggle");
+		botao.addListener(new ChangeListener(){
 
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
+			public void changed(ChangeEvent event, Actor actor) {
 				// TODO Auto-generated method stub
+				
 			}
 		});
 		
@@ -336,7 +349,7 @@ public class CadastroPessoaScreen extends Tela {
 		final Table conteudo = new Table(skin);
 		//conteudo.debugAll();
 		
-		checkEstetica = new CheckBox("Estética", skin);
+		checkEstetica = new CheckBox("EstÃ©tica", skin);
 		conteudo.add(checkEstetica).left().padRight(50);
 		
 		checkTerapeutico = new CheckBox("Terapeutico", skin);
@@ -348,27 +361,28 @@ public class CadastroPessoaScreen extends Tela {
 		checkLazer = new CheckBox("Lazer", skin);
 		conteudo.add(checkLazer).left();
 		
-		checkCondFisico = new CheckBox("Condicionamento Físico", skin);
+		checkCondFisico = new CheckBox("Condicionamento FÃ­sico", skin);
 		conteudo.add(checkCondFisico).left();
 		
 		checkHipertrofia = new CheckBox("Hipertrofia", skin);
 		conteudo.add(checkHipertrofia).left().row();
 		
-		checkSaude = new CheckBox("Saúde", skin);
+		checkSaude = new CheckBox("SaÃºde", skin);
 		conteudo.add(checkSaude).left();
 		
-		checkPrepFisica = new CheckBox("Preparação Física", skin);
+		checkPrepFisica = new CheckBox("PreparaÃ§Ã£o FÃ­sica", skin);
 		conteudo.add(checkPrepFisica).left();
 		
 		checkEmagrecimento = new CheckBox("Emagrecimento", skin);
 		conteudo.add(checkEmagrecimento);
 		
 		final TextButton botao = new TextButton("Objetivos", skin, "toggle");
-		botao.addListener(new ClickListener(){
+		botao.addListener(new ChangeListener(){
 
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
+			public void changed(ChangeEvent event, Actor actor) {
 				// TODO Auto-generated method stub
+				
 			}
 		});
 		
@@ -388,7 +402,7 @@ public class CadastroPessoaScreen extends Tela {
 		cirurgias.setPrefRows(3);
 		leftTable.add(cirurgias).left().width(500).row();
 		
-		leftTable.add("Sintomas/Doenças:").left().row();
+		leftTable.add("Sintomas/DoenÃ§as:").left().row();
 		sintomasDoencas = new TextArea("", skin);
 		sintomasDoencas.setPrefRows(3);
 		leftTable.add(sintomasDoencas).left().width(500).row();
@@ -398,7 +412,7 @@ public class CadastroPessoaScreen extends Tela {
 		medicamentos.setPrefRows(3);
 		leftTable.add(medicamentos).left().width(500).row();
 		
-		leftTable.add("Lesões:").left().row();
+		leftTable.add("LesÃµes:").left().row();
 		lesoes = new TextArea("", skin);
 		lesoes.setPrefRows(3);
 		leftTable.add(lesoes).left().width(500).row();
@@ -408,7 +422,7 @@ public class CadastroPessoaScreen extends Tela {
 		alergias.setPrefRows(3);
 		leftTable.add(alergias).left().width(500).row();
 		
-		leftTable.add("Outras informações:").left().row();
+		leftTable.add("Outras informaÃ§Ãµes:").left().row();
 		outros = new TextArea("", skin);
 		outros.setPrefRows(3);
 		leftTable.add(outros).left().width(500);
@@ -422,17 +436,18 @@ public class CadastroPessoaScreen extends Tela {
 		cardiopatia = new CheckBox("Cardiopatia", skin);
 		rightTable.add(cardiopatia).left().row();
 		
-		hipertensao = new CheckBox("Hipertensão", skin);
+		hipertensao = new CheckBox("HipertensÃ£o", skin);
 		rightTable.add(hipertensao).left();
 		
 		conteudo.add(rightTable).padLeft(10).top();
 		
-		final TextButton botao = new TextButton("História patológica", skin, "toggle");
-		botao.addListener(new ClickListener(){
+		final TextButton botao = new TextButton("HistÃ³ria patolÃ³gica", skin, "toggle");
+		botao.addListener(new ChangeListener(){
 
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
+			public void changed(ChangeEvent event, Actor actor) {
 				// TODO Auto-generated method stub
+				
 			}
 		});
 		
@@ -445,19 +460,19 @@ public class CadastroPessoaScreen extends Tela {
 		
 		conteudo.add("Dieta:").left().row();
 		dieta = new SelectBox<String>(skin);
-		dieta.setItems("Não faz dieta", "Para perder peso", "Para ganhar peso");
+		dieta.setItems("NÃ£o faz dieta", "Para perder peso", "Para ganhar peso");
 		conteudo.add(dieta).left().row();
 		
-		conteudo.add("Pratica atividade física durante quanto tempo?").left().row();
-		atividadeFisica = new TextField("Não pratica", skin);
+		conteudo.add("Pratica atividade fÃ­sica durante quanto tempo?").left().row();
+		atividadeFisica = new TextField("NÃ£o pratica", skin);
 		conteudo.add(atividadeFisica).left().row();
 		
-		conteudo.add("Data último exame médico:").left().row();
+		conteudo.add("Data Ãºltimo exame mÃ©dico:").left().row();
 		ultimoExame = new TextField("", skin);
 		ultimoExame.setTextFieldFilter(utils.dateFilter);
 		conteudo.add(ultimoExame).left().row();
 		
-		conteudo.add("Periodicidade exame médico:").left().row();
+		conteudo.add("Periodicidade exame mÃ©dico:").left().row();
 		
 		final Table inTable = new Table(skin);
 		
@@ -473,12 +488,13 @@ public class CadastroPessoaScreen extends Tela {
 		
 		conteudo.add(inTable).left();
 		
-		final TextButton botao = new TextButton("Hábitos", skin, "toggle");
-		botao.addListener(new ClickListener(){
+		final TextButton botao = new TextButton("Hï¿½bitos", skin, "toggle");
+		botao.addListener(new ChangeListener(){
 
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
+			public void changed(ChangeEvent event, Actor actor) {
 				// TODO Auto-generated method stub
+				
 			}
 		});
 		
@@ -509,7 +525,7 @@ public class CadastroPessoaScreen extends Tela {
 		
 		conteudo.add(inTable).left().row();
 		
-		conteudo.add("Medidas Antropométricas:").left().padTop(15).row();
+		conteudo.add("Medidas AntropomÃ©tricas:").left().padTop(15).row();
 		
 		inTable = new Table(skin);
 		inTable.add("Peso corporal:").left();
@@ -568,13 +584,13 @@ public class CadastroPessoaScreen extends Tela {
 		
 		conteudo.add(inTable).left().row();
 		
-		conteudo.add("Medidas Circunferênciais:").padTop(15).left().row();
+		conteudo.add("Medidas CircunferÃªnciais:").padTop(15).left().row();
 		
 		inTable = new Table(skin);
-		inTable.add("Tórax:").left();
-		inTable.add("Abdômen:").padLeft(10).left();
+		inTable.add("TÃ³rax:").left();
+		inTable.add("AbdÃ´men:").padLeft(10).left();
 		inTable.add("Cintura:").padLeft(10).left();
-		inTable.add("Bíceps:").padLeft(10).left().row();
+		inTable.add("BÃ­ceps:").padLeft(10).left().row();
 		
 		torax = new TextField("", skin);
 		torax.setTextFieldFilter(utils.currencyFilter);
@@ -595,9 +611,9 @@ public class CadastroPessoaScreen extends Tela {
 //		conteudo.add(inTable).left().row();
 //		
 //		inTable = new Table(skin);
-		inTable.add("Tríceps:").left();
+		inTable.add("TrÃ­ceps:").left();
 		inTable.add("Coxa:").padLeft(10).left();
-		inTable.add("Antebraço:").padLeft(10).left().row();
+		inTable.add("AntebraÃ§o:").padLeft(10).left().row();
 		
 		triceps = new TextField("", skin);
 		triceps.setTextFieldFilter(utils.currencyFilter);
@@ -613,11 +629,11 @@ public class CadastroPessoaScreen extends Tela {
 		
 		conteudo.add(inTable).left().row();
 		
-		conteudo.add("Dobras Cutâneas").padTop(15).left().row();
+		conteudo.add("Dobras Cutï¿½neas").padTop(15).left().row();
 		
 		inTable = new Table(skin);
-		inTable.add("Bíceps:").left();
-		inTable.add("Tríceps:").padLeft(10).left();
+		inTable.add("BÃ­ceps:").left();
+		inTable.add("TrÃ­ceps:").padLeft(10).left();
 		inTable.add("Sub-axilar:").padLeft(10).left().row();
 		
 		dcBiceps = new TextField("", skin);
@@ -635,9 +651,9 @@ public class CadastroPessoaScreen extends Tela {
 //		conteudo.add(inTable).left().row();
 //		
 //		inTable = new Table(skin);
-		inTable.add("Supra-ilíacas:").left();
+		inTable.add("Supra-ilÃ­acas:").left();
 		inTable.add("Subescapular:").padLeft(10).left();
-		inTable.add("Toráxica:").padLeft(10).left().row();
+		inTable.add("TorÃ¡xica:").padLeft(10).left().row();
 		
 		dcSupraIliacas = new TextField("", skin);
 		dcSupraIliacas.setTextFieldFilter(utils.currencyFilter);
@@ -670,11 +686,12 @@ public class CadastroPessoaScreen extends Tela {
 		conteudo.add(inTable).left().row();
 		
 		final TextButton botao = new TextButton("Medidas", skin, "toggle");
-		botao.addListener(new ClickListener(){
+		botao.addListener(new ChangeListener(){
 
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
+			public void changed(ChangeEvent event, Actor actor) {
 				// TODO Auto-generated method stub
+				
 			}
 		});
 		

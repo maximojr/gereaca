@@ -1,11 +1,11 @@
-package br.com.tapananuca.gereacademia.telas;
+package br.com.tapananuca.gereacademia.comunicacao;
 
 public enum EstadoCivil {
 
 	SOLTEIRO("Solteiro(a)"),
 	CASADO("Casado(a)"),
 	DIVORCIADO("Divorciado(a)"), 
-	VIUVO("Viúvo(a)");
+	VIUVO("ViÃºvo(a)");
 	
 	private String descricao;
 	
@@ -13,15 +13,15 @@ public enum EstadoCivil {
 		this.descricao = descricao;
 	}
 
-	public String toString() {
+	public String getDescricao() {
 		return descricao;
 	}
 	
-	public EstadoCivil getEnumByValue(String value){
+	public static EstadoCivil getEnumByValue(String value){
 		
 		for (EstadoCivil e : EstadoCivil.values()){
 			
-			if (e.toString().equals(value)){
+			if (e.getDescricao().equals(value)){
 				
 				return e;
 			}

@@ -13,11 +13,11 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import br.com.tapananuca.gereacademia.telas.EstadoCivil;
+import br.com.tapananuca.gereacademia.comunicacao.EstadoCivil;
 
 /**
- * Dados referentes a endereÁo e telefone deviam estar tabelas separadas,
- * mas por enquanto n„o h· necessidade
+ * Dados referentes a endere√ßo e telefone deviam estar tabelas separadas,
+ * mas por enquanto n√£o h√° necessidade
  */
 @Entity
 @Table(name="PESSOA")
