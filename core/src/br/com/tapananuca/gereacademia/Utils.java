@@ -4,11 +4,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
-import br.com.tapananuca.gereacademia.comunicacao.GARequest;
 import br.com.tapananuca.gereacademia.comunicacao.JsonSerializer;
 
 import com.badlogic.gdx.Gdx;
@@ -16,12 +13,16 @@ import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldFilter;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public class Utils {
@@ -31,40 +32,35 @@ public class Utils {
 	public static final String WEB_APP_END_POINT = "web.app.endpoint";
 	
 	public static final String URL_LOGIN = "/login";
-	
 	public static final String URL_PESSOA = "/pessoa";
-	
 	public static final String URL_PESSOA_A_RECEBER = URL_PESSOA + "/receber";
-	
 	public static final String URL_PESSOA_PAGAR = URL_PESSOA + "/pagar";
-	
+	public static final String URL_PESSOA_ANIVERSARIOS = URL_PESSOA + "/aniversarios";
 	public static final String URL_PESSOA_DADOS_BASICOS = URL_PESSOA + "/basicos";
-	
 	public static final String URL_PESSOA_DADOS_BASICOS_SALVAR = URL_PESSOA_DADOS_BASICOS + "/salvar";
-	
 	public static final String URL_PESSOA_OBJETIVOS = URL_PESSOA + "/objetivo";
-	
 	public static final String URL_PESSOA_OBJETIVOS_SALVAR = URL_PESSOA_OBJETIVOS + "/salvar";
-	
 	public static final String URL_PESSOA_HIST_PAT = URL_PESSOA + "/histpat";
-	
 	public static final String URL_PESSOA_HIST_PAT_SALVAR = URL_PESSOA_HIST_PAT + "/salvar";
-	
 	public static final String URL_PESSOA_HABITOS = URL_PESSOA + "/habito";
-	
 	public static final String URL_PESSOA_HABITO_SALVAR = URL_PESSOA_HABITOS + "/salvar";
-	
 	public static final String URL_PESSOA_MEDIDAS = URL_PESSOA + "/medida";
-	
 	public static final String URL_PESSOA_MEDIDAS_SALVAR = URL_PESSOA_MEDIDAS + "/salvar";
 	
-	private final Json json = new Json();
+	private final Json json;
 	
 	private String sessionId;
 	
 	private static ObjectMap<String, String> properties;
 	
-	private Utils(){}
+	private Utils(){
+		
+		json = new Json();
+		json.setTypeName(null);
+		json.setUsePrototypes(false);
+		json.setIgnoreUnknownFields(true);
+		json.setOutputType(OutputType.json);
+	}
 	
 	public static void starInstance(ObjectMap<String, String> properties){
 		
@@ -112,7 +108,7 @@ public class Utils {
 		return jsonSerializer.toJson();
 	}
 	
-	public HttpRequest criarRequest(String url, GARequest parametros){
+	public HttpRequest criarRequest(String url, JsonSerializer parametros){
 		
 		final HttpRequest request = new HttpRequest(HttpMethods.POST);
 		request.setUrl(properties.get(WEB_APP_END_POINT) + url);
@@ -148,6 +144,23 @@ public class Utils {
 		return valor.toString().replace(",", "").replace(".", ",");
 	}
 	
+	public String formatCurrency(String valor){
+		
+		if (valor == null){
+			
+			return "0,00";
+		}
+		
+		valor = valor.toString().replace(",", "").replace(".", ",");
+		
+		if (valor.endsWith(",0")){
+			
+			valor += "0";
+		}
+		
+		return valor;
+	}
+	
 	public BigDecimal StringToCurrency(String valor){
 		
 		if (valor == null || valor.trim().isEmpty()){
@@ -162,7 +175,14 @@ public class Utils {
 		
 		final Window window = new Window(titulo == null ? "--- --- ---" : titulo, skin);
 		window.setWidth(Gdx.graphics.getWidth());
-		window.add(msg);
+		
+		final Table table = new Table(skin);
+		final Label label = new Label(msg, skin);
+		label.setWrap(true);
+		
+		table.add(label).width(Gdx.graphics.getWidth()).height(label.getPrefHeight());
+		
+		window.add(table);
 		window.addListener(new ClickListener(){
 			
 			@Override
@@ -213,40 +233,46 @@ public class Utils {
 		}
 	}
 	
-	public <T extends JsonSerializer> void addGARequestCollectionToJson(StringBuilder json, String nomeCampo, Collection<T> collection){
+	public <T extends JsonSerializer> void addGARequestCollectionToJson(StringBuilder json, String nomeCampo, Array<T> collection){
 		
 		json.append(nomeCampo)
 			.append(":[");
 		
-		final Iterator<T> ite = collection.iterator();
+		if (collection != null){
 		
-		while (ite.hasNext()){
+			final Iterator<T> ite = collection.iterator();
 			
-			json.append(ite.next().toJson());
-			
-			if (ite.hasNext()){
+			while (ite.hasNext()){
 				
-				json.append(",");
+				json.append(ite.next().toJson());
+				
+				if (ite.hasNext()){
+					
+					json.append(",");
+				}
 			}
 		}
 		
 		json.append("]");
 	}
 	
-	public <T extends Object> void addCollectionToJson(StringBuilder json, String nomeCampo, List<T> collection){
+	public <T extends Object> void addCollectionToJson(StringBuilder json, String nomeCampo, Array<T> collection){
 		
 		json.append(nomeCampo)
 			.append(":[");
 		
-		final Iterator<T> ite = collection.iterator();
+		if (collection != null){
 		
-		while (ite.hasNext()){
+			final Iterator<T> ite = collection.iterator();
 			
-			json.append(ite.next().toString());
-			
-			if (ite.hasNext()){
+			while (ite.hasNext()){
 				
-				json.append(",");
+				json.append(ite.next().toString());
+				
+				if (ite.hasNext()){
+					
+					json.append(",");
+				}
 			}
 		}
 		

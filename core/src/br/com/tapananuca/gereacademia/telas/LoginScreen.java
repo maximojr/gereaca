@@ -1,5 +1,7 @@
 package br.com.tapananuca.gereacademia.telas;
 
+import java.util.Date;
+
 import br.com.tapananuca.gereacademia.GereAcademia;
 import br.com.tapananuca.gereacademia.Utils;
 import br.com.tapananuca.gereacademia.comunicacao.GAResponse;
@@ -16,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.TimeUtils;
 
 
 public class LoginScreen extends Tela {
@@ -83,7 +86,11 @@ public class LoginScreen extends Tela {
 										final MenuPrincipalScreen menuPrincipalScreen = new MenuPrincipalScreen(gereAcademia);
 										gereAcademia.setTelaAtual(menuPrincipalScreen);
 										
-										menuPrincipalScreen.carregarPagamentosAReceber(1, null);
+										final Date d = new Date(TimeUtils.millis());
+										@SuppressWarnings("deprecation")
+										final String dataRef = (d.getMonth() + 1) + "/" + (d.getYear() + 1900);
+										
+										menuPrincipalScreen.carregarTabelasMenuPrincipal(1, dataRef);
 									}
 								});
 								

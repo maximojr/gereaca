@@ -18,7 +18,7 @@ public enum Dieta {
 		return this.descricao;
 	}
 	
-	public Dieta getEnumByValue(String value){
+	public static Dieta getEnumByValue(String value){
 		
 		for (Dieta e : Dieta.values()){
 			

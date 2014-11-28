@@ -1,16 +1,18 @@
 package br.com.tapananuca.gereacademia.comunicacao;
 
-import java.util.List;
-
 import br.com.tapananuca.gereacademia.Utils;
+
+import com.badlogic.gdx.utils.Array;
 
 public class AReceberPaginaDTO extends GAResponse {
 
-	private List<AReceberDTO> aReceber;
+	private Array<AReceberDTO> aReceber;
 	
-	private List<String> datasRef;
+	private Array<String> datasRef;
 	
-	private Long qtdPaginas;
+	private String qtdPaginas;
+	
+	public AReceberPaginaDTO(){}
 	
 	@Override
 	public String toJson() {
@@ -20,9 +22,10 @@ public class AReceberPaginaDTO extends GAResponse {
 		final StringBuilder json = new StringBuilder("{");
 		
 		utils.addGARequestCollectionToJson(json, "aReceber", aReceber);
+		json.append(",");
 		utils.addCollectionToJson(json, "datasRef", datasRef);
 		
-		utils.addNumberToJson(json, "qtdPaginas", qtdPaginas);
+		utils.addStringToJson(json, "qtdPaginas", qtdPaginas);
 		
 		json.append(",").append(super.toJson().replace("{", "").replace("}", ""));
 		
@@ -31,27 +34,27 @@ public class AReceberPaginaDTO extends GAResponse {
 		return json.toString();
 	}
 
-	public List<AReceberDTO> getaReceber() {
+	public Array<AReceberDTO> getaReceber() {
 		return aReceber;
 	}
 
-	public void setaReceber(List<AReceberDTO> aReceber) {
+	public void setaReceber(Array<AReceberDTO> aReceber) {
 		this.aReceber = aReceber;
 	}
 
-	public List<String> getDatasRef() {
+	public Array<String> getDatasRef() {
 		return datasRef;
 	}
 
-	public void setDatasRef(List<String> datasRef) {
+	public void setDatasRef(Array<String> datasRef) {
 		this.datasRef = datasRef;
 	}
 
-	public Long getQtdPaginas() {
+	public String getQtdPaginas() {
 		return qtdPaginas;
 	}
 
-	public void setQtdPaginas(Long qtdPaginas) {
+	public void setQtdPaginas(String qtdPaginas) {
 		this.qtdPaginas = qtdPaginas;
 	}
 

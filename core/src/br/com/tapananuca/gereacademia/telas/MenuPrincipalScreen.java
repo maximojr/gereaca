@@ -2,13 +2,13 @@ package br.com.tapananuca.gereacademia.telas;
 
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import br.com.tapananuca.gereacademia.GereAcademia;
 import br.com.tapananuca.gereacademia.Utils;
 import br.com.tapananuca.gereacademia.comunicacao.AReceberDTO;
 import br.com.tapananuca.gereacademia.comunicacao.AReceberPaginaDTO;
+import br.com.tapananuca.gereacademia.comunicacao.MesUtil;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.HttpRequest;
@@ -20,29 +20,32 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.TimeUtils;
 
 public class MenuPrincipalScreen extends Tela {
 
-	final Pixmap pm1;
-	final Drawable cinza;
-	final Skin skin;
-	final Table tablePrincipal;
-	final Utils utils;
+	private final Pixmap pm1;
+	private final Drawable cinza;
+	private final Skin skin;
+	private final Table tablePrincipal;
+	private final Table tablePagamentos;
+	private final Table tableAniversarios;
+	private final Utils utils;
+	
+	private final SelectBox<String> datasRefPagamento;
+	private final SelectBox<String> datasRefAniversario;
 	
 	private List<DataHolder> dados;
+	
+	private final ChangeListener dataRefPgto, dataRefAnin;
 	
 	public MenuPrincipalScreen(GereAcademia applicationListener) {
 		super(applicationListener);
@@ -58,8 +61,26 @@ public class MenuPrincipalScreen extends Tela {
 		
 		utils = Utils.getInstance();
 		
+		datasRefPagamento = new SelectBox<String>(skin);
+		dataRefPgto = new DataRefPagamentoChangeListener();
+		datasRefPagamento.addListener(dataRefPgto);
+		
+		datasRefAniversario = new SelectBox<String>(skin);
+		
+		final String[] es = new String[MesUtil.values().length];
+		
+		int index = 0;
+		for (MesUtil e : MesUtil.values()){
+			es[index] = e.getNome();
+			index++;
+		}
+		
+		datasRefAniversario.setItems(es);
+		dataRefAnin = new DataRefAniversarioChangeListener();
+		datasRefAniversario.addListener(dataRefAnin);
+		
 		tablePrincipal = new Table();
-		//table.debugAll();
+		//tablePrincipal.debugAll();
 		stage.addActor(tablePrincipal);
 		tablePrincipal.setSkin(skin);
 		tablePrincipal.setFillParent(true);
@@ -79,74 +100,15 @@ public class MenuPrincipalScreen extends Tela {
 		
 		tablePrincipal.add(cadastrarPessoaButton).colspan(3).row().padTop(50);
 		
-		tablePrincipal.add("A receber").colspan(3).row();
+		tablePagamentos = new Table(skin);
 		
-		tablePrincipal.add("Nome").center().width(300);
-		tablePrincipal.add("Valor");
-		tablePrincipal.add("Pago");
+		tablePrincipal.add(tablePagamentos);
 		
 		tablePrincipal.row().padTop(10);
 		
+		tableAniversarios = new Table(skin);
 		
-		
-		final Table wrapAniversarios = new Table();
-		
-		tablePrincipal.add(wrapAniversarios).colspan(3).fill();
-		
-		wrapAniversarios.add(new Label("Aniversariantes", skin)).colspan(3).row();
-		final Label nomeAnim = new Label("Nome", skin);
-		nomeAnim.setAlignment(Align.center);
-		wrapAniversarios.add(nomeAnim).width(300);
-		wrapAniversarios.add(new Label("Dia", skin));
-		
-		wrapAniversarios.row().padTop(10);
-		
-		for (int index = 0 ; index < 10 ; index++){
-			
-			if (index % 2 == 0){
-				
-				wrapAniversarios.add(new Label("Pessoa " + index, skin)).left();
-				wrapAniversarios.add(new Label("99/99/9999", skin));
-			} else {
-				
-				Table inTable = new Table();
-				inTable.setBackground(cinza);
-				
-				inTable.add(new Label("Pessoa " + index, skin)).left();
-				wrapAniversarios.add(inTable.left()).fill();
-				
-				inTable = new Table();
-				inTable.setBackground(cinza);
-				
-				inTable.add(new Label("99/99/9999", skin));
-				wrapAniversarios.add(inTable.center()).fill();
-			}
-			
-			wrapAniversarios.row();
-		}
-		
-		TextButton paginaAnteriorAniversarios = new TextButton("<<", skin);
-		paginaAnteriorAniversarios.addListener(new ClickListener(){
-
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				// TODO Auto-generated method stub
-			}
-		});
-		
-		TextButton proximaPaginaAniversarios = new TextButton(">>", skin);
-		proximaPaginaAniversarios.addListener(new ClickListener(){
-
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				// TODO Auto-generated method stub
-			}
-		});
-		
-		final Table paginacaoTableAniversarios = new Table();
-		paginacaoTableAniversarios.add(paginaAnteriorAniversarios,proximaPaginaAniversarios);
-		
-		wrapAniversarios.add(paginacaoTableAniversarios).left().padTop(10);
+		tablePrincipal.add(tableAniversarios).colspan(3).fill();
 		
 		Gdx.input.setInputProcessor(stage);
 	}
@@ -155,30 +117,66 @@ public class MenuPrincipalScreen extends Tela {
 		
 		private DataHolder(){}
 		
-		public Long id;
+		public String id;
 		public TextField valor;
 		public CheckBox chec;
 	}
 	
+	class DataRefPagamentoChangeListener extends ChangeListener{
+
+		@Override
+		public void changed(ChangeEvent event, Actor actor) {
+			
+			MenuPrincipalScreen.this.carregarPagamentosAReceber(1, datasRefPagamento.getSelected());
+		}
+	}
+	
+	class DataRefAniversarioChangeListener extends ChangeListener{
+
+		@Override
+		public void changed(ChangeEvent event, Actor actor) {
+			
+			MenuPrincipalScreen.this.carregarAniversariantes(1, 
+					MesUtil.getEnumByValue(datasRefAniversario.getSelected()));
+		}
+	}
+	
 	private TextField createCurrencyField(String valor, Skin skin){
 		
-		final TextField campoValor = new TextField(valor, skin);
+		final TextField campoValor = new TextField(utils.formatCurrency(valor), skin);
 		campoValor.setRightAligned(true);
 		campoValor.setTextFieldFilter(Utils.getInstance().currencyFilter);
 		
 		return campoValor;
 	}
 
-	@SuppressWarnings("deprecation")
-	public void carregarPagamentosAReceber(int pagina, String dataRef) {
+	public void carregarTabelasMenuPrincipal(int pagina, String dataRef) {
 		
-		if (dataRef == null){
-			
-			Date d = new Date(TimeUtils.millis());
-			dataRef = (d.getMonth() + 1) + "/" + (d.getYear() + 1900);
-		}
+		this.carregarPagamentosAReceber(pagina, dataRef);
 		
-		final HttpRequest req = this.utils.criarRequest(Utils.URL_PESSOA_A_RECEBER, null);
+		this.datasRefAniversario.setSelected(MesUtil.getEnumByCodigo(Integer.valueOf(dataRef.split("/")[0])).getNome());
+	}
+	
+	private void carregarPagamentosAReceber(final int pagina, final String dataRef){
+		
+		tablePagamentos.clear();
+		
+		final Table inTable = new Table(skin);
+		
+		inTable.add("A receber: ");
+		inTable.add(datasRefPagamento);
+		
+		tablePagamentos.add(inTable).colspan(3).row();
+		
+		tablePagamentos.add("Nome").center().width(300);
+		tablePagamentos.add("Valor");
+		tablePagamentos.add("Pago").row();
+		
+		final AReceberDTO dto = new AReceberDTO();
+		dto.setPaginaAtual(String.valueOf(pagina));
+		dto.setDataRef(dataRef);
+		
+		final HttpRequest req = this.utils.criarRequest(Utils.URL_PESSOA_A_RECEBER, dto);
 		
 		Gdx.net.sendHttpRequest(req, new HttpResponseListener() {
 			
@@ -189,7 +187,7 @@ public class MenuPrincipalScreen extends Tela {
 				
 				if (aReceberPaginaDTO.isSucesso()){
 					
-					if (aReceberPaginaDTO.getaReceber() != null && !aReceberPaginaDTO.getaReceber().isEmpty()){
+					if (aReceberPaginaDTO.getaReceber() != null && aReceberPaginaDTO.getaReceber().size != 0){
 						
 						int index = 0;
 						for (AReceberDTO dto : aReceberPaginaDTO.getaReceber()){
@@ -198,32 +196,32 @@ public class MenuPrincipalScreen extends Tela {
 							
 							dh.id = dto.getId();
 							
-							if (index %2==0){
+							if (index %2 != 0){
 								
-								tablePrincipal.add(dto.getNome()).left().fill();
+								tablePagamentos.add(dto.getNome()).left().fill();
 								
 								final TextField campoValor = MenuPrincipalScreen.this.createCurrencyField(String.valueOf(dto.getValor()), skin);
-								tablePrincipal.add(campoValor).width(130).height(23);
+								tablePagamentos.add(campoValor).width(130).height(23);
 								
 								dh.valor = campoValor;
 								
 								final CheckBox checkBox = new CheckBox("", skin);
-								tablePrincipal.add(checkBox);
+								tablePagamentos.add(checkBox);
 								
 								dh.chec = checkBox;
 							} else {
 								
-								Table inTable = new Table();
+								Table inTable = new Table(skin);
 								inTable.setBackground(cinza);
 								
 								inTable.add(dto.getNome()).left();
-								tablePrincipal.add(inTable.left()).fill();
+								tablePagamentos.add(inTable.left()).fill();
 								
 								inTable = new Table();
 								inTable.setBackground(cinza);
 								final TextField campoValor = MenuPrincipalScreen.this.createCurrencyField(String.valueOf(dto.getValor()), skin);
 								inTable.add(campoValor).width(130).height(23);
-								tablePrincipal.add(inTable).fill();
+								tablePagamentos.add(inTable).fill();
 								
 								dh.valor = campoValor;
 								
@@ -233,63 +231,214 @@ public class MenuPrincipalScreen extends Tela {
 								final CheckBox checkBox = new CheckBox("", skin);
 								
 								inTable.add(checkBox).fill();
-								tablePrincipal.add(inTable).fill();
+								tablePagamentos.add(inTable).fill();
 								
 								dh.chec = checkBox;
 							}
 							
-							tablePrincipal.row();
+							tablePagamentos.row();
 							
 							MenuPrincipalScreen.this.dados.add(dh);
 							
 							index++;
 						}
 						
-						TextButton paginaAnteriorAReceber = new TextButton("<<", skin);
-						paginaAnteriorAReceber.addListener(new ClickListener(){
-				
+						final Table paginacaoTable = new Table(skin);
+						
+						final TextButton paginaAnteriorAReceber = new TextButton("<<", skin);
+						paginaAnteriorAReceber.addListener(new ChangeListener(){
+
 							@Override
-							public void clicked(InputEvent event, float x, float y) {
-								// TODO Auto-generated method stub
+							public void changed(ChangeEvent event, Actor actor) {
+								
+								if (pagina > 1){
+									
+									MenuPrincipalScreen.this.carregarPagamentosAReceber(pagina - 1, datasRefPagamento.getSelected());
+								}
 							}
 						});
+						paginacaoTable.add(paginaAnteriorAReceber);
 						
-						TextButton proximaPaginaAReceber = new TextButton(">>", skin);
-						proximaPaginaAReceber.addListener(new ClickListener(){
-				
+						paginacaoTable.add(" Página " + pagina + " de " + aReceberPaginaDTO.getQtdPaginas() + " ");
+						
+						final TextButton proximaPaginaAReceber = new TextButton(">>", skin);
+						proximaPaginaAReceber.addListener(new ChangeListener(){
+
 							@Override
-							public void clicked(InputEvent event, float x, float y) {
-								// TODO Auto-generated method stub
+							public void changed(ChangeEvent event, Actor actor) {
+								
+								if (pagina < Integer.valueOf(aReceberPaginaDTO.getQtdPaginas())){
+									
+									MenuPrincipalScreen.this.carregarPagamentosAReceber(pagina + 1, datasRefPagamento.getSelected());
+								}
 							}
 						});
+						paginacaoTable.add(proximaPaginaAReceber);
 						
-						final Table paginacaoTable = new Table();
-						paginacaoTable.add(paginaAnteriorAReceber,proximaPaginaAReceber);
+						tablePagamentos.add(paginacaoTable).left().padTop(10);
+						tablePagamentos.add(new TextButton("Salvar", skin)).colspan(2);
 						
-						tablePrincipal.add(paginacaoTable).left().padTop(10);
-						tablePrincipal.add(new TextButton("Salvar", skin)).colspan(2);
-						
-						tablePrincipal.row().padTop(50);
+						tablePagamentos.row().padTop(50);
 					} else {
 
-						//TODO tudo pago
+						tablePagamentos.add("Todos os pagamentos foram efetuados.");
 					}
+					
+					datasRefPagamento.removeListener(dataRefPgto);
+					datasRefPagamento.clearItems();
+					
+					if (!aReceberPaginaDTO.getDatasRef().contains(dataRef, false)){
+						
+						aReceberPaginaDTO.getDatasRef().add(dataRef);
+					}
+					
+					final String[] es = new String[aReceberPaginaDTO.getDatasRef().size];
+					
+					int index = 0;
+					for (String e : aReceberPaginaDTO.getDatasRef()){
+						es[index] = e;
+						index++;
+					}
+					
+					datasRefPagamento.setItems(es);
+					datasRefPagamento.setSelected(dataRef);
+					
+					datasRefPagamento.addListener(dataRefPgto);
+					
 				} else {
 					
-					//TODO deu merda na req
+					utils.mostarAlerta("Atenção", aReceberPaginaDTO.getMsg(), stage, skin);
 				}
 			}
 			
 			@Override
 			public void failed(Throwable t) {
-				// TODO Auto-generated method stub
 				
+				utils.mostarAlerta("Atenção", t.getMessage(), stage, skin);
 			}
 			
 			@Override
 			public void cancelled() {
-				// TODO Auto-generated method stub
 				
+				utils.mostarAlerta(null, "Requisição ao servidor cancelada.", stage, skin);
+			}
+		});
+	}
+
+	private void carregarAniversariantes(final int pagina, final MesUtil dataRef) {
+		
+		tableAniversarios.clear();
+		
+		Table inTable = new Table(skin);
+		
+		inTable.add("Aniversariantes: ");
+		inTable.add(datasRefAniversario);
+		
+		tableAniversarios.add(inTable).colspan(3).row();
+		
+		tableAniversarios.add("Nome").width(300);
+		tableAniversarios.add("Dia").row().padTop(10);
+		
+		final AReceberDTO dto = new AReceberDTO();
+		dto.setPaginaAtual(String.valueOf(pagina));
+		dto.setDataRef(String.valueOf(dataRef.getCodigo()));
+		
+		final HttpRequest req = this.utils.criarRequest(Utils.URL_PESSOA_ANIVERSARIOS, dto);
+		
+		Gdx.net.sendHttpRequest(req, new HttpResponseListener() {
+			
+			@Override
+			public void handleHttpResponse(HttpResponse httpResponse) {
+				
+				final AReceberPaginaDTO aReceberPaginaDTO = utils.fromJson(AReceberPaginaDTO.class, httpResponse.getResultAsString());
+				
+				if (aReceberPaginaDTO.isSucesso()){
+					
+					if (aReceberPaginaDTO.getaReceber() != null && aReceberPaginaDTO.getaReceber().size != 0){
+						
+						int index = 0;
+						for (AReceberDTO dto : aReceberPaginaDTO.getaReceber()){
+							
+							if (index % 2 != 0){
+								
+								tableAniversarios.add(dto.getNome()).left();
+								tableAniversarios.add(dto.getDataRef());
+							} else {
+								
+								Table inTable = new Table(skin);
+								inTable.setBackground(cinza);
+								
+								inTable.add(dto.getNome()).left();
+								tableAniversarios.add(inTable.left()).fill();
+								
+								inTable = new Table(skin);
+								inTable.setBackground(cinza);
+								
+								inTable.add(dto.getDataRef());
+								tableAniversarios.add(inTable.center()).fill();
+							}
+							
+							tableAniversarios.row();
+							
+							index++;
+						}
+						
+						final Table paginacaoTableAniversarios = new Table(skin);
+						
+						final TextButton paginaAnteriorAniversarios = new TextButton("<<", skin);
+						paginaAnteriorAniversarios.addListener(new ChangeListener(){
+							
+							@Override
+							public void changed(ChangeEvent event, Actor actor) {
+								
+								if (pagina > 1){
+									
+									MenuPrincipalScreen.this.carregarAniversariantes(pagina - 1, 
+											MesUtil.getEnumByValue(datasRefAniversario.getSelected()));
+								}
+							}
+						});
+						paginacaoTableAniversarios.add(paginaAnteriorAniversarios);
+						
+						paginacaoTableAniversarios.add("Página " + pagina + " de " + aReceberPaginaDTO.getQtdPaginas() + " ");
+						
+						final TextButton proximaPaginaAniversarios = new TextButton(">>", skin);
+						proximaPaginaAniversarios.addListener(new ChangeListener(){
+							
+							@Override
+							public void changed(ChangeEvent event, Actor actor) {
+								
+								if (pagina < Integer.valueOf(aReceberPaginaDTO.getQtdPaginas())){
+									
+									MenuPrincipalScreen.this.carregarAniversariantes(pagina + 1, 
+											MesUtil.getEnumByValue(datasRefAniversario.getSelected()));
+								}
+							}
+						});
+						paginacaoTableAniversarios.add(proximaPaginaAniversarios);
+						
+						tableAniversarios.add(paginacaoTableAniversarios).left().padTop(10);
+						
+					} else {
+						
+						tableAniversarios.add("Nenhum aniversariante no mês de " + datasRefAniversario.getSelected());
+					}
+				} else {
+					
+					utils.mostarAlerta("Atenção", aReceberPaginaDTO.getMsg(), stage, skin);
+				}
+			}
+
+			@Override
+			public void failed(Throwable t) {
+				
+				utils.mostarAlerta("Atenção", t.getMessage(), stage, skin);
+			}
+
+			@Override
+			public void cancelled() {
+				
+				utils.mostarAlerta(null, "Requisição ao servidor cancelada.", stage, skin);
 			}
 		});
 	}

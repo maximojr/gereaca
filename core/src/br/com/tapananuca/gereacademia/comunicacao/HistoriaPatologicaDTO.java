@@ -4,7 +4,7 @@ import br.com.tapananuca.gereacademia.Utils;
 
 public class HistoriaPatologicaDTO implements GARequest {
 
-	private Long id;
+	private String idPessoa;
 	
 	private String cirurgias;
 	
@@ -29,7 +29,7 @@ public class HistoriaPatologicaDTO implements GARequest {
 		
 		final StringBuilder json = new StringBuilder("{");
 		
-		utils.addNumberToJson(json, "id", id);
+		utils.addStringToJson(json, "idPessoa", idPessoa);
 		utils.addStringToJson(json, "cirurgias", cirurgias);
 		utils.addStringToJson(json, "sintomasDoencas", sintomasDoencas);
 		utils.addStringToJson(json, "medicamentos", medicamentos);
@@ -44,12 +44,12 @@ public class HistoriaPatologicaDTO implements GARequest {
 		return json.toString();
 	}
 
-	public Long getId() {
-		return id;
+	public String getIdPessoa() {
+		return idPessoa;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setIdPessoa(String idPessoa) {
+		this.idPessoa = idPessoa;
 	}
 
 	public String getCirurgias() {

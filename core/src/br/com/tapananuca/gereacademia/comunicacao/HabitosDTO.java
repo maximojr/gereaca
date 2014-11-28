@@ -4,7 +4,7 @@ import br.com.tapananuca.gereacademia.Utils;
 
 public class HabitosDTO implements GARequest {
 
-	private Long id;
+	private String idPessoa;
 	
 	private Dieta dieta;
 	
@@ -12,7 +12,7 @@ public class HabitosDTO implements GARequest {
 	
 	private String dataUltimoExameMedico;
 	
-	private Integer periodExameMedico;
+	private String periodExameMedico;
 	
 	@Override
 	public String toJson() {
@@ -21,23 +21,23 @@ public class HabitosDTO implements GARequest {
 		
 		final StringBuilder json = new StringBuilder("{");
 		
-		utils.addNumberToJson(json, "id", id);
+		utils.addStringToJson(json, "idPessoa", idPessoa);
 		utils.addStringToJson(json, "dieta", dieta.name());
 		utils.addStringToJson(json, "praticaAtivFisica", praticaAtivFisica);
 		utils.addStringToJson(json, "dataUltimoExameMedico", dataUltimoExameMedico);
-		utils.addNumberToJson(json, "periodExameMedico", periodExameMedico);
+		utils.addStringToJson(json, "periodExameMedico", periodExameMedico);
 		
 		json.append("}");
 		
 		return json.toString();
 	}
 
-	public Long getId() {
-		return id;
+	public String getIdPessoa() {
+		return idPessoa;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setIdPessoa(String idPessoa) {
+		this.idPessoa = idPessoa;
 	}
 
 	public Dieta getDieta() {
@@ -64,11 +64,11 @@ public class HabitosDTO implements GARequest {
 		this.dataUltimoExameMedico = dataUltimoExameMedico;
 	}
 
-	public Integer getPeriodExameMedico() {
+	public String getPeriodExameMedico() {
 		return periodExameMedico;
 	}
 
-	public void setPeriodExameMedico(Integer periodExameMedico) {
+	public void setPeriodExameMedico(String periodExameMedico) {
 		this.periodExameMedico = periodExameMedico;
 	}
 

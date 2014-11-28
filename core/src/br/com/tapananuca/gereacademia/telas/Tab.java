@@ -25,7 +25,9 @@ public class Tab {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				
-				Tab.this.tabbedPanel.botaoClick(Tab.this);
+				if (Tab.this.botao.isChecked()){
+					Tab.this.tabbedPanel.botaoClick(Tab.this);
+				}
 			}
 		});
 		

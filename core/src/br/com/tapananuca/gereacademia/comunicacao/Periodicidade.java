@@ -26,7 +26,7 @@ public enum Periodicidade {
 		return this.peso;
 	}
 	
-	public Periodicidade getEnumByValue(String value){
+	public static Periodicidade getEnumByValue(String value){
 		
 		for (Periodicidade e : Periodicidade.values()){
 			

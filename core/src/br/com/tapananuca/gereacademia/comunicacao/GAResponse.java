@@ -1,5 +1,7 @@
 package br.com.tapananuca.gereacademia.comunicacao;
 
+import br.com.tapananuca.gereacademia.Utils;
+
 public class GAResponse implements JsonSerializer{
 
 	private String sessionId, msg;
@@ -33,27 +35,16 @@ public class GAResponse implements JsonSerializer{
 	@Override
 	public String toJson() {
 		
+		final Utils utils = Utils.getInstance();
+		
 		final StringBuilder json = new StringBuilder("{");
 		
-		json.append("sucesso:").append(sucesso);
-		
-		if (sessionId != null){
-			
-			json.append(",")
-				.append("sessionId:")
-				.append(sessionId);
-		}
-		
-		if (msg != null){
-			
-			json.append(",")
-				.append("msg:")
-				.append("\"")
-				.append(msg)
-				.append("\"");
-		}
+		utils.addStringToJson(json, "sucesso", String.valueOf(sucesso));
+		utils.addStringToJson(json, "sessionId", String.valueOf(sessionId));
+		utils.addStringToJson(json, "msg", String.valueOf(msg));
 		
 		json.append("}");
+		
 		return json.toString();
 	}
 }

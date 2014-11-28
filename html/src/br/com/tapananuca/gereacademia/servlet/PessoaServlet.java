@@ -40,55 +40,59 @@ public class PessoaServlet extends HttpServlet {
 		
 		final String dados = req.getReader().readLine();
 		
-		final String queryString = req.getRequestURI();
+		final String url = req.getRequestURI();
 		
 		GAResponse ga = null;
 		
-		if (queryString.endsWith(Utils.URL_PESSOA_A_RECEBER)){
+		if (url.endsWith(Utils.URL_PESSOA_A_RECEBER)){
 			
 			ga = this.buscarPagamentosAReceber(dados);
 			
-		} else if (queryString.endsWith(Utils.URL_PESSOA_PAGAR)){
+		} else if (url.endsWith(Utils.URL_PESSOA_PAGAR)){
 			
 			ga = this.darBaixaPagamento(dados);
 			
-		} else if (queryString.endsWith(Utils.URL_PESSOA_DADOS_BASICOS)){
+		} else if (url.endsWith(Utils.URL_PESSOA_ANIVERSARIOS)){
+			
+			ga = this.buscarAniversarios(dados);
+			
+		} else if (url.endsWith(Utils.URL_PESSOA_DADOS_BASICOS)){
 			
 			ga = this.buscarDadosPessoa(dados);
 			
-		} else if (queryString.endsWith(Utils.URL_PESSOA_DADOS_BASICOS_SALVAR)){
+		} else if (url.endsWith(Utils.URL_PESSOA_DADOS_BASICOS_SALVAR)){
 			
 			ga = this.salvarDadosPessoa(dados);
 			
-		} else if (queryString.endsWith(Utils.URL_PESSOA_OBJETIVOS)){
+		} else if (url.endsWith(Utils.URL_PESSOA_OBJETIVOS)){
 			
 			ga = this.buscarObjetivosPessoa(dados);
 			
-		} else if (queryString.endsWith(Utils.URL_PESSOA_OBJETIVOS_SALVAR)){
+		} else if (url.endsWith(Utils.URL_PESSOA_OBJETIVOS_SALVAR)){
 			
 			ga = this.salvarObjetivosPessoa(dados);
 			
-		} else if (queryString.endsWith(Utils.URL_PESSOA_HIST_PAT)){
+		} else if (url.endsWith(Utils.URL_PESSOA_HIST_PAT)){
 			
 			ga = this.buscarHistPatologicaPessoa(dados);
 			
-		} else if (queryString.endsWith(Utils.URL_PESSOA_HIST_PAT_SALVAR)){
+		} else if (url.endsWith(Utils.URL_PESSOA_HIST_PAT_SALVAR)){
 			
 			ga = this.salvarHistPatologicaPessoa(dados);
 			
-		} else if (queryString.endsWith(Utils.URL_PESSOA_HABITOS)){
+		} else if (url.endsWith(Utils.URL_PESSOA_HABITOS)){
 			
 			ga = this.buscarHabitosPessoa(dados);
 			
-		} else if (queryString.endsWith(Utils.URL_PESSOA_HABITO_SALVAR)){
+		} else if (url.endsWith(Utils.URL_PESSOA_HABITO_SALVAR)){
 			
 			ga = this.salvarHabitosPessoa(dados);
 			
-		} else if (queryString.endsWith(Utils.URL_PESSOA_MEDIDAS)){
+		} else if (url.endsWith(Utils.URL_PESSOA_MEDIDAS)){
 			
 			ga = this.buscarMedidasPessoa(dados);
 			
-		} else if (queryString.endsWith(Utils.URL_PESSOA_MEDIDAS_SALVAR)){
+		} else if (url.endsWith(Utils.URL_PESSOA_MEDIDAS_SALVAR)){
 			
 			ga = this.salvarMedidasPessoa(dados);
 		} else {
@@ -112,22 +116,56 @@ public class PessoaServlet extends HttpServlet {
 		
 		final String[] strData = aReceberDTO.getDataRef().split("/");
 		final Calendar calendar = Calendar.getInstance();
-		calendar.set(Integer.valueOf(strData[2]), Integer.valueOf(strData[1]) - 1, Integer.valueOf(strData[0]));
+		calendar.set(Integer.valueOf(strData[1]), Integer.valueOf(strData[0]) - 1, 1);
 		
-		final AReceberPaginaDTO resp = 
-				pessoaService.buscarPagamentos(
-						calendar.getTime(), 
-						null, 
-						10, 
-						aReceberDTO.getPaginaAtual(), 
-						true);
-		
-		return resp;
+		try {
+			final AReceberPaginaDTO resp = 
+					pessoaService.buscarPagamentos(
+							calendar.getTime(), 
+							null, 
+							10, 
+							Integer.valueOf(aReceberDTO.getPaginaAtual()), 
+							true);
+			
+			return resp;
+		} catch (Exception e) {
+			
+			final GAResponse ga = new GAResponse();
+			ga.setSucesso(false);
+			ga.setMsg(e.getMessage());
+			
+			return ga;
+		}
 	}
 
 	private GAResponse darBaixaPagamento(String dados) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	private GAResponse buscarAniversarios(String dados){
+		
+		
+		final AReceberDTO aReceberDTO = Utils.getInstance().fromJson(AReceberDTO.class, dados);
+		
+		final PessoaService pessoaService = new PessoaService();
+		
+		try {
+			final AReceberPaginaDTO resp = 
+					pessoaService.buscarAniversarios(
+							Integer.valueOf(aReceberDTO.getDataRef()), 
+							10, 
+							Integer.valueOf(aReceberDTO.getPaginaAtual()));
+			
+			return resp;
+		} catch (Exception e) {
+			
+			GAResponse ga = new GAResponse();
+			ga.setSucesso(false);
+			ga.setMsg(e.getMessage());
+			
+			return ga;
+		}
 	}
 
 	private GAResponse buscarDadosPessoa(String dados) {
@@ -155,6 +193,7 @@ public class PessoaServlet extends HttpServlet {
 		if (idPessoa != null){
 
 			ga.setMsg("Pessoa cadastrada com sucesso.");
+			ga.setSessionId(idPessoa.toString());
 		} else {
 			
 			ga.setSucesso(false);

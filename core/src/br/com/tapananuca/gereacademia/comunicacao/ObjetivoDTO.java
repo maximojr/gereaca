@@ -5,7 +5,7 @@ import br.com.tapananuca.gereacademia.Utils;
 
 public class ObjetivoDTO implements GARequest {
 
-	private Long id;
+	private String idPessoa;
 	
 	private boolean estetica;
 	
@@ -32,7 +32,7 @@ public class ObjetivoDTO implements GARequest {
 		
 		final StringBuilder json = new StringBuilder("{");
 		
-		utils.addStringToJson(json, "id", String.valueOf(id));
+		utils.addStringToJson(json, "idPessoa", idPessoa);
 		utils.addStringToJson(json, "estetica", String.valueOf(estetica));
 		utils.addStringToJson(json, "lazer", String.valueOf(lazer));
 		utils.addStringToJson(json, "saude", String.valueOf(saude));
@@ -48,6 +48,14 @@ public class ObjetivoDTO implements GARequest {
 		return json.toString();
 	}
 	
+	public String getIdPessoa() {
+		return idPessoa;
+	}
+
+	public void setIdPessoa(String idPessoa) {
+		this.idPessoa = idPessoa;
+	}
+
 	public boolean isEstetica() {
 		return estetica;
 	}

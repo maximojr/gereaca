@@ -15,7 +15,7 @@ import br.com.tapananuca.gereacademia.comunicacao.PessoaDTO;
 import br.com.tapananuca.gereacademia.model.Pagamento;
 import br.com.tapananuca.gereacademia.model.Pessoa;
 
-public class PessoaService {
+public class PessoaService extends Service{
 
 	@SuppressWarnings("unchecked")
 	public AReceberPaginaDTO buscarPagamentos(Date dataRef, Long idPessoa, Integer qtdRegistros, Integer pagina, boolean emAberto){
@@ -24,9 +24,9 @@ public class PessoaService {
 		
 		StringBuilder hql = new StringBuilder("select new ");
 		hql.append(AReceberDTO.class.getCanonicalName())
-		   .append(" (pag.id as id, ")
-		   .append(" pes.nome as nome, ")
-		   .append(" pag.valorDevido as valor) ")
+		   .append(" (pag.id, ")
+		   .append(" pes.nome, ")
+		   .append(" pag.valorDevido) ")
 		   .append(" from Pagamento pag ")
 		   .append(" join pag.pessoa pes ")
 		   .append(" where ");
@@ -41,7 +41,7 @@ public class PessoaService {
 		
 		if (dataRef != null){
 			
-			hql.append(" and month(pag.dataRef) = :mes and year(pag.dataRef) = :ano");
+			hql.append(" and month(pag.dataReferente) = :mes and year(pag.dataReferente) = :ano ");
 		}
 		
 		if (idPessoa != null){
@@ -49,7 +49,7 @@ public class PessoaService {
 			hql.append(" and pes.id = :idPessoa ");
 		}
 		
-		hql.append(" order by pag.dataRef, pes.nome ");
+		hql.append(" order by pag.dataReferente, pes.nome ");
 		
 		Query query = em.createQuery(hql.toString());
 		
@@ -74,22 +74,58 @@ public class PessoaService {
 		}
 		
 		final AReceberPaginaDTO dto = new AReceberPaginaDTO();
-		dto.setaReceber(query.getResultList());
+		
+		dto.setaReceber(this.getArrayFromList(query.getResultList()));
 		
 		hql = new StringBuilder("select ");
 		hql.append(" count(pag.id) ")
-		   .append(" from Pagamento pag ");
-		
-		dto.setQtdPaginas((Long)query.getSingleResult() + 1);
-		
-		hql = new StringBuilder("select ");
-		hql.append(" concat(month(pag.dataRef), '/', year(pag.dataRef)) ")
 		   .append(" from Pagamento pag ")
-		   .append(" order by pag.dataRef ");
+		   .append(" where ");
+		
+		if (emAberto){
+			
+			hql.append(" pag.dataBaixa is null ");
+		} else {
+			
+			hql.append(" pag.dataBaixa is not null ");
+		}
+		
+		if (dataRef != null){
+			
+			hql.append(" and month(pag.dataReferente) = :mes and year(pag.dataReferente) = :ano ");
+		}
+		
+		if (idPessoa != null){
+			
+			hql.append(" and pes.id = :idPessoa ");
+		}
 		
 		query = em.createQuery(hql.toString());
 		
-		dto.setDatasRef(query.getResultList());
+		if (dataRef != null){
+			
+			final Calendar calendar = Calendar.getInstance();
+			calendar.setTime(dataRef);
+			
+			query.setParameter("mes", calendar.get(Calendar.MONTH) + 1);
+			query.setParameter("ano", calendar.get(Calendar.YEAR));
+		}
+		
+		if (idPessoa != null){
+			
+			query.setParameter("idPessoa", idPessoa);
+		}
+		
+		dto.setQtdPaginas(String.valueOf(((Long)query.getSingleResult() / qtdRegistros) + 1));
+		
+		hql = new StringBuilder("select ");
+		hql.append(" concat(month(pag.dataReferente), '/', year(pag.dataReferente)) ")
+		   .append(" from Pagamento pag ")
+		   .append(" order by pag.dataReferente ");
+		
+		query = em.createQuery(hql.toString());
+		
+		dto.setDatasRef(this.getArrayFromList(query.getResultList()));
 		
 		return dto;
 	}
@@ -122,21 +158,25 @@ public class PessoaService {
 			}
 		}
 		
-		final String[] strData = pessoaDTO.getDataNascimento().split("/");
+		String[] strData = pessoaDTO.getDataNascimento().split("/");
 		
 		final Calendar calendar = Calendar.getInstance();
 		calendar.set(Integer.valueOf(strData[2]), Integer.valueOf(strData[1]) - 1, Integer.valueOf(strData[0]));
-		
 		pessoa.setDataNascimento(calendar.getTime());
+		
+		strData = pessoaDTO.getDataInicio().split("/");
+		calendar.set(Integer.valueOf(strData[2]), Integer.valueOf(strData[1]) - 1, Integer.valueOf(strData[0]));
+		pessoa.setInicio(calendar.getTime());
+		
 		pessoa.setBairro(pessoaDTO.getBairro());
 		pessoa.setEmail(pessoaDTO.getEmail());
 		pessoa.setEndereco(pessoaDTO.getEndereco());
-		pessoa.setInicio(new Date());
 		pessoa.setNome(pessoaDTO.getNome());
 		pessoa.setNumero(Integer.valueOf(pessoaDTO.getNumero()));
 		pessoa.setSexo(pessoaDTO.getSexo());
 		pessoa.setTelefone(pessoaDTO.getTelefone());
 		pessoa.setValorMensal(new BigDecimal(pessoaDTO.getValorMensal()).setScale(2, RoundingMode.HALF_UP));
+		pessoa.setEstadoCivil(pessoaDTO.getEstadoCivil());
 		
 		em.getTransaction().begin();
 		
@@ -147,7 +187,7 @@ public class PessoaService {
 			final Pagamento pagamento = new Pagamento();
 			pagamento.setPessoa(pessoa);
 			pagamento.setValorDevido(pessoa.getValorMensal());
-			pagamento.setDataReferente(new Date());
+			pagamento.setDataReferente(pessoa.getInicio());
 			
 			em.persist(pagamento);
 			
@@ -159,5 +199,46 @@ public class PessoaService {
 		em.getTransaction().commit();
 		
 		return pessoa.getId();
+	}
+
+	@SuppressWarnings("unchecked")
+	public AReceberPaginaDTO buscarAniversarios(int mes, Integer qtdRegistros, Integer pagina) {
+		
+		final EntityManager em = new Conexao().getEntityManager();
+		
+		StringBuilder hql = new StringBuilder("select new ");
+		hql.append(AReceberDTO.class.getCanonicalName())
+		   .append(" (pes.nome, ")
+		   .append(" concat(day(pes.dataNascimento), '/', month(pes.dataNascimento), '/', year(pes.dataNascimento))) ")
+		   .append(" from Pessoa pes ")
+		   .append(" where month(pes.dataNascimento) = :mes ");
+		
+		hql.append(" order by pes.dataNascimento, pes.nome ");
+		
+		Query query = em.createQuery(hql.toString());
+		
+		query.setParameter("mes", mes);
+		
+		if (pagina != null && qtdRegistros != null){
+			
+			query.setFirstResult((pagina - 1) * qtdRegistros);
+			query.setMaxResults(qtdRegistros);
+		}
+		
+		final AReceberPaginaDTO dto = new AReceberPaginaDTO();
+		dto.setaReceber(this.getArrayFromList(query.getResultList()));
+		
+		hql = new StringBuilder("select ");
+		hql.append(" count(pes.id) ")
+		   .append(" from Pessoa pes ")
+		   .append(" where month(pes.dataNascimento) = :mes ");
+		
+		query = em.createQuery(hql.toString());
+		
+		query.setParameter("mes", mes);
+		
+		dto.setQtdPaginas(String.valueOf(((Long)query.getSingleResult() / qtdRegistros) + 1));
+		
+		return dto;
 	}
 }

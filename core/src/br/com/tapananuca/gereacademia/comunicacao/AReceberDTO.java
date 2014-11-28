@@ -1,5 +1,7 @@
 package br.com.tapananuca.gereacademia.comunicacao;
 
+import java.math.BigDecimal;
+
 import br.com.tapananuca.gereacademia.Utils;
 
 /**
@@ -8,23 +10,29 @@ import br.com.tapananuca.gereacademia.Utils;
  */
 public class AReceberDTO implements JsonSerializer {
 
-	private Long id;
+	public String id;
 	
-	private String nome;
+	public String nome;
 	
-	private Float valor;
+	public String valor;
 	
-	private String dataRef;
+	public String dataRef;
 	
-	private int paginaAtual;
+	public String paginaAtual;
 	
 	public AReceberDTO(){}
 	
-	public AReceberDTO(Long id, String nome, Float valor){
+	public AReceberDTO(Long id, String nome, BigDecimal valor){
 		
-		this.id = id;
+		this.id = String.valueOf(id);
 		this.nome = nome;
-		this.valor = valor;
+		this.valor = String.valueOf(valor);
+	}
+	
+	public AReceberDTO(String nome, String data){
+		
+		this.nome = nome;
+		this.dataRef = data;
 	}
 	
 	@Override
@@ -34,22 +42,22 @@ public class AReceberDTO implements JsonSerializer {
 		
 		final StringBuilder json = new StringBuilder("{");
 		
-		utils.addNumberToJson(json, "id", id);
+		utils.addStringToJson(json, "id", id);
 		utils.addStringToJson(json, "nome", nome);
-		utils.addNumberToJson(json, "valor", valor);
+		utils.addStringToJson(json, "valor", valor);
 		utils.addStringToJson(json, "dataRef", dataRef);
-		utils.addNumberToJson(json, "paginaAtual", paginaAtual);
+		utils.addStringToJson(json, "paginaAtual", paginaAtual);
 		
 		json.append("}");
 		
 		return json.toString();
 	}
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -61,11 +69,11 @@ public class AReceberDTO implements JsonSerializer {
 		this.nome = nome;
 	}
 
-	public Float getValor() {
+	public String getValor() {
 		return valor;
 	}
 
-	public void setValor(Float valor) {
+	public void setValor(String valor) {
 		this.valor = valor;
 	}
 
@@ -77,11 +85,11 @@ public class AReceberDTO implements JsonSerializer {
 		this.dataRef = dataRef;
 	}
 
-	public int getPaginaAtual() {
+	public String getPaginaAtual() {
 		return paginaAtual;
 	}
 
-	public void setPaginaAtual(int paginaAtual) {
+	public void setPaginaAtual(String paginaAtual) {
 		this.paginaAtual = paginaAtual;
 	}
 
