@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import br.com.tapananuca.gereacademia.comunicacao.Dieta;
 import br.com.tapananuca.gereacademia.comunicacao.EstadoCivil;
 
 /**
@@ -57,7 +58,7 @@ public class Pessoa {
 	private String endereco;
 	
 	@Column(name="NUMERO")
-	private Integer numero;
+	private String numero;
 	
 	@Column(name="BAIRRO")
 	private String bairro;
@@ -68,6 +69,73 @@ public class Pessoa {
 	@Column(name="ESTADO_CIVIL")
 	private EstadoCivil estadoCivil;
 	
+	//objetivos
+	@Column(name="ESTETICA")
+	private Boolean estetica;
+	
+	@Column(name="LAZER")
+	private Boolean lazer;
+	
+	@Column(name="SAUDE")
+	private Boolean saude;
+	
+	@Column(name="TERAPEUTICO")
+	private Boolean terapeutico;
+	
+	@Column(name="COND_FISICO")
+	private Boolean condFisico;
+	
+	@Column(name="PREP_FISICA")
+	private Boolean prepFisica;
+	
+	@Column(name="AUTO_REND")
+	private Boolean autoRend;
+	
+	@Column(name="HIPERTROFIA")
+	private Boolean hipertrofia;
+	
+	@Column(name="EMAGRECIMENTO")
+	private Boolean emagrecimento;
+	
+	//historia patologica
+	@Column(name="CIRURGIAS")
+	private String cirurgias;
+	
+	@Column(name="SINTOMAS_DOENCAS")
+	private String sintomasDoencas;
+	
+	@Column(name="MEDICAMENTOS")
+	private String medicamentos;
+	
+	@Column(name="LESOES")
+	private String lesoes;
+	
+	@Column(name="ALERGIAS")
+	private String alergias;
+	
+	@Column(name="OUTROS")
+	private String outros;
+	
+	@Column(name="CARDIOPATIA")
+	private Boolean cardiopatia;
+	
+	@Column(name="HIPERTENSAO")
+	private Boolean hipertensao;
+	
+	//habitos
+	@Column(name="DIETA")
+	private Dieta dieta;
+	
+	@Column(name="PRATICA_ATIV_FISICA")
+	private String praticaAtivFisica;
+	
+	@Column(name="DATA_ULTIMO_EXAME_MEDICO")
+	@Temporal(TemporalType.DATE)
+	private Date dataUltimoExameMedico;
+	
+	@Column(name="PERIODO_EXAME_MEDICO")
+	private Integer periodExameMedico;
+
 	public Long getId() {
 		return id;
 	}
@@ -140,11 +208,11 @@ public class Pessoa {
 		this.endereco = endereco;
 	}
 
-	public Integer getNumero() {
+	public String getNumero() {
 		return numero;
 	}
 
-	public void setNumero(Integer numero) {
+	public void setNumero(String numero) {
 		this.numero = numero;
 	}
 
@@ -170,5 +238,173 @@ public class Pessoa {
 
 	public void setEstadoCivil(EstadoCivil estadoCivil) {
 		this.estadoCivil = estadoCivil;
+	}
+
+	public Boolean getEstetica() {
+		return estetica;
+	}
+
+	public void setEstetica(Boolean estetica) {
+		this.estetica = estetica;
+	}
+
+	public Boolean getLazer() {
+		return lazer;
+	}
+
+	public void setLazer(Boolean lazer) {
+		this.lazer = lazer;
+	}
+
+	public Boolean getSaude() {
+		return saude;
+	}
+
+	public void setSaude(Boolean saude) {
+		this.saude = saude;
+	}
+
+	public Boolean getTerapeutico() {
+		return terapeutico;
+	}
+
+	public void setTerapeutico(Boolean terapeutico) {
+		this.terapeutico = terapeutico;
+	}
+
+	public Boolean getCondFisico() {
+		return condFisico;
+	}
+
+	public void setCondFisico(Boolean condFisico) {
+		this.condFisico = condFisico;
+	}
+
+	public Boolean getPrepFisica() {
+		return prepFisica;
+	}
+
+	public void setPrepFisica(Boolean prepFisica) {
+		this.prepFisica = prepFisica;
+	}
+
+	public Boolean getAutoRend() {
+		return autoRend;
+	}
+
+	public void setAutoRend(Boolean autoRend) {
+		this.autoRend = autoRend;
+	}
+
+	public Boolean getHipertrofia() {
+		return hipertrofia;
+	}
+
+	public void setHipertrofia(Boolean hipertrofia) {
+		this.hipertrofia = hipertrofia;
+	}
+
+	public Boolean getEmagrecimento() {
+		return emagrecimento;
+	}
+
+	public void setEmagrecimento(Boolean emagrecimento) {
+		this.emagrecimento = emagrecimento;
+	}
+
+	public String getCirurgias() {
+		return cirurgias;
+	}
+
+	public void setCirurgias(String cirurgias) {
+		this.cirurgias = cirurgias;
+	}
+
+	public String getSintomasDoencas() {
+		return sintomasDoencas;
+	}
+
+	public void setSintomasDoencas(String sintomasDoencas) {
+		this.sintomasDoencas = sintomasDoencas;
+	}
+
+	public String getMedicamentos() {
+		return medicamentos;
+	}
+
+	public void setMedicamentos(String medicamentos) {
+		this.medicamentos = medicamentos;
+	}
+
+	public String getLesoes() {
+		return lesoes;
+	}
+
+	public void setLesoes(String lesoes) {
+		this.lesoes = lesoes;
+	}
+
+	public String getAlergias() {
+		return alergias;
+	}
+
+	public void setAlergias(String alergias) {
+		this.alergias = alergias;
+	}
+
+	public String getOutros() {
+		return outros;
+	}
+
+	public void setOutros(String outros) {
+		this.outros = outros;
+	}
+
+	public Boolean getCardiopatia() {
+		return cardiopatia;
+	}
+
+	public void setCardiopatia(Boolean cardiopatia) {
+		this.cardiopatia = cardiopatia;
+	}
+
+	public Boolean getHipertensao() {
+		return hipertensao;
+	}
+
+	public void setHipertensao(Boolean hipertensao) {
+		this.hipertensao = hipertensao;
+	}
+
+	public Dieta getDieta() {
+		return dieta;
+	}
+
+	public void setDieta(Dieta dieta) {
+		this.dieta = dieta;
+	}
+
+	public String getPraticaAtivFisica() {
+		return praticaAtivFisica;
+	}
+
+	public void setPraticaAtivFisica(String praticaAtivFisica) {
+		this.praticaAtivFisica = praticaAtivFisica;
+	}
+
+	public Date getDataUltimoExameMedico() {
+		return dataUltimoExameMedico;
+	}
+
+	public void setDataUltimoExameMedico(Date dataUltimoExameMedico) {
+		this.dataUltimoExameMedico = dataUltimoExameMedico;
+	}
+
+	public Integer getPeriodExameMedico() {
+		return periodExameMedico;
+	}
+
+	public void setPeriodExameMedico(Integer periodExameMedico) {
+		this.periodExameMedico = periodExameMedico;
 	}
 }

@@ -14,7 +14,16 @@ import br.com.tapananuca.gereacademia.Utils;
 import br.com.tapananuca.gereacademia.comunicacao.AReceberDTO;
 import br.com.tapananuca.gereacademia.comunicacao.AReceberPaginaDTO;
 import br.com.tapananuca.gereacademia.comunicacao.GAResponse;
+import br.com.tapananuca.gereacademia.comunicacao.HabitosDTO;
+import br.com.tapananuca.gereacademia.comunicacao.HabitosDTOResponse;
+import br.com.tapananuca.gereacademia.comunicacao.HistoriaPatologicaDTO;
+import br.com.tapananuca.gereacademia.comunicacao.HistoriaPatologicaDTOResponse;
+import br.com.tapananuca.gereacademia.comunicacao.MedidaDTO;
+import br.com.tapananuca.gereacademia.comunicacao.MedidaDTOResponse;
+import br.com.tapananuca.gereacademia.comunicacao.ObjetivoDTO;
+import br.com.tapananuca.gereacademia.comunicacao.ObjetivoDTOResponse;
 import br.com.tapananuca.gereacademia.comunicacao.PessoaDTO;
+import br.com.tapananuca.gereacademia.comunicacao.PessoaDTOResponse;
 import br.com.tapananuca.gereacademia.service.PessoaService;
 
 @WebServlet(name="pessoa", urlPatterns=Utils.URL_PESSOA + "/*")
@@ -55,6 +64,10 @@ public class PessoaServlet extends HttpServlet {
 		} else if (url.endsWith(Utils.URL_PESSOA_ANIVERSARIOS)){
 			
 			ga = this.buscarAniversarios(dados);
+			
+		} else if (url.endsWith(Utils.URL_PESSOA_DADOS_NOMES)){
+			
+			ga = this.buscarNomesPessoa(dados);
 			
 		} else if (url.endsWith(Utils.URL_PESSOA_DADOS_BASICOS)){
 			
@@ -145,7 +158,6 @@ public class PessoaServlet extends HttpServlet {
 	
 	private GAResponse buscarAniversarios(String dados){
 		
-		
 		final AReceberDTO aReceberDTO = Utils.getInstance().fromJson(AReceberDTO.class, dados);
 		
 		final PessoaService pessoaService = new PessoaService();
@@ -167,10 +179,61 @@ public class PessoaServlet extends HttpServlet {
 			return ga;
 		}
 	}
+	
+	private GAResponse buscarNomesPessoa(String dados){
+		
+		final PessoaDTO pessoaDTO = Utils.getInstance().fromJson(PessoaDTO.class, dados);
+		
+		if (pessoaDTO == null){
+			
+			final GAResponse ga = new GAResponse();
+			ga.setSucesso(false);
+			ga.setMsg("Dados insuficientes para buscar nomes.");
+			
+			return ga;
+		}
+		
+		final PessoaService pessoaService = new PessoaService();
+		
+		try {
+			return pessoaService.buscarNomesPessoa(pessoaDTO.getNome());
+		} catch (Exception e) {
+			
+			final GAResponse ga = new GAResponse();
+			ga.setSucesso(false);
+			ga.setMsg(e.getLocalizedMessage());
+			
+			return ga;
+		}
+	}
 
 	private GAResponse buscarDadosPessoa(String dados) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		final PessoaDTO pessoaDTO = Utils.getInstance().fromJson(PessoaDTO.class, dados);
+		
+		PessoaDTOResponse rs = null;
+		if (pessoaDTO == null || pessoaDTO.getId() == null /*|| objetivoDTO.getIdPessoa().isEmpty()*/){
+			
+			rs = new PessoaDTOResponse();
+			rs.setSucesso(false);
+			rs.setMsg("Dados insuficientes para buscar informações básicas.");
+			
+			return rs;
+		}
+		
+		final PessoaService pessoaService = new PessoaService();
+		
+		try {
+			rs = pessoaService.buscarDadosPessoa(Long.valueOf(pessoaDTO.getId()));
+		} catch (Exception e) {
+			
+			rs = new PessoaDTOResponse();
+			rs.setSucesso(false);
+			rs.setMsg(e.getLocalizedMessage());
+			e.printStackTrace();
+		}
+		
+		return rs;
 	}
 
 	private GAResponse salvarDadosPessoa(String dados) {
@@ -184,7 +247,7 @@ public class PessoaServlet extends HttpServlet {
 		try {
 			idPessoa = pessoaService.salvarPessoa(pessoaDTO);
 		} catch (Exception e) {
-			msg = e.getMessage();
+			msg = e.getLocalizedMessage();
 			e.printStackTrace();
 		}
 		
@@ -204,42 +267,234 @@ public class PessoaServlet extends HttpServlet {
 	}
 
 	private GAResponse buscarObjetivosPessoa(String dados) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		final ObjetivoDTO objetivoDTO = Utils.getInstance().fromJson(ObjetivoDTO.class, dados);
+		
+		ObjetivoDTOResponse rs = null;
+		if (objetivoDTO == null || objetivoDTO.getIdPessoa() == null || objetivoDTO.getIdPessoa().isEmpty()){
+			
+			rs = new ObjetivoDTOResponse();
+			rs.setSucesso(false);
+			rs.setMsg("Dados insuficientes para buscar objetivos.");
+			
+			return rs;
+		}
+		
+		final PessoaService pessoaService = new PessoaService();
+		
+		try {
+			rs = pessoaService.buscarObjetivos(Long.valueOf(objetivoDTO.getIdPessoa()));
+		} catch (Exception e) {
+			
+			rs = new ObjetivoDTOResponse();
+			rs.setSucesso(false);
+			rs.setMsg(e.getLocalizedMessage());
+			e.printStackTrace();
+		}
+		
+		return rs;
 	}
 
 	private GAResponse salvarObjetivosPessoa(String dados) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		final ObjetivoDTO objetivoDTO = Utils.getInstance().fromJson(ObjetivoDTO.class, dados);
+		
+		final PessoaService pessoaService = new PessoaService();
+		
+		String msg = null;
+		
+		try {
+			msg = pessoaService.salvarObjetivos(objetivoDTO);
+		} catch (Exception e) {
+			
+			msg = e.getLocalizedMessage();
+			e.printStackTrace();
+		}
+		
+		final GAResponse ga = new GAResponse();
+		if (msg != null){
+			
+			ga.setSucesso(false);
+			ga.setMsg(msg);
+		}
+		
+		return ga;
 	}
 
 	private GAResponse buscarHistPatologicaPessoa(String dados) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		final HistoriaPatologicaDTO historiaPatologicaDTO = Utils.getInstance().fromJson(HistoriaPatologicaDTO.class, dados);
+		
+		HistoriaPatologicaDTOResponse rs = null;
+		if (historiaPatologicaDTO == null || 
+				historiaPatologicaDTO.getIdPessoa() == null || 
+				historiaPatologicaDTO.getIdPessoa().isEmpty()){
+			
+			rs = new HistoriaPatologicaDTOResponse();
+			rs.setSucesso(false);
+			rs.setMsg("Dados insuficientes para buscar história patológica.");
+			
+			return rs;
+		}
+		
+		final PessoaService pessoaService = new PessoaService();
+		
+		try {
+			rs = pessoaService.buscarHistPatologica(Long.valueOf(historiaPatologicaDTO.getIdPessoa()));
+		} catch (Exception e) {
+			
+			rs = new HistoriaPatologicaDTOResponse();
+			rs.setSucesso(false);
+			rs.setMsg(e.getLocalizedMessage());
+			e.printStackTrace();
+		}
+		
+		return rs;
 	}
 
 	private GAResponse salvarHistPatologicaPessoa(String dados) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		final HistoriaPatologicaDTO historiaPatologicaDTO = Utils.getInstance().fromJson(HistoriaPatologicaDTO.class, dados);
+		
+		final PessoaService pessoaService = new PessoaService();
+		
+		String msg = null;
+		
+		try {
+			msg = pessoaService.salvarHistoriaPatologica(historiaPatologicaDTO);
+		} catch (Exception e) {
+			
+			msg = e.getLocalizedMessage();
+			e.printStackTrace();
+		}
+		
+		final GAResponse ga = new GAResponse();
+		if (msg != null){
+			
+			ga.setSucesso(false);
+			ga.setMsg(msg);
+		}
+		
+		return ga;
 	}
 
 	private GAResponse buscarHabitosPessoa(String dados) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		final HabitosDTO habitosDTO = Utils.getInstance().fromJson(HabitosDTO.class, dados);
+		
+		HabitosDTOResponse rs = null;
+		if (habitosDTO == null || habitosDTO.getIdPessoa() == null || habitosDTO.getIdPessoa().isEmpty()){
+			
+			rs = new HabitosDTOResponse();
+			rs.setSucesso(false);
+			rs.setMsg("Dados insuficientes para buscar hábitos.");
+			
+			return rs;
+		}
+		
+		final PessoaService pessoaService = new PessoaService();
+		
+		try {
+			rs = pessoaService.buscarHabitos(Long.valueOf(habitosDTO.getIdPessoa()));
+		} catch (Exception e) {
+			
+			rs = new HabitosDTOResponse();
+			rs.setSucesso(false);
+			rs.setMsg(e.getLocalizedMessage());
+			e.printStackTrace();
+		}
+		
+		return rs;
 	}
 
 	private GAResponse salvarHabitosPessoa(String dados) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		final HabitosDTO habitosDTO = Utils.getInstance().fromJson(HabitosDTO.class, dados);
+		
+		final PessoaService pessoaService = new PessoaService();
+		
+		String msg = null;
+		
+		try {
+			msg = pessoaService.salvarHabitos(habitosDTO);
+		} catch (Exception e) {
+			
+			msg = e.getLocalizedMessage();
+			e.printStackTrace();
+		}
+		
+		final GAResponse ga = new GAResponse();
+		if (msg != null){
+			
+			ga.setSucesso(false);
+			ga.setMsg(msg);
+		}
+		
+		return ga;
 	}
 
 	private GAResponse buscarMedidasPessoa(String dados) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		final MedidaDTO medidaDTO = Utils.getInstance().fromJson(MedidaDTO.class, dados);
+		
+		MedidaDTOResponse rs = null;
+		if (medidaDTO == null || medidaDTO.getIdPessoa() == null || medidaDTO.getIdPessoa().isEmpty() ||
+				medidaDTO.getDataReferente() == null || medidaDTO.getDataReferente().isEmpty()){
+			
+			rs = new MedidaDTOResponse();
+			rs.setSucesso(false);
+			rs.setMsg("Dados insuficientes para buscar medidas.");
+			
+			return rs;
+		}
+		
+		final PessoaService pessoaService = new PessoaService();
+		
+		try {
+			
+			final String[] strData = medidaDTO.getDataReferente().split("/");
+			
+			final Calendar calendar = Calendar.getInstance();
+			calendar.set(Integer.valueOf(strData[2]), Integer.valueOf(strData[1]) - 1, Integer.valueOf(strData[0]));
+			
+			rs = pessoaService.buscarMedidas(
+					Long.valueOf(medidaDTO.getIdPessoa()),
+					calendar.getTime());
+			
+		} catch (Exception e) {
+			
+			rs = new MedidaDTOResponse();
+			rs.setSucesso(false);
+			rs.setMsg(e.getLocalizedMessage());
+			e.printStackTrace();
+		}
+		
+		return rs;
 	}
 
 	private GAResponse salvarMedidasPessoa(String dados) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		final MedidaDTO medidaDTO = Utils.getInstance().fromJson(MedidaDTO.class, dados);
+		
+		final PessoaService pessoaService = new PessoaService();
+		
+		String msg = null;
+		
+		try {
+			msg = pessoaService.salvarMedidas(medidaDTO);
+		} catch (Exception e) {
+			
+			msg = e.getLocalizedMessage();
+			e.printStackTrace();
+		}
+		
+		final GAResponse ga = new GAResponse();
+		if (msg != null){
+			
+			ga.setSucesso(false);
+			ga.setMsg(msg);
+		}
+		
+		return ga;
 	}
 }

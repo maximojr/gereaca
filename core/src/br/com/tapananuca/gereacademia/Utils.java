@@ -36,6 +36,7 @@ public class Utils {
 	public static final String URL_PESSOA_A_RECEBER = URL_PESSOA + "/receber";
 	public static final String URL_PESSOA_PAGAR = URL_PESSOA + "/pagar";
 	public static final String URL_PESSOA_ANIVERSARIOS = URL_PESSOA + "/aniversarios";
+	public static final String URL_PESSOA_DADOS_NOMES = URL_PESSOA + "/nomes";
 	public static final String URL_PESSOA_DADOS_BASICOS = URL_PESSOA + "/basicos";
 	public static final String URL_PESSOA_DADOS_BASICOS_SALVAR = URL_PESSOA_DADOS_BASICOS + "/salvar";
 	public static final String URL_PESSOA_OBJETIVOS = URL_PESSOA + "/objetivo";
@@ -208,12 +209,23 @@ public class Utils {
 		
 		if (valor != null && !valor.isEmpty()){
 			
+			final boolean hasWhiteSpace = valor.contains(" ");
+			
 			json.append(json.length() == 1 ? "" : ",")
 				.append(nomeCampo)
-				.append(":")
-				.append("\"")
-				.append(valor)
-				.append("\"");
+				.append(":");
+			
+			if (hasWhiteSpace){
+				
+				json.append("\"");
+			}
+			
+			json.append(valor);
+			
+			if (hasWhiteSpace){
+				
+				json.append("\"");
+			}
 		}
 	}
 	
@@ -225,6 +237,22 @@ public class Utils {
 		}
 		
 		if (valor != null){
+			
+			json.append(json.length() == 1 ? "" : ",")
+				.append(nomeCampo)
+				.append(":")
+				.append(valor);
+		}
+	}
+	
+	public void addBooleanToJson(StringBuilder json, String nomeCampo, Boolean valor){
+		
+		if (json == null){
+			
+			return;
+		}
+		
+		if (valor != null && valor){
 			
 			json.append(json.length() == 1 ? "" : ",")
 				.append(nomeCampo)

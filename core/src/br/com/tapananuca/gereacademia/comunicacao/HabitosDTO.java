@@ -14,6 +14,23 @@ public class HabitosDTO implements GARequest {
 	
 	private String periodExameMedico;
 	
+	public HabitosDTO() {}
+	
+	public HabitosDTO(Dieta dieta, String praticaAtivFisica, 
+			Integer diaUltimoExame, Integer mesUltimoExame, Integer anoUltimoExame, 
+			String periodExameMedico) {
+		
+		this.dieta = dieta;
+		this.praticaAtivFisica = praticaAtivFisica;
+		
+		if (diaUltimoExame != null){
+			
+			this.dataUltimoExameMedico = diaUltimoExame + "/" + mesUltimoExame + "/" + anoUltimoExame;
+		}
+		
+		this.periodExameMedico = periodExameMedico;
+	}
+
 	@Override
 	public String toJson() {
 		
@@ -22,7 +39,11 @@ public class HabitosDTO implements GARequest {
 		final StringBuilder json = new StringBuilder("{");
 		
 		utils.addStringToJson(json, "idPessoa", idPessoa);
-		utils.addStringToJson(json, "dieta", dieta.name());
+		
+		if (dieta != null){
+			utils.addStringToJson(json, "dieta", dieta.name());
+		}
+		
 		utils.addStringToJson(json, "praticaAtivFisica", praticaAtivFisica);
 		utils.addStringToJson(json, "dataUltimoExameMedico", dataUltimoExameMedico);
 		utils.addStringToJson(json, "periodExameMedico", periodExameMedico);

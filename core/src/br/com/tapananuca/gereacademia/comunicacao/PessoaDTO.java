@@ -1,5 +1,7 @@
 package br.com.tapananuca.gereacademia.comunicacao;
 
+import java.math.BigDecimal;
+
 import br.com.tapananuca.gereacademia.Utils;
 
 
@@ -30,6 +32,31 @@ public class PessoaDTO implements GARequest {
 	
 	private EstadoCivil estadoCivil;
 	
+	public PessoaDTO() {}
+	
+	public PessoaDTO(Long id, String nome){
+		
+		this.id = id;
+		this.nome = nome;
+	}
+	
+	public PessoaDTO(String nome, int diaDtNasc, int mesDtNasc, int anoDtNasc, EstadoCivil estadoCivil, Character sexo,
+			String endereco, String numero, String bairro, String telefone, String email,
+			int diaDtInic, int mesDtInic, int anoDtInic, BigDecimal valorMensal) {
+		
+		this.nome = nome;
+		this.dataNascimento = diaDtNasc + "/" + mesDtNasc + "/" + anoDtNasc;
+		this.estadoCivil = estadoCivil;
+		this.sexo = sexo;
+		this.endereco = endereco;
+		this.numero = numero;
+		this.bairro = bairro;
+		this.telefone = telefone;
+		this.email = email;
+		this.dataInicio = diaDtInic + "/" + mesDtInic + "/" + anoDtInic;
+		this.valorMensal = valorMensal.floatValue();
+	}
+	
 	@Override
 	public String toJson() {
 		
@@ -39,7 +66,12 @@ public class PessoaDTO implements GARequest {
 		
 		utils.addNumberToJson(json, "id", id);
 		utils.addStringToJson(json, "nome", nome);
-		utils.addStringToJson(json, "sexo", String.valueOf(sexo));
+		
+		if (sexo != null){
+			
+			utils.addStringToJson(json, "sexo", String.valueOf(sexo));
+		}
+			
 		utils.addStringToJson(json, "email", email);
 		utils.addStringToJson(json, "dataNascimento", dataNascimento);
 		utils.addStringToJson(json, "dataInicio", dataInicio);
@@ -48,7 +80,11 @@ public class PessoaDTO implements GARequest {
 		utils.addStringToJson(json, "numero", numero);
 		utils.addStringToJson(json, "bairro", bairro);
 		utils.addStringToJson(json, "telefone", telefone);
-		utils.addStringToJson(json, "estadoCivil", estadoCivil.name());
+		
+		if (estadoCivil != null){
+		
+			utils.addStringToJson(json, "estadoCivil", estadoCivil.name());
+		}
 		
 		json.append("}");
 		

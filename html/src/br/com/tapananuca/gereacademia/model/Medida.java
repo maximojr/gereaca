@@ -1,102 +1,111 @@
-package br.com.tapananuca.gereacademia.comunicacao;
+package br.com.tapananuca.gereacademia.model;
 
-import br.com.tapananuca.gereacademia.Utils;
+import java.util.Date;
 
-public class MedidasDTO implements GARequest {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
+@Entity
+@Table(name="MEDIDA")
+public class Medida {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "medida_seq_gen")
+	@SequenceGenerator(name = "medida_seq_gen", sequenceName = "medida_id_seq", 
+					   initialValue = 1, allocationSize = 1)
 	private Long id;
 	
-	private String dataRef;
+	@ManyToOne
+	@JoinColumn(name="PESSOA_ID")
+	private Pessoa pessoa;
 	
+	@Temporal(TemporalType.DATE)
+	@Column(name="DATA_REFERENTE")
+	private Date dataReferente;
+	
+	@Column(name="MA_PESO_CORPORAL")
 	private Float maPesoCorporal;
 	
-	private Float maPesoMagro;
-	
-	private Float maPesoGordura;
-	
+	@Column(name="MA_ALTURA")
 	private Float maAltura;
 	
-	private Float maPg;
+	@Column(name="MA_PESO_MAGRO")
+	private Float maPesoMagro;
 	
+	@Column(name="MA_PESO_GORDURA")
+	private Float maPesoGordura;
+	
+	@Column(name="MA_PORCENTAGEM_PG")
+	private Float maPorcentagemPG;
+	
+	@Column(name="MA_IMC")
 	private Float maImc;
 	
+	@Column(name="MA_CINTURA")
 	private Float maCintura;
 	
+	@Column(name="MA_QUADRIL")
 	private Float maQuadril;
 	
+	@Column(name="MA_PMRC")
 	private Float maPmrc;
 	
+	@Column(name="MC_TORAX")
 	private Float mcTorax;
 	
+	@Column(name="MC_ABDOMEN")
 	private Float mcAbdomen;
 	
+	@Column(name="MC_CINTURA")
 	private Float mcCintura;
 	
+	@Column(name="MC_BICEPS")
 	private Float mcBiceps;
 	
+	@Column(name="MC_TRICEPS")
 	private Float mcTriceps;
 	
+	@Column(name="MC_COXA")
 	private Float mcCoxa;
 	
+	@Column(name="MC_ANTEBRACO")
 	private Float mcAntebraco;
 	
+	@Column(name="DC_BICEPS")
 	private Float dcBiceps;
 	
+	@Column(name="DC_TRICEPS")
 	private Float dcTriceps;
 	
+	@Column(name="DC_SUB_AXILAR")
 	private Float dcSubAxilar;
 	
+	@Column(name="DC_SUPRA_ILIACAS")
 	private Float dcSupraIliacas;
 	
+	@Column(name="DC_SUB_ESCAPULAR")
 	private Float dcSubEscapular;
 	
+	@Column(name="DC_TORAXICA")
 	private Float dcToraxica;
 	
+	@Column(name="DC_ABDOMINAL")
 	private Float dcAbdominal;
 	
+	@Column(name="DC_COXA")
 	private Float dcCoxa;
 	
+	@Column(name="DC_PERNA")
 	private Float dcPerna;
-	
-	@Override
-	public String toJson() {
-		
-		final Utils utils = Utils.getInstance();
-		
-		final StringBuilder json = new StringBuilder("{");
-		
-		utils.addNumberToJson(json, "id", id);
-		utils.addStringToJson(json, "dataRef", dataRef);
-		utils.addNumberToJson(json, "maPesoCorporal", maPesoCorporal);
-		utils.addNumberToJson(json, "maPesoMagro", maPesoMagro);
-		utils.addNumberToJson(json, "maPesoGordura", maPesoGordura);
-		utils.addNumberToJson(json, "maAltura", maAltura);
-		utils.addNumberToJson(json, "maPg", maPg);
-		utils.addNumberToJson(json, "maImc", maImc);
-		utils.addNumberToJson(json, "maCintura", maCintura);
-		utils.addNumberToJson(json, "maQuadril", maQuadril);
-		utils.addNumberToJson(json, "maPmrc", maPmrc);
-		utils.addNumberToJson(json, "mcTorax", mcTorax);
-		utils.addNumberToJson(json, "mcAbdomen", mcAbdomen);
-		utils.addNumberToJson(json, "mcCintura", mcCintura);
-		utils.addNumberToJson(json, "mcBiceps", mcBiceps);
-		utils.addNumberToJson(json, "mcTriceps", mcTriceps);
-		utils.addNumberToJson(json, "mcCoxa", mcCoxa);
-		utils.addNumberToJson(json, "mcAntebraco", mcAntebraco);
-		utils.addNumberToJson(json, "dcBiceps", dcBiceps);
-		utils.addNumberToJson(json, "dcTriceps", dcTriceps);
-		utils.addNumberToJson(json, "dcSubAxilar", dcSubAxilar);
-		utils.addNumberToJson(json, "dcSupraIliacas", dcSupraIliacas);
-		utils.addNumberToJson(json, "dcSubEscapular", dcSubEscapular);
-		utils.addNumberToJson(json, "dcToraxica", dcToraxica);
-		utils.addNumberToJson(json, "dcAbdominal", dcAbdominal);
-		utils.addNumberToJson(json, "dcCoxa", dcCoxa);
-		utils.addNumberToJson(json, "dcPerna", dcPerna);
-		
-		json.append("}");
-		
-		return json.toString();
-	}
 
 	public Long getId() {
 		return id;
@@ -106,12 +115,20 @@ public class MedidasDTO implements GARequest {
 		this.id = id;
 	}
 
-	public String getDataRef() {
-		return dataRef;
+	public Pessoa getPessoa() {
+		return pessoa;
 	}
 
-	public void setDataRef(String dataRef) {
-		this.dataRef = dataRef;
+	public void setPessoa(Pessoa pessoa) {
+		this.pessoa = pessoa;
+	}
+
+	public Date getDataReferente() {
+		return dataReferente;
+	}
+
+	public void setDataReferente(Date dataReferente) {
+		this.dataReferente = dataReferente;
 	}
 
 	public Float getMaPesoCorporal() {
@@ -120,6 +137,14 @@ public class MedidasDTO implements GARequest {
 
 	public void setMaPesoCorporal(Float maPesoCorporal) {
 		this.maPesoCorporal = maPesoCorporal;
+	}
+
+	public Float getMaAltura() {
+		return maAltura;
+	}
+
+	public void setMaAltura(Float maAltura) {
+		this.maAltura = maAltura;
 	}
 
 	public Float getMaPesoMagro() {
@@ -138,20 +163,12 @@ public class MedidasDTO implements GARequest {
 		this.maPesoGordura = maPesoGordura;
 	}
 
-	public Float getMaAltura() {
-		return maAltura;
+	public Float getMaPorcentagemPG() {
+		return maPorcentagemPG;
 	}
 
-	public void setMaAltura(Float maAltura) {
-		this.maAltura = maAltura;
-	}
-
-	public Float getMaPg() {
-		return maPg;
-	}
-
-	public void setMaPg(Float maPg) {
-		this.maPg = maPg;
+	public void setMaPorcentagemPG(Float maPorcentagemPG) {
+		this.maPorcentagemPG = maPorcentagemPG;
 	}
 
 	public Float getMaImc() {
@@ -313,5 +330,4 @@ public class MedidasDTO implements GARequest {
 	public void setDcPerna(Float dcPerna) {
 		this.dcPerna = dcPerna;
 	}
-
 }

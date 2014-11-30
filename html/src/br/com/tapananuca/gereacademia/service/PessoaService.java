@@ -11,9 +11,21 @@ import javax.persistence.Query;
 
 import br.com.tapananuca.gereacademia.comunicacao.AReceberDTO;
 import br.com.tapananuca.gereacademia.comunicacao.AReceberPaginaDTO;
+import br.com.tapananuca.gereacademia.comunicacao.HabitosDTO;
+import br.com.tapananuca.gereacademia.comunicacao.HabitosDTOResponse;
+import br.com.tapananuca.gereacademia.comunicacao.HistoriaPatologicaDTO;
+import br.com.tapananuca.gereacademia.comunicacao.HistoriaPatologicaDTOResponse;
+import br.com.tapananuca.gereacademia.comunicacao.MedidaDTO;
+import br.com.tapananuca.gereacademia.comunicacao.MedidaDTOResponse;
+import br.com.tapananuca.gereacademia.comunicacao.ObjetivoDTO;
+import br.com.tapananuca.gereacademia.comunicacao.ObjetivoDTOResponse;
 import br.com.tapananuca.gereacademia.comunicacao.PessoaDTO;
+import br.com.tapananuca.gereacademia.comunicacao.PessoaDTOResponse;
+import br.com.tapananuca.gereacademia.model.Medida;
 import br.com.tapananuca.gereacademia.model.Pagamento;
 import br.com.tapananuca.gereacademia.model.Pessoa;
+
+import com.badlogic.gdx.utils.Array;
 
 public class PessoaService extends Service{
 
@@ -172,7 +184,7 @@ public class PessoaService extends Service{
 		pessoa.setEmail(pessoaDTO.getEmail());
 		pessoa.setEndereco(pessoaDTO.getEndereco());
 		pessoa.setNome(pessoaDTO.getNome());
-		pessoa.setNumero(Integer.valueOf(pessoaDTO.getNumero()));
+		pessoa.setNumero(pessoaDTO.getNumero());
 		pessoa.setSexo(pessoaDTO.getSexo());
 		pessoa.setTelefone(pessoaDTO.getTelefone());
 		pessoa.setValorMensal(new BigDecimal(pessoaDTO.getValorMensal()).setScale(2, RoundingMode.HALF_UP));
@@ -206,16 +218,13 @@ public class PessoaService extends Service{
 		
 		final EntityManager em = new Conexao().getEntityManager();
 		
-		StringBuilder hql = new StringBuilder("select new ");
-		hql.append(AReceberDTO.class.getCanonicalName())
-		   .append(" (pes.nome, ")
-		   .append(" concat(day(pes.dataNascimento), '/', month(pes.dataNascimento), '/', year(pes.dataNascimento))) ")
-		   .append(" from Pessoa pes ")
-		   .append(" where month(pes.dataNascimento) = :mes ");
-		
-		hql.append(" order by pes.dataNascimento, pes.nome ");
-		
-		Query query = em.createQuery(hql.toString());
+		Query query = em.createQuery("select new " +
+				AReceberDTO.class.getCanonicalName() +
+				" (pes.nome, " +
+				" concat(day(pes.dataNascimento), '/', month(pes.dataNascimento), '/', year(pes.dataNascimento))) " +
+				" from Pessoa pes " +
+				" where month(pes.dataNascimento) = :mes " +
+				" order by pes.dataNascimento, pes.nome ");
 		
 		query.setParameter("mes", mes);
 		
@@ -228,17 +237,402 @@ public class PessoaService extends Service{
 		final AReceberPaginaDTO dto = new AReceberPaginaDTO();
 		dto.setaReceber(this.getArrayFromList(query.getResultList()));
 		
-		hql = new StringBuilder("select ");
-		hql.append(" count(pes.id) ")
-		   .append(" from Pessoa pes ")
-		   .append(" where month(pes.dataNascimento) = :mes ");
-		
-		query = em.createQuery(hql.toString());
+		query = em.createQuery("select " +
+				" count(pes.id) " +
+				" from Pessoa pes " +
+				" where month(pes.dataNascimento) = :mes ");
 		
 		query.setParameter("mes", mes);
 		
 		dto.setQtdPaginas(String.valueOf(((Long)query.getSingleResult() / qtdRegistros) + 1));
 		
 		return dto;
+	}
+
+	public String salvarObjetivos(ObjetivoDTO objetivoDTO) {
+		
+		if (objetivoDTO == null || objetivoDTO.getIdPessoa() == null || objetivoDTO.getIdPessoa().isEmpty()){
+			
+			return "Dados insuficientes para salvar objetivos.";
+		}
+		
+		final EntityManager em = new Conexao().getEntityManager();
+		
+		Pessoa pessoa = em.find(Pessoa.class, Long.valueOf(objetivoDTO.getIdPessoa()));
+		
+		if (pessoa == null){
+			
+			return "Dados básicos da pessoa não encontrados.";
+		}
+		
+		pessoa.setEstetica(objetivoDTO.isEstetica());
+		pessoa.setLazer(objetivoDTO.isLazer());
+		pessoa.setSaude(objetivoDTO.isSaude());
+		pessoa.setTerapeutico(objetivoDTO.isTerapeutico());
+		pessoa.setCondFisico(objetivoDTO.isCondFisico());
+		pessoa.setPrepFisica(objetivoDTO.isPrepFisica());
+		pessoa.setAutoRend(objetivoDTO.isAutoRend());
+		pessoa.setHipertrofia(objetivoDTO.isHipertrofia());
+		pessoa.setEmagrecimento(objetivoDTO.isEmagrecimento());
+		
+		em.getTransaction().begin();
+		em.merge(pessoa);
+		em.getTransaction().commit();
+		
+		return null;
+	}
+
+	public ObjetivoDTOResponse buscarObjetivos(Long idPessoa) {
+		
+		final ObjetivoDTOResponse resp = new ObjetivoDTOResponse();
+		
+		if (idPessoa == null){
+			
+			resp.setSucesso(false);
+			resp.setMsg("Dados insuficientes para buscar objetivos.");
+			
+			return resp;
+		}
+		
+		final EntityManager em = new Conexao().getEntityManager();
+		
+		final Query query = em.createQuery("select new " + 
+				ObjetivoDTO.class.getCanonicalName() + 
+				"(p.estetica, p.lazer, p.saude, p.terapeutico, p.condFisico, p.prepFisica, p.autoRend, p.hipertrofia, p.emagrecimento) " +
+				" from Pessoa p " +
+				" where p.id = :id ");
+		
+		query.setParameter("id", idPessoa);
+		
+		try {
+			resp.setObjetivoDTO((ObjetivoDTO) query.getSingleResult());
+		} catch (NoResultException e) {
+			
+		}
+		
+		return resp;
+	}
+
+	@SuppressWarnings("unchecked")
+	public PessoaDTOResponse buscarNomesPessoa(String nome){
+		
+		final PessoaDTOResponse resp = new PessoaDTOResponse();
+		
+		if (nome == null){
+			
+			resp.setSucesso(false);
+			resp.setMsg("Dados insuficientes para buscar dados.");
+			
+			return resp;
+		}
+		
+		final EntityManager em = new Conexao().getEntityManager();
+		
+		final StringBuilder hql = new StringBuilder("select new ");
+		hql.append(PessoaDTO.class.getCanonicalName())
+		   .append("(p.id, p.nome)")
+		   .append(" from Pessoa p ")
+		   .append(" where upper(p.nome) like upper(:nome) ");
+		
+		final Query query = em.createQuery(hql.toString());
+		query.setParameter("nome", "%" + nome + "%");
+		
+		resp.setPessoasDTO(this.getArrayFromList(query.getResultList()));
+		
+		return resp;
+	}
+	
+	public PessoaDTOResponse buscarDadosPessoa(Long id) {
+		
+		final PessoaDTOResponse resp = new PessoaDTOResponse();
+		
+		if (id == null){
+			
+			resp.setSucesso(false);
+			resp.setMsg("Dados insuficientes para buscar dados.");
+			
+			return resp;
+		}
+		
+		final EntityManager em = new Conexao().getEntityManager();
+		
+		final StringBuilder hql = new StringBuilder("select new ");
+		hql.append(PessoaDTO.class.getCanonicalName())
+		   .append("(p.nome, day(p.dataNascimento), month(p.dataNascimento), year(p.dataNascimento), p.estadoCivil, p.sexo, ")
+		   .append("p.endereco, p.numero, p.bairro, p.telefone, p.email, ")
+		   .append("day(p.inicio), month(p.inicio), year(p.inicio), p.valorMensal)")
+		   .append(" from Pessoa p ")
+		   .append(" where p.id = :id ");
+		
+		final Query query = em.createQuery(hql.toString());
+		query.setParameter("id", id);
+		
+		PessoaDTO dto = null;
+		try {
+			dto = (PessoaDTO) query.getSingleResult();
+		} catch (NoResultException e) {
+			
+		}
+		
+		final Array<PessoaDTO> ar = new Array<PessoaDTO>(1);
+		ar.add(dto);
+		
+		resp.setPessoasDTO(ar);
+		
+		return resp;
+	}
+
+	public String salvarHistoriaPatologica(HistoriaPatologicaDTO historiaPatologicaDTO) {
+		
+		if (historiaPatologicaDTO == null || historiaPatologicaDTO.getIdPessoa() == null || historiaPatologicaDTO.getIdPessoa().isEmpty()){
+			
+			return "Dados insuficientes para salvar história patológica.";
+		}
+		
+		final EntityManager em = new Conexao().getEntityManager();
+		
+		Pessoa pessoa = em.find(Pessoa.class, Long.valueOf(historiaPatologicaDTO.getIdPessoa()));
+		
+		if (pessoa == null){
+			
+			return "Dados básicos da pessoa não encontrados.";
+		}
+		
+		pessoa.setCirurgias(historiaPatologicaDTO.getCirurgias());
+		pessoa.setSintomasDoencas(historiaPatologicaDTO.getSintomasDoencas());
+		pessoa.setMedicamentos(historiaPatologicaDTO.getMedicamentos());
+		pessoa.setLesoes(historiaPatologicaDTO.getLesoes());
+		pessoa.setAlergias(historiaPatologicaDTO.getAlergias());
+		pessoa.setOutros(historiaPatologicaDTO.getOutros());
+		pessoa.setCardiopatia(historiaPatologicaDTO.isCardiopatia());
+		pessoa.setHipertensao(historiaPatologicaDTO.isHipertensao());
+		
+		em.getTransaction().begin();
+		em.merge(pessoa);
+		em.getTransaction().commit();
+		
+		return null;
+	}
+
+	public HistoriaPatologicaDTOResponse buscarHistPatologica(Long id) {
+		
+		final HistoriaPatologicaDTOResponse resp = new HistoriaPatologicaDTOResponse();
+		
+		if (id == null){
+			
+			resp.setSucesso(false);
+			resp.setMsg("Dados insuficientes para buscar história patológica");
+		}
+		
+		final EntityManager em = new Conexao().getEntityManager();
+		
+		final Query query = em.createQuery("select new " +
+				HistoriaPatologicaDTO.class.getCanonicalName() +
+				"(pes.cirurgias, pes.sintomasDoencas, pes.medicamentos, pes.lesoes, pes.alergias, " +
+				" pes.outros, pes.cardiopatia, pes.hipertensao)" +
+				" from Pessoa pes where pes.id = :id ");
+		
+		query.setParameter("id", id);
+		
+		try {
+			resp.setHistoriaPatologicaDTO((HistoriaPatologicaDTO) query.getSingleResult());
+		} catch (NoResultException e) {
+			
+		}
+		
+		return resp;
+	}
+
+	public HabitosDTOResponse buscarHabitos(Long id) {
+		
+		final HabitosDTOResponse resp = new HabitosDTOResponse();
+		
+		if (id == null){
+			
+			resp.setSucesso(false);
+			resp.setMsg("Dados insuficientes para buscar hábitos.");
+		}
+		
+		final EntityManager em = new Conexao().getEntityManager();
+		
+		final Query query = em.createQuery("select new " +
+				HabitosDTO.class.getCanonicalName() +
+				"(pes.dieta, pes.praticaAtivFisica, " +
+				" day(pes.dataUltimoExameMedico), month(pes.dataUltimoExameMedico), year(pes.dataUltimoExameMedico), " +
+				" pes.periodExameMedico)" +
+				" from Pessoa pes where pes.id = :id ");
+		
+		query.setParameter("id", id);
+		
+		try {
+			resp.setHabitosDTO((HabitosDTO) query.getSingleResult());
+		} catch (NoResultException e) {
+			
+		}
+		
+		return resp;
+	}
+
+	public String salvarHabitos(HabitosDTO habitosDTO) {
+		
+		if (habitosDTO == null || habitosDTO.getIdPessoa() == null || habitosDTO.getIdPessoa().isEmpty()){
+			
+			return "Dados insuficientes para salvar hábitos.";
+		}
+		
+		final EntityManager em = new Conexao().getEntityManager();
+		
+		Pessoa pessoa = em.find(Pessoa.class, Long.valueOf(habitosDTO.getIdPessoa()));
+		
+		if (pessoa == null){
+			
+			return "Dados básicos da pessoa não encontrados.";
+		}
+		
+		pessoa.setDieta(habitosDTO.getDieta());
+		pessoa.setPraticaAtivFisica(habitosDTO.getPraticaAtivFisica());
+		
+		final String[] strData = habitosDTO.getDataUltimoExameMedico().split("/");
+		final Calendar calendar = Calendar.getInstance();
+		calendar.set(Integer.valueOf(strData[2]), Integer.valueOf(strData[1]) - 1, Integer.valueOf(strData[0]));
+		pessoa.setDataNascimento(calendar.getTime());
+		
+		pessoa.setDataUltimoExameMedico(calendar.getTime());
+		
+		if (habitosDTO.getPeriodExameMedico() != null && !habitosDTO.getPeriodExameMedico().isEmpty()){
+			
+			pessoa.setPeriodExameMedico(Integer.valueOf(habitosDTO.getPeriodExameMedico()));
+		}
+		
+		em.getTransaction().begin();
+		em.merge(pessoa);
+		em.getTransaction().commit();
+		
+		return null;
+	}
+
+	public MedidaDTOResponse buscarMedidas(Long idPessoa, Date dataRef) {
+		
+		final MedidaDTOResponse resp = new MedidaDTOResponse();
+		
+		if (idPessoa == null || dataRef == null){
+			
+			resp.setSucesso(false);
+			resp.setMsg("Dados insuficientes para buscar hábitos.");
+		}
+		
+		final EntityManager em = new Conexao().getEntityManager();
+		
+		final Query query = em.createQuery("select new " +
+				MedidaDTO.class.getCanonicalName() +
+				"(m.maPesoCorporal, m.maAltura, m.maPesoMagro, m.maPesoGordura, m.maPorcentagemPG, " +
+				" m.maImc, m.maCintura, m.maQuadril, m.maPmrc, m.mcTorax, m.mcAbdomen, m.mcCintura, " +
+				" m.mcBiceps, m.mcTriceps, m.mcCoxa, m.mcAntebraco, m.dcBiceps, m.dcTriceps, " +
+				" m.dcSubAxilar, m.dcSupraIliacas, m.dcSubEscapular, m.dcToraxica, m.dcAbdominal, m.dcCoxa, m.dcPerna) " +
+				" from Medida m join m.pessoa p where p.id = :id and m.dataReferente = :dataRef ");
+		
+		query.setParameter("id", idPessoa);
+		query.setParameter("dataRef", dataRef);
+		
+		try {
+			resp.setMedidaDTO((MedidaDTO) query.getSingleResult());
+		} catch (NoResultException e) {
+			
+		}
+		
+		//TODO buscar datas ref
+		
+		return resp;
+	}
+
+	public String salvarMedidas(MedidaDTO medidaDTO) {
+		
+		if (medidaDTO == null || medidaDTO.getIdPessoa() == null || medidaDTO.getIdPessoa().isEmpty() ||
+				medidaDTO.getDataReferente() == null || medidaDTO.getDataReferente().isEmpty()){
+			
+			return "Dados insuficientes para salvar medidas";
+		}
+		
+		final Long idPessoa = Long.valueOf(medidaDTO.getIdPessoa());
+		
+		final String[] strData = medidaDTO.getDataReferente().split("/");
+		final Calendar calendar = Calendar.getInstance();
+		calendar.set(Integer.valueOf(strData[2]), Integer.valueOf(strData[1]) - 1, Integer.valueOf(strData[0]));
+		
+		final EntityManager em = new Conexao().getEntityManager();
+		
+		final Pessoa pessoa = em.find(Pessoa.class, idPessoa);
+		
+		if (pessoa == null){
+			
+			return "Pessoa não encontrada para cadastro de medidas.";
+		}
+		
+		final Query query = 
+			em.createQuery(
+				"select med from Medida med join med.pessoa pes where pes.id = :idPessoa and med.dataRef = :dataRef");
+		
+		query.setParameter("idPessoa", idPessoa);
+		query.setParameter("dataRef", calendar.getTime());
+		
+		Medida medida = null;
+		
+		try {
+			medida = (Medida) query.getSingleResult();
+		} catch (NoResultException e) {
+			
+		}
+		
+		if (medida == null){
+			
+			medida = new Medida();
+			medida.setPessoa(pessoa);
+			medida.setDataReferente(calendar.getTime());
+		}
+		
+		medida.setDcAbdominal(this.floatOrNull(medidaDTO.getDcAbdominal()));
+		medida.setDcBiceps(this.floatOrNull(medidaDTO.getDcBiceps()));
+		medida.setDcCoxa(this.floatOrNull(medidaDTO.getDcCoxa()));
+		medida.setDcPerna(this.floatOrNull(medidaDTO.getDcPerna()));
+		medida.setDcSubAxilar(this.floatOrNull(medidaDTO.getDcSubAxilar()));
+		medida.setDcSubEscapular(this.floatOrNull(medidaDTO.getDcSubEscapular()));
+		medida.setDcSupraIliacas(this.floatOrNull(medidaDTO.getDcSupraIliacas()));
+		medida.setDcToraxica(this.floatOrNull(medidaDTO.getDcToraxica()));
+		medida.setDcTriceps(this.floatOrNull(medidaDTO.getDcTriceps()));
+		medida.setMaAltura(this.floatOrNull(medidaDTO.getMaAltura()));
+		medida.setMaCintura(this.floatOrNull(medidaDTO.getMaCintura()));
+		medida.setMaImc(this.floatOrNull(medidaDTO.getMaImc()));
+		medida.setMaPesoCorporal(this.floatOrNull(medidaDTO.getMaPesoCorporal()));
+		medida.setMaPesoGordura(this.floatOrNull(medidaDTO.getMaPesoGordura()));
+		medida.setMaPesoMagro(this.floatOrNull(medidaDTO.getMaPesoMagro()));
+		medida.setMaPmrc(this.floatOrNull(medidaDTO.getMaPmrc()));
+		medida.setMaPorcentagemPG(this.floatOrNull(medidaDTO.getMaPorcentagemPG()));
+		medida.setMaQuadril(this.floatOrNull(medidaDTO.getMaQuadril()));
+		medida.setMcAbdomen(this.floatOrNull(medidaDTO.getMcAbdomen()));
+		medida.setMcAntebraco(this.floatOrNull(medidaDTO.getMcAntebraco()));
+		medida.setMcBiceps(this.floatOrNull(medidaDTO.getMcBiceps()));
+		medida.setMcCintura(this.floatOrNull(medidaDTO.getMcCintura()));
+		medida.setMcCoxa(this.floatOrNull(medidaDTO.getMcCoxa()));
+		medida.setMcTorax(this.floatOrNull(medidaDTO.getMcTorax()));
+		medida.setMcTriceps(this.floatOrNull(medidaDTO.getMcTriceps()));
+		
+		em.getTransaction().begin();
+		
+		if (medida.getId() == null){
+			
+			em.persist(medida);
+		} else {
+			
+			em.merge(medida);
+		}
+		
+		em.getTransaction().commit();
+		
+		return null;
+	}
+	
+	private Float floatOrNull(String valor){
+		
+		return valor == null ? null : Float.valueOf(valor);
 	}
 }

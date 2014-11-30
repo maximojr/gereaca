@@ -8,10 +8,16 @@ import br.com.tapananuca.gereacademia.comunicacao.Dieta;
 import br.com.tapananuca.gereacademia.comunicacao.EstadoCivil;
 import br.com.tapananuca.gereacademia.comunicacao.GAResponse;
 import br.com.tapananuca.gereacademia.comunicacao.HabitosDTO;
+import br.com.tapananuca.gereacademia.comunicacao.HabitosDTOResponse;
 import br.com.tapananuca.gereacademia.comunicacao.HistoriaPatologicaDTO;
+import br.com.tapananuca.gereacademia.comunicacao.HistoriaPatologicaDTOResponse;
+import br.com.tapananuca.gereacademia.comunicacao.MedidaDTO;
+import br.com.tapananuca.gereacademia.comunicacao.MedidaDTOResponse;
 import br.com.tapananuca.gereacademia.comunicacao.ObjetivoDTO;
+import br.com.tapananuca.gereacademia.comunicacao.ObjetivoDTOResponse;
 import br.com.tapananuca.gereacademia.comunicacao.Periodicidade;
 import br.com.tapananuca.gereacademia.comunicacao.PessoaDTO;
+import br.com.tapananuca.gereacademia.comunicacao.PessoaDTOResponse;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.HttpRequest;
@@ -27,6 +33,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -85,24 +92,25 @@ public class CadastroPessoaScreen extends Tela {
 	private SelectBox<String> periodoExame;
 	
 	//campos medidas
-	private SelectBox<String> dataReferente;
-	private TextField pesoCorporal;
-	private TextField altura;
-	private TextField pesoMagro;
-	private TextField pesoGordura;
-	private TextField porcentagemPG;
-	private TextField imc;
-	private TextField cintura;
-	private TextField quadril;
-	private TextField pmrc;
+	private SelectBox<String> dataReferenteMedida;
 	
-	private TextField torax;
-	private TextField abdomen;
-	//private TextField cintura;
-	private TextField biceps;
-	private TextField triceps;
-	private TextField coxa;
-	private TextField antebraco;
+	private TextField maPesoCorporal;
+	private TextField maAltura;
+	private TextField maPesoMagro;
+	private TextField maPesoGordura;
+	private TextField maPorcentagemPG;
+	private TextField maImc;
+	private TextField maCintura;
+	private TextField maQuadril;
+	private TextField maPmrc;
+	
+	private TextField mcTorax;
+	private TextField mcAbdomen;
+	private TextField mcCintura;
+	private TextField mcBiceps;
+	private TextField mcTriceps;
+	private TextField mcCoxa;
+	private TextField mcAntebraco;
 	
 	private TextField dcBiceps;
 	private TextField dcTriceps;
@@ -113,6 +121,8 @@ public class CadastroPessoaScreen extends Tela {
 	private TextField dcAbdominal;
 	private TextField dcCoxa;
 	private TextField dcPerna;
+	
+	private final ChangeListener dataRefChangeListener;
 	
 	//botões tabbed pannel
 	private TextButton botaoTabObjetivos;
@@ -126,6 +136,8 @@ public class CadastroPessoaScreen extends Tela {
 		utils = Utils.getInstance();
 		
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		
+		this.dataRefChangeListener = new DataReferenteChangeListener();
 		
 		final Table table = new Table();
 		//table.debugAll();
@@ -169,18 +181,61 @@ public class CadastroPessoaScreen extends Tela {
 		table.add(botaoVoltar).left().row();
 	}
 	
-	public void editar(PessoaDTO pessoaDTO){
+	public void editar(){
 		
-		this.pessoaEdicaoId = pessoaDTO.getId() == null ? null : Long.valueOf(pessoaDTO.getId());
-		this.nome.setText(pessoaDTO.getNome());
-		this.dataNasc.setText(pessoaDTO.getDataNascimento());
-		this.listSexo.setSelected(pessoaDTO.getSexo());
-		this.endereco.setText(pessoaDTO.getEndereco());
-		this.numero.setText(pessoaDTO.getNumero() == null ? "" : pessoaDTO.getNumero().toString());
-		this.bairro.setText(pessoaDTO.getBairro());
-		this.telefone.setText(pessoaDTO.getTelefone());
-		this.email.setText(pessoaDTO.getEmail());
-		this.valorMensal.setText(pessoaDTO.getValorMensal().toString());
+		final PessoaDTO dto = new PessoaDTO(this.pessoaEdicaoId, null);
+		
+		final HttpRequest httpRequest = utils.criarRequest(Utils.URL_PESSOA_DADOS_BASICOS, dto);
+		
+		Gdx.net.sendHttpRequest(httpRequest, new HttpResponseListener() {
+			
+			@Override
+			public void handleHttpResponse(HttpResponse httpResponse) {
+				
+				final PessoaDTOResponse resp = utils.fromJson(PessoaDTOResponse.class, httpResponse.getResultAsString());
+				
+				if (resp.isSucesso()){
+					
+					if (resp.getPessoasDTO() != null && resp.getPessoasDTO().size != 0){
+						
+						final PessoaDTO pessoaDTO = resp.getPessoasDTO().first();
+						
+						CadastroPessoaScreen.this.nome.setText(pessoaDTO.getNome());
+						CadastroPessoaScreen.this.dataNasc.setText(pessoaDTO.getDataNascimento());
+						CadastroPessoaScreen.this.listSexo.setSelected(pessoaDTO.getSexo());
+						CadastroPessoaScreen.this.endereco.setText(pessoaDTO.getEndereco());
+						CadastroPessoaScreen.this.numero.setText(pessoaDTO.getNumero() == null ? "" : pessoaDTO.getNumero().toString());
+						CadastroPessoaScreen.this.bairro.setText(pessoaDTO.getBairro());
+						CadastroPessoaScreen.this.telefone.setText(pessoaDTO.getTelefone());
+						CadastroPessoaScreen.this.email.setText(pessoaDTO.getEmail());
+						CadastroPessoaScreen.this.valorMensal.setText(pessoaDTO.getValorMensal().toString().replace(".", ","));
+						CadastroPessoaScreen.this.dataInicio.setText(pessoaDTO.getDataInicio());
+						CadastroPessoaScreen.this.listEstadoCivil.setSelected(pessoaDTO.getEstadoCivil().getDescricao());
+						
+						CadastroPessoaScreen.this.botaoTabObjetivos.setDisabled(false);
+						CadastroPessoaScreen.this.botaoTabHistPat.setDisabled(false);
+						CadastroPessoaScreen.this.botaoTabHabitos.setDisabled(false);
+						CadastroPessoaScreen.this.botaoTabMedidas.setDisabled(false);
+					}
+					
+				} else {
+					
+					utils.mostarAlerta("Atenção:", resp.getMsg(), stage, skin);
+				}
+			}
+			
+			@Override
+			public void failed(Throwable t) {
+				
+				utils.mostarAlerta("Erro:", "Erro ao tentar salvar dados: " + t.getMessage() , stage, skin);
+			}
+			
+			@Override
+			public void cancelled() {
+				
+				utils.mostarAlerta(null, "Solicitação ao servidor cancelada.", stage, skin);
+			}
+		});
 	}
 	
 	private void salvarDadosCadastrais(){
@@ -255,8 +310,8 @@ public class CadastroPessoaScreen extends Tela {
 
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				// TODO Auto-generated method stub
 				
+				CadastroPessoaScreen.this.abrirDialogPesquisaPessoa();
 			}
 		});
 		
@@ -371,6 +426,92 @@ public class CadastroPessoaScreen extends Tela {
 		return new Tab(botao, conteudo, skin, Align.topLeft);
 	}
 	
+	private void abrirDialogPesquisaPessoa() {
+		
+		final Window window = new Window("Escolha: ", skin);
+		final Table table = new Table(skin);
+		
+		window.add(table);
+		
+		final TextButton botaoCancelar = new TextButton("Cancelar", skin);
+		botaoCancelar.addListener(new ChangeListener() {
+			
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				window.remove();
+			}
+		});
+		
+		final PessoaDTO dto = new PessoaDTO();
+		dto.setNome(this.nome.getText());
+		
+		final HttpRequest httpRequest = utils.criarRequest(Utils.URL_PESSOA_DADOS_NOMES, dto);
+		
+		Gdx.net.sendHttpRequest(httpRequest, new HttpResponseListener() {
+			
+			@Override
+			public void handleHttpResponse(HttpResponse httpResponse) {
+				
+				final PessoaDTOResponse resp = utils.fromJson(PessoaDTOResponse.class, httpResponse.getResultAsString());
+				
+				if (resp.isSucesso()){
+					
+					if (resp.getPessoasDTO() != null && resp.getPessoasDTO().size != 0){
+						
+						for (final PessoaDTO p : resp.getPessoasDTO()){
+							
+							final Label label = new Label(p.getNome(), skin);
+							label.addListener(new ClickListener(){
+
+								@Override
+								public void clicked(InputEvent event, float x, float y) {
+									
+									window.remove();
+									
+									CadastroPessoaScreen.this.pessoaEdicaoId = Long.valueOf(p.getId());
+									CadastroPessoaScreen.this.editar();
+								}
+							});
+							
+							table.add(label).row();
+						}
+					} else {
+						
+						table.add("Nenhuma pessoa encontrada.").row();
+					}
+					
+					table.add(botaoCancelar);
+					
+					//window.pack();
+					table.pack();
+					window.setWidth(table.getPrefWidth() + 10);
+					window.setHeight(table.getHeight() + 20);
+					
+					window.setPosition(
+							(Gdx.graphics.getWidth() / 2) - (window.getWidth() / 2) ,
+							(Gdx.graphics.getHeight() / 2) - (window.getHeight() / 2));
+					
+					CadastroPessoaScreen.this.stage.addActor(window);
+				} else {
+					
+					utils.mostarAlerta("Atenção:", resp.getMsg(), stage, skin);
+				}
+			}
+			
+			@Override
+			public void failed(Throwable t) {
+				
+				utils.mostarAlerta("Erro:", "Erro ao tentar salvar objetivos: " + t.getMessage() , stage, skin);
+			}
+			
+			@Override
+			public void cancelled() {
+				
+				utils.mostarAlerta(null, "Solicitação ao servidor cancelada.", stage, skin);
+			}
+		});
+	}
+
 	private Tab montarObjetivos(){
 		
 		final Table conteudo = new Table(skin);
@@ -421,10 +562,9 @@ public class CadastroPessoaScreen extends Tela {
 
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				// TODO Auto-generated method stub
 				
 				if (botaoTabObjetivos.isChecked()){
-					System.out.println("wow");
+					CadastroPessoaScreen.this.carregarObjetivos();
 				}
 			}
 		});
@@ -432,6 +572,64 @@ public class CadastroPessoaScreen extends Tela {
 		return new Tab(botaoTabObjetivos, conteudo, skin, Align.center);
 	}
 	
+	private void carregarObjetivos() {
+		
+		if (this.pessoaEdicaoId == null){
+			
+			utils.mostarAlerta("Atenção", "Dados insuficientes, salve ou pesquise um cliente cadastrado.", stage, skin);
+			
+			return;
+		}
+		
+		final ObjetivoDTO dto = new ObjetivoDTO();
+		dto.setIdPessoa(this.pessoaEdicaoId.toString());
+		
+		final HttpRequest httpRequest = utils.criarRequest(Utils.URL_PESSOA_OBJETIVOS, dto);
+		
+		Gdx.net.sendHttpRequest(httpRequest, new HttpResponseListener() {
+			
+			@Override
+			public void handleHttpResponse(HttpResponse httpResponse) {
+				
+				final ObjetivoDTOResponse resp = utils.fromJson(ObjetivoDTOResponse.class, httpResponse.getResultAsString());
+				
+				if (resp.isSucesso()){
+					
+					if (resp.getObjetivoDTO() != null){
+						
+						final ObjetivoDTO dto = resp.getObjetivoDTO();
+						
+						CadastroPessoaScreen.this.checkEstetica.setChecked(dto.isEstetica());
+						CadastroPessoaScreen.this.checkLazer.setChecked(dto.isLazer());
+						CadastroPessoaScreen.this.checkSaude.setChecked(dto.isSaude());
+						CadastroPessoaScreen.this.checkTerapeutico.setChecked(dto.isTerapeutico());
+						CadastroPessoaScreen.this.checkCondFisico.setChecked(dto.isCondFisico());
+						CadastroPessoaScreen.this.checkPrepFisica.setChecked(dto.isPrepFisica());
+						CadastroPessoaScreen.this.checkAutoRend.setChecked(dto.isAutoRend());
+						CadastroPessoaScreen.this.checkHipertrofia.setChecked(dto.isHipertrofia());
+						CadastroPessoaScreen.this.checkEmagrecimento.setChecked(dto.isEmagrecimento());
+					}
+					
+				} else {
+					
+					utils.mostarAlerta("Atenção:", resp.getMsg(), stage, skin);
+				}
+			}
+			
+			@Override
+			public void failed(Throwable t) {
+				
+				utils.mostarAlerta("Erro:", "Erro ao tentar salvar objetivos: " + t.getMessage() , stage, skin);
+			}
+			
+			@Override
+			public void cancelled() {
+				
+				utils.mostarAlerta(null, "Solicitação ao servidor cancelada.", stage, skin);
+			}
+		});
+	}
+
 	private void salvarObjetivos() {
 		
 		//cant happen no mater what, but...
@@ -557,14 +755,76 @@ public class CadastroPessoaScreen extends Tela {
 
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				// TODO Auto-generated method stub
 				
+				if (botaoTabHistPat.isChecked()){
+					CadastroPessoaScreen.this.carregarHistPat();
+				}
 			}
 		});
 		
 		return new Tab(botaoTabHistPat, conteudo, skin, Align.topLeft);
 	}
 	
+	private void carregarHistPat() {
+		
+		//can't happen
+		if (this.pessoaEdicaoId == null){
+			
+			utils.mostarAlerta("Atenção", "Dados insuficientes, salve ou pesquise um cliente cadastrado.", stage, skin);
+			
+			return;
+		}
+		
+		final HistoriaPatologicaDTO dto = new HistoriaPatologicaDTO();
+		dto.setIdPessoa(this.pessoaEdicaoId.toString());
+		
+		final HttpRequest httpRequest = utils.criarRequest(Utils.URL_PESSOA_HIST_PAT, dto);
+		
+		Gdx.net.sendHttpRequest(httpRequest, new HttpResponseListener() {
+			
+			@Override
+			public void handleHttpResponse(HttpResponse httpResponse) {
+				
+				final HistoriaPatologicaDTOResponse resp = 
+						utils.fromJson(HistoriaPatologicaDTOResponse.class, httpResponse.getResultAsString());
+				
+				if (resp.isSucesso()){
+					
+					final HistoriaPatologicaDTO dto = resp.getHistoriaPatologicaDTO();
+					
+					if (dto != null){
+						
+						CadastroPessoaScreen.this.cirurgias.setText(dto.getCirurgias());
+						CadastroPessoaScreen.this.sintomasDoencas.setText(dto.getSintomasDoencas());
+						CadastroPessoaScreen.this.medicamentos.setText(dto.getMedicamentos());
+						CadastroPessoaScreen.this.lesoes.setText(dto.getLesoes());
+						CadastroPessoaScreen.this.alergias.setText(dto.getAlergias());
+						CadastroPessoaScreen.this.outros.setText(dto.getOutros());
+						
+						CadastroPessoaScreen.this.cardiopatia.setChecked(dto.isCardiopatia());
+						CadastroPessoaScreen.this.hipertensao.setChecked(dto.isHipertensao());
+					}
+					
+				} else {
+					
+					utils.mostarAlerta("Atenção:", resp.getMsg(), stage, skin);
+				}
+			}
+			
+			@Override
+			public void failed(Throwable t) {
+				
+				utils.mostarAlerta("Erro:", "Erro ao tentar carregar história patológica: " + t.getMessage() , stage, skin);
+			}
+			
+			@Override
+			public void cancelled() {
+				
+				utils.mostarAlerta(null, "Solicitação ao servidor cancelada.", stage, skin);
+			}
+		});
+	}
+
 	private void salvarHistPat() {
 		
 		//cant happen no mater what, but...
@@ -681,14 +941,95 @@ public class CadastroPessoaScreen extends Tela {
 
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				// TODO Auto-generated method stub
 				
+				if (botaoTabHabitos.isChecked()){
+					
+					CadastroPessoaScreen.this.carregarHabitos();
+				}
 			}
 		});
 		
 		return new Tab(botaoTabHabitos, conteudo, skin, Align.center);
 	}
 	
+	private void carregarHabitos() {
+		
+		//can't happen
+		if (this.pessoaEdicaoId == null){
+			
+			utils.mostarAlerta("Atenção", "Dados insuficientes, salve ou pesquise um cliente cadastrado.", stage, skin);
+			
+			return;
+		}
+		
+		final HabitosDTO dto = new HabitosDTO();
+		dto.setIdPessoa(this.pessoaEdicaoId.toString());
+		
+		final HttpRequest httpRequest = utils.criarRequest(Utils.URL_PESSOA_HABITOS, dto);
+		
+		Gdx.net.sendHttpRequest(httpRequest, new HttpResponseListener() {
+			
+			@Override
+			public void handleHttpResponse(HttpResponse httpResponse) {
+				
+				final HabitosDTOResponse resp = 
+						utils.fromJson(HabitosDTOResponse.class, httpResponse.getResultAsString());
+				
+				if (resp.isSucesso()){
+					
+					final HabitosDTO dto = resp.getHabitosDTO();
+					
+					if (dto != null){
+						
+						CadastroPessoaScreen.this.dieta.setSelected(dto.getDieta().getDescricao());
+						CadastroPessoaScreen.this.atividadeFisica.setText(dto.getPraticaAtivFisica());
+						CadastroPessoaScreen.this.ultimoExame.setText(dto.getDataUltimoExameMedico());
+						
+						if (dto.getPeriodExameMedico() != null){
+							
+							final Integer qtdDias = Integer.valueOf(dto.getPeriodExameMedico());
+							
+							if (qtdDias % Periodicidade.MESES.getPeso() == 0){
+								
+								CadastroPessoaScreen.this.qtdTempoPeriodoExame.setText(String.valueOf(qtdDias / Periodicidade.MESES.getPeso()));
+								CadastroPessoaScreen.this.periodoExame.setSelected(Periodicidade.MESES.getDescricao());
+							} else if (qtdDias % Periodicidade.SEMANAS.getPeso() == 0) {
+								
+								CadastroPessoaScreen.this.qtdTempoPeriodoExame.setText(String.valueOf(qtdDias / Periodicidade.SEMANAS.getPeso()));
+								CadastroPessoaScreen.this.periodoExame.setSelected(Periodicidade.SEMANAS.getDescricao());
+							} else {
+								
+								CadastroPessoaScreen.this.qtdTempoPeriodoExame.setText(qtdDias.toString());
+								CadastroPessoaScreen.this.periodoExame.setSelected(Periodicidade.DIAS.getDescricao());
+							}
+							
+						} else {
+							
+							CadastroPessoaScreen.this.qtdTempoPeriodoExame.setText("");
+							CadastroPessoaScreen.this.periodoExame.setSelected("");
+						}
+					}
+					
+				} else {
+					
+					utils.mostarAlerta("Atenção:", resp.getMsg(), stage, skin);
+				}
+			}
+			
+			@Override
+			public void failed(Throwable t) {
+				
+				utils.mostarAlerta("Erro:", "Erro ao tentar carregar história patológica: " + t.getMessage() , stage, skin);
+			}
+			
+			@Override
+			public void cancelled() {
+				
+				utils.mostarAlerta(null, "Solicitação ao servidor cancelada.", stage, skin);
+			}
+		});
+	}
+
 	private void salvarHabitos() {
 		
 		//cant happen no mater what, but...
@@ -747,6 +1088,16 @@ public class CadastroPessoaScreen extends Tela {
 		});
 	}
 
+	class DataReferenteChangeListener extends ChangeListener{
+
+		@Override
+		public void changed(ChangeEvent event, Actor actor) {
+			
+			CadastroPessoaScreen.this.carregarMedidas();
+		}
+	}
+	
+	@SuppressWarnings("deprecation")
 	private Tab montarMedidas() {
 		
 		final Table conteudo = new Table(skin);
@@ -754,20 +1105,13 @@ public class CadastroPessoaScreen extends Tela {
 		Table inTable = new Table(skin);
 		inTable.add("Data referente: ").left();
 		
-		dataReferente = new SelectBox<String>(skin);
-//		Date d = new Date(TimeUtils.millis());
-//		final String data = d.getDate() + "/" + (d.getMonth() + 1) + "/" + (d.getYear() + 1900);
-//		dataReferente.setItems(data);
-		dataReferente.addListener(new ChangeListener() {
-			
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				
-				// TODO Auto-generated method stub
-			}
-		});
+		dataReferenteMedida = new SelectBox<String>(skin);
+		Date d = new Date(TimeUtils.millis());
+		final String data = d.getDate() + "/" + (d.getMonth() + 1) + "/" + (d.getYear() + 1900);
+		dataReferenteMedida.setItems(data);
+		dataReferenteMedida.addListener(dataRefChangeListener);
 		
-		inTable.add(dataReferente).left();
+		inTable.add(dataReferenteMedida).left();
 		
 		conteudo.add(inTable).left().row();
 		
@@ -778,49 +1122,49 @@ public class CadastroPessoaScreen extends Tela {
 		inTable.add("Peso magro:").padLeft(10).left();
 		inTable.add("Peso gordura:").padLeft(10).left().row();
 		
-		pesoCorporal = new TextField("", skin);
-		pesoCorporal.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(pesoCorporal).left();
+		maPesoCorporal = new TextField("", skin);
+		maPesoCorporal.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(maPesoCorporal).left();
 		
-		pesoMagro = new TextField("", skin);
-		pesoMagro.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(pesoMagro).padLeft(10).left();
+		maPesoMagro = new TextField("", skin);
+		maPesoMagro.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(maPesoMagro).padLeft(10).left();
 		
-		pesoGordura = new TextField("", skin);
-		pesoGordura.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(pesoGordura).padLeft(10).left().row();
+		maPesoGordura = new TextField("", skin);
+		maPesoGordura.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(maPesoGordura).padLeft(10).left().row();
 		
 		inTable.add("Altura:").left();
 		inTable.add("P.G. %:").padLeft(10).left();
 		inTable.add("I.M.C.:").padLeft(10).left().row();
 		
-		altura = new TextField("", skin);
-		altura.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(altura).left();
+		maAltura = new TextField("", skin);
+		maAltura.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(maAltura).left();
 		
-		porcentagemPG = new TextField("", skin);
-		porcentagemPG.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(porcentagemPG).padLeft(10).left();
+		maPorcentagemPG = new TextField("", skin);
+		maPorcentagemPG.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(maPorcentagemPG).padLeft(10).left();
 		
-		imc = new TextField("", skin);
-		imc.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(imc).padLeft(10).left().row();
+		maImc = new TextField("", skin);
+		maImc.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(maImc).padLeft(10).left().row();
 		
 		inTable.add("Cintura:").left();
 		inTable.add("Quadril:").padLeft(10).left();
 		inTable.add("P.M.R.C.:").padLeft(10).left().row();
 		
-		cintura = new TextField("", skin);
-		cintura.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(cintura).left();
+		maCintura = new TextField("", skin);
+		maCintura.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(maCintura).left();
 		
-		quadril = new TextField("", skin);
-		quadril.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(quadril).padLeft(10).left();
+		maQuadril = new TextField("", skin);
+		maQuadril.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(maQuadril).padLeft(10).left();
 		
-		pmrc = new TextField("", skin);
-		pmrc.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(pmrc).padLeft(10).left();
+		maPmrc = new TextField("", skin);
+		maPmrc.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(maPmrc).padLeft(10).left();
 		
 		conteudo.add(inTable).left().row();
 		
@@ -832,37 +1176,37 @@ public class CadastroPessoaScreen extends Tela {
 		inTable.add("Cintura:").padLeft(10).left();
 		inTable.add("Bíceps:").padLeft(10).left().row();
 		
-		torax = new TextField("", skin);
-		torax.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(torax).left();
+		mcTorax = new TextField("", skin);
+		mcTorax.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(mcTorax).left();
 		
-		abdomen = new TextField("", skin);
-		abdomen.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(abdomen).padLeft(10).left();
+		mcAbdomen = new TextField("", skin);
+		mcAbdomen.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(mcAbdomen).padLeft(10).left();
 		
-		cintura = new TextField("", skin);
-		cintura.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(cintura).padLeft(10).left();
+		mcCintura = new TextField("", skin);
+		mcCintura.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(mcCintura).padLeft(10).left();
 		
-		biceps = new TextField("", skin);
-		biceps.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(biceps).padLeft(10).left().row();
+		mcBiceps = new TextField("", skin);
+		mcBiceps.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(mcBiceps).padLeft(10).left().row();
 		
 		inTable.add("Tríceps:").left();
 		inTable.add("Coxa:").padLeft(10).left();
 		inTable.add("Antebraço:").padLeft(10).left().row();
 		
-		triceps = new TextField("", skin);
-		triceps.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(triceps).left();
+		mcTriceps = new TextField("", skin);
+		mcTriceps.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(mcTriceps).left();
 		
-		coxa = new TextField("", skin);
-		coxa.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(coxa).padLeft(10).left();
+		mcCoxa = new TextField("", skin);
+		mcCoxa.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(mcCoxa).padLeft(10).left();
 		
-		antebraco = new TextField("", skin);
-		antebraco.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(antebraco).padLeft(10).left();
+		mcAntebraco = new TextField("", skin);
+		mcAntebraco.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(mcAntebraco).padLeft(10).left();
 		
 		conteudo.add(inTable).left().row();
 		
@@ -937,16 +1281,169 @@ public class CadastroPessoaScreen extends Tela {
 
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				// TODO Auto-generated method stub
 				
+				CadastroPessoaScreen.this.carregarMedidas();
 			}
 		});
 		
 		return new Tab(botaoTabMedidas, conteudo, skin, Align.topLeft);
 	}
 
-	private void salvarMedidas() {
-		// TODO Auto-generated method stub
+	private void carregarMedidas() {
 		
+		//can't happen
+		if (this.pessoaEdicaoId == null){
+			
+			utils.mostarAlerta("Atenção", "Dados insuficientes, salve ou pesquise um cliente cadastrado.", stage, skin);
+			
+			return;
+		}
+		
+		final MedidaDTO dto = new MedidaDTO();
+		dto.setIdPessoa(this.pessoaEdicaoId.toString());
+		dto.setDataReferente(this.dataReferenteMedida.getSelected());
+		
+		final HttpRequest httpRequest = utils.criarRequest(Utils.URL_PESSOA_MEDIDAS, dto);
+		
+		Gdx.net.sendHttpRequest(httpRequest, new HttpResponseListener() {
+			
+			@Override
+			public void handleHttpResponse(HttpResponse httpResponse) {
+				
+				final MedidaDTOResponse resp = 
+						utils.fromJson(MedidaDTOResponse.class, httpResponse.getResultAsString());
+				
+				if (resp.isSucesso()){
+					
+					final MedidaDTO dto = resp.getMedidaDTO();
+					
+					if (dto != null){
+						
+						CadastroPessoaScreen.this.maPesoCorporal.setText(dto.getMaPesoCorporal());
+						CadastroPessoaScreen.this.maAltura.setText(dto.getMaAltura());
+						CadastroPessoaScreen.this.maPesoMagro.setText(dto.getMaPesoMagro());
+						CadastroPessoaScreen.this.maPesoGordura.setText(dto.getMaPesoGordura());
+						CadastroPessoaScreen.this.maPorcentagemPG.setText(dto.getMaPorcentagemPG());
+						CadastroPessoaScreen.this.maImc.setText(dto.getMaImc());
+						CadastroPessoaScreen.this.maCintura.setText(dto.getMaCintura());
+						CadastroPessoaScreen.this.maQuadril.setText(dto.getMaQuadril());
+						CadastroPessoaScreen.this.maPmrc.setText(dto.getMaPmrc());
+						
+						CadastroPessoaScreen.this.mcTorax.setText(dto.getMcTorax());
+						CadastroPessoaScreen.this.mcAbdomen.setText(dto.getMcAbdomen());
+						CadastroPessoaScreen.this.mcCintura.setText(dto.getMcCintura());
+						CadastroPessoaScreen.this.mcBiceps.setText(dto.getMcBiceps());
+						CadastroPessoaScreen.this.mcTriceps.setText(dto.getMcTriceps());
+						CadastroPessoaScreen.this.mcCoxa.setText(dto.getMcCoxa());
+						CadastroPessoaScreen.this.mcAntebraco.setText(dto.getMcAntebraco());
+						
+						CadastroPessoaScreen.this.dcBiceps.setText(dto.getDcBiceps());
+						CadastroPessoaScreen.this.dcTriceps.setText(dto.getDcTriceps());
+						CadastroPessoaScreen.this.dcSubAxilar.setText(dto.getDcSubAxilar());
+						CadastroPessoaScreen.this.dcSupraIliacas.setText(dto.getDcSupraIliacas());
+						CadastroPessoaScreen.this.dcSubEscapular.setText(dto.getDcSubEscapular());
+						CadastroPessoaScreen.this.dcToraxica.setText(dto.getDcToraxica());
+						CadastroPessoaScreen.this.dcAbdominal.setText(dto.getDcAbdominal());
+						CadastroPessoaScreen.this.dcCoxa.setText(dto.getDcCoxa());
+						CadastroPessoaScreen.this.dcPerna.setText(dto.getDcPerna());
+					}
+					
+					//TODO carregar datas ref
+					
+				} else {
+					
+					utils.mostarAlerta("Atenção:", resp.getMsg(), stage, skin);
+				}
+			}
+			
+			@Override
+			public void failed(Throwable t) {
+				
+				utils.mostarAlerta("Erro:", "Erro ao tentar carregar medidas: " + t.getMessage() , stage, skin);
+			}
+			
+			@Override
+			public void cancelled() {
+				
+				utils.mostarAlerta(null, "Solicitação ao servidor cancelada.", stage, skin);
+			}
+		});
+	}
+
+	private void salvarMedidas() {
+		
+		//cant happen no mater what, but...
+		if (this.pessoaEdicaoId == null){
+			
+			utils.mostarAlerta("Atenção", "Dados insuficientes, salve ou pesquise um cliente cadastrado.", stage, skin);
+			
+			return;
+		}
+		
+		final MedidaDTO medidaDTO = new MedidaDTO();
+		medidaDTO.setIdPessoa(this.pessoaEdicaoId.toString());
+		medidaDTO.setDataReferente(this.dataReferenteMedida.getSelected());
+		
+		medidaDTO.setMaPesoCorporal(this.maPesoCorporal.getText().replace(",", "."));
+		medidaDTO.setMaAltura(this.maAltura.getText().replace(",", "."));
+		medidaDTO.setMaPesoMagro(this.maPesoMagro.getText().replace(",", "."));
+		medidaDTO.setMaPesoGordura(this.maPesoGordura.getText().replace(",", "."));
+		medidaDTO.setMaPorcentagemPG(this.maPorcentagemPG.getText().replace(",", "."));
+		medidaDTO.setMaImc(this.maImc.getText().replace(",", "."));
+		medidaDTO.setMaCintura(this.maCintura.getText().replace(",", "."));
+		medidaDTO.setMaQuadril(this.maQuadril.getText().replace(",", "."));
+		medidaDTO.setMaPmrc(this.maPmrc.getText().replace(",", "."));
+		
+		medidaDTO.setMcTorax(this.mcTorax.getText().replace(",", "."));
+		medidaDTO.setMcAbdomen(this.mcAbdomen.getText().replace(",", "."));
+		medidaDTO.setMcCintura(this.mcCintura.getText().replace(",", "."));
+		medidaDTO.setMcBiceps(this.mcBiceps.getText().replace(",", "."));
+		medidaDTO.setMcTriceps(this.mcTriceps.getText().replace(",", "."));
+		medidaDTO.setMcCoxa(this.mcCoxa.getText().replace(",", "."));
+		medidaDTO.setMcAntebraco(this.mcAntebraco.getText().replace(",", "."));
+		
+		medidaDTO.setDcBiceps(this.dcBiceps.getText().replace(",", "."));
+		medidaDTO.setDcTriceps(this.dcTriceps.getText().replace(",", "."));
+		medidaDTO.setDcSubAxilar(this.dcSubAxilar.getText().replace(",", "."));
+		medidaDTO.setDcSupraIliacas(this.dcSupraIliacas.getText().replace(",", "."));
+		medidaDTO.setDcSubEscapular(this.dcSubEscapular.getText().replace(",", "."));
+		medidaDTO.setDcToraxica(this.dcToraxica.getText().replace(",", "."));
+		medidaDTO.setDcAbdominal(this.dcAbdominal.getText().replace(",", "."));
+		medidaDTO.setDcCoxa(this.dcCoxa.getText().replace(",", "."));
+		medidaDTO.setDcPerna(this.dcPerna.getText().replace(",", "."));
+		
+		final HttpRequest httpRequest = utils.criarRequest(Utils.URL_PESSOA_MEDIDAS_SALVAR, medidaDTO);
+		
+		Gdx.net.sendHttpRequest(httpRequest, new HttpResponseListener() {
+			
+			@Override
+			public void handleHttpResponse(HttpResponse httpResponse) {
+				
+				final GAResponse resp = utils.fromJson(GAResponse.class, httpResponse.getResultAsString());
+				
+				if (resp.isSucesso()){
+					
+					utils.mostarAlerta(
+							null, 
+							"Medidas da data " + CadastroPessoaScreen.this.dataReferenteMedida.getSelected() + "salvas com sucesso.", stage, skin);
+					
+				} else {
+					
+					utils.mostarAlerta("Atenção:", resp.getMsg(), stage, skin);
+				}
+			}
+			
+			@Override
+			public void failed(Throwable t) {
+				
+				utils.mostarAlerta("Erro:", "Erro ao tentar salvar medidas: " + t.getMessage() , stage, skin);
+			}
+			
+			@Override
+			public void cancelled() {
+				
+				utils.mostarAlerta(null, "Solicitação ao servidor cancelada.", stage, skin);
+			}
+		});
 	}
 }

@@ -22,6 +22,22 @@ public class HistoriaPatologicaDTO implements GARequest {
 	
 	private boolean hipertensao;
 	
+	public HistoriaPatologicaDTO() {}
+	
+	public HistoriaPatologicaDTO(String cirurgias, String sintomasDoencas,
+			String medicamentos, String lesoes, String alergias, String outros,
+			Boolean cardiopatia, Boolean hipertensao) {
+		
+		this.cirurgias = cirurgias;
+		this.sintomasDoencas = sintomasDoencas;
+		this.medicamentos = medicamentos;
+		this.lesoes = lesoes;
+		this.alergias = alergias;
+		this.outros = outros;
+		this.cardiopatia = cardiopatia == null ? false : cardiopatia;
+		this.hipertensao = hipertensao == null ? false : hipertensao;
+	}
+
 	@Override
 	public String toJson() {
 		

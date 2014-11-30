@@ -25,6 +25,23 @@ public class ObjetivoDTO implements GARequest {
 	
 	private boolean emagrecimento;
 	
+	public ObjetivoDTO() {}
+	
+	public ObjetivoDTO(Boolean estetica, Boolean lazer, Boolean saude, Boolean terapeutico, 
+			Boolean condFisico, Boolean prepFisica, Boolean autoRend, Boolean hipertrofia,
+			Boolean emagrecimento) {
+		
+		this.estetica = estetica == null ? false : estetica;
+		this.lazer = lazer == null ? false : lazer;
+		this.saude = saude == null ? false : saude;
+		this.terapeutico = terapeutico == null ? false : terapeutico;
+		this.condFisico = condFisico == null ? false : condFisico;
+		this.prepFisica = prepFisica == null ? false : prepFisica;
+		this.autoRend = autoRend == null ? false : autoRend;
+		this.hipertrofia = hipertrofia == null ? false : hipertrofia;
+		this.emagrecimento = emagrecimento == null ? false : emagrecimento;
+	}
+	
 	@Override
 	public String toJson() {
 		
@@ -33,15 +50,15 @@ public class ObjetivoDTO implements GARequest {
 		final StringBuilder json = new StringBuilder("{");
 		
 		utils.addStringToJson(json, "idPessoa", idPessoa);
-		utils.addStringToJson(json, "estetica", String.valueOf(estetica));
-		utils.addStringToJson(json, "lazer", String.valueOf(lazer));
-		utils.addStringToJson(json, "saude", String.valueOf(saude));
-		utils.addStringToJson(json, "terapeutico", String.valueOf(terapeutico));
-		utils.addStringToJson(json, "condFisico", String.valueOf(condFisico));
-		utils.addStringToJson(json, "prepFisica", String.valueOf(prepFisica));
-		utils.addStringToJson(json, "autoRend", String.valueOf(autoRend));
-		utils.addStringToJson(json, "hipertrofia", String.valueOf(hipertrofia));
-		utils.addStringToJson(json, "emagrecimento", String.valueOf(emagrecimento));
+		utils.addBooleanToJson(json, "estetica", estetica);
+		utils.addBooleanToJson(json, "lazer", lazer);
+		utils.addBooleanToJson(json, "saude", saude);
+		utils.addBooleanToJson(json, "terapeutico", terapeutico);
+		utils.addBooleanToJson(json, "condFisico", condFisico);
+		utils.addBooleanToJson(json, "prepFisica", prepFisica);
+		utils.addBooleanToJson(json, "autoRend", autoRend);
+		utils.addBooleanToJson(json, "hipertrofia", hipertrofia);
+		utils.addBooleanToJson(json, "emagrecimento", emagrecimento);
 		
 		json.append("}");
 		
