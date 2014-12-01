@@ -542,10 +542,7 @@ public class PessoaService extends Service{
 		}
 		
 		query = em.createQuery("select concat(day(m.dataReferente), '/', month(m.dataReferente), '/', year(m.dataReferente)) " +
-				" from Medida m join m.pessoa p where p.id = :id " +
-				" union " +
-				" select concat(day(current_date()), '/', month(current_date()), '/', year(current_date())) " +
-				" order by 1 ");
+				" from Medida m join m.pessoa p where p.id = :id ");
 		
 		query.setParameter("id", idPessoa);
 		
