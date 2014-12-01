@@ -18,7 +18,7 @@ public class HabitosDTO implements GARequest {
 	
 	public HabitosDTO(Dieta dieta, String praticaAtivFisica, 
 			Integer diaUltimoExame, Integer mesUltimoExame, Integer anoUltimoExame, 
-			String periodExameMedico) {
+			Integer periodExameMedico) {
 		
 		this.dieta = dieta;
 		this.praticaAtivFisica = praticaAtivFisica;
@@ -28,7 +28,7 @@ public class HabitosDTO implements GARequest {
 			this.dataUltimoExameMedico = diaUltimoExame + "/" + mesUltimoExame + "/" + anoUltimoExame;
 		}
 		
-		this.periodExameMedico = periodExameMedico;
+		this.periodExameMedico = periodExameMedico == null ? null : periodExameMedico.toString();
 	}
 
 	@Override

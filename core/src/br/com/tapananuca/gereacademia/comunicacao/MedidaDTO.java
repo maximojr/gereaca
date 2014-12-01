@@ -1,7 +1,5 @@
 package br.com.tapananuca.gereacademia.comunicacao;
 
-import java.math.BigDecimal;
-
 import br.com.tapananuca.gereacademia.Utils;
 
 
@@ -41,14 +39,14 @@ public class MedidaDTO implements GARequest {
 	
 	public MedidaDTO() {}
 	
-	public MedidaDTO(BigDecimal maPesoCorporal, BigDecimal maAltura,
-			BigDecimal maPesoMagro, BigDecimal maPesoGordura, BigDecimal maPorcentagemPG,
-			BigDecimal maImc, BigDecimal maCintura, BigDecimal maQuadril, BigDecimal maPmrc,
-			BigDecimal mcTorax, BigDecimal mcAbdomen, BigDecimal mcCintura,
-			BigDecimal mcBiceps, BigDecimal mcTriceps, BigDecimal mcCoxa,
-			BigDecimal mcAntebraco, BigDecimal dcBiceps, BigDecimal dcTriceps,
-			BigDecimal dcSubAxilar, BigDecimal dcSupraIliacas, BigDecimal dcSubEscapular,
-			BigDecimal dcToraxica, BigDecimal dcAbdominal, BigDecimal dcCoxa, BigDecimal dcPerna) {
+	public MedidaDTO(Float maPesoCorporal, Float maAltura,
+			Float maPesoMagro, Float maPesoGordura, Float maPorcentagemPG,
+			Float maImc, Float maCintura, Float maQuadril, Float maPmrc,
+			Float mcTorax, Float mcAbdomen, Float mcCintura,
+			Float mcBiceps, Float mcTriceps, Float mcCoxa,
+			Float mcAntebraco, Float dcBiceps, Float dcTriceps,
+			Float dcSubAxilar, Float dcSupraIliacas, Float dcSubEscapular,
+			Float dcToraxica, Float dcAbdominal, Float dcCoxa, Float dcPerna) {
 		
 		this.maPesoCorporal = this.nullOrString(maPesoCorporal);
 		this.maAltura = this.nullOrString(maAltura);
@@ -77,7 +75,7 @@ public class MedidaDTO implements GARequest {
 		this.dcPerna = this.nullOrString(dcPerna);
 	}
 	
-	private String nullOrString(BigDecimal valor){
+	private String nullOrString(Float valor){
 		
 		return valor == null ? null : String.valueOf(valor);
 	}

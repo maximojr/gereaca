@@ -307,6 +307,16 @@ public class Utils {
 		json.append("]");
 	}
 	
+	public String emptyOrString(Object object){
+		
+		if (object == null){
+			
+			return "";
+		}
+		
+		return object.toString();
+	}
+	
 	public final TextFieldFilter currencyFilter = new TextFieldFilter() {
 		
 		@Override

@@ -511,6 +511,7 @@ public class PessoaService extends Service{
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public MedidaDTOResponse buscarMedidas(Long idPessoa, Date dataRef) {
 		
 		final MedidaDTOResponse resp = new MedidaDTOResponse();
@@ -523,7 +524,7 @@ public class PessoaService extends Service{
 		
 		final EntityManager em = new Conexao().getEntityManager();
 		
-		final Query query = em.createQuery("select new " +
+		Query query = em.createQuery("select new " +
 				MedidaDTO.class.getCanonicalName() +
 				"(m.maPesoCorporal, m.maAltura, m.maPesoMagro, m.maPesoGordura, m.maPorcentagemPG, " +
 				" m.maImc, m.maCintura, m.maQuadril, m.maPmrc, m.mcTorax, m.mcAbdomen, m.mcCintura, " +
@@ -540,7 +541,28 @@ public class PessoaService extends Service{
 			
 		}
 		
-		//TODO buscar datas ref
+		query = em.createQuery("select concat(day(m.dataReferente), '/', month(m.dataReferente), '/', year(m.dataReferente)) " +
+				" from Medida m join m.pessoa p where p.id = :id " +
+				" union " +
+				" select concat(day(current_date()), '/', month(current_date()), '/', year(current_date())) " +
+				" order by 1 ");
+		
+		query.setParameter("id", idPessoa);
+		
+		final Array<String> dts = this.getArrayFromList(query.getResultList());
+		
+		final Calendar calendar = Calendar.getInstance();
+		calendar.setTime(dataRef);
+		
+		final String dtStr = 
+				calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.MONTH + 1) + "/" + calendar.get(Calendar.YEAR);
+		
+		if (!dts.contains(dtStr, false)){
+			
+			dts.add(dtStr);
+		}
+		
+		resp.setDatasRef(dts);
 		
 		return resp;
 	}

@@ -22,6 +22,7 @@ public class MedidaDTOResponse extends GAResponse {
 		}
 		
 		utils.addCollectionToJson(json, "datasRef", datasRef);
+		json.append(",");
 		
 		json.append(super.toJson().replace("{", "").replace("}", ""));
 		

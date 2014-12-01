@@ -794,12 +794,12 @@ public class CadastroPessoaScreen extends Tela {
 					
 					if (dto != null){
 						
-						CadastroPessoaScreen.this.cirurgias.setText(dto.getCirurgias());
-						CadastroPessoaScreen.this.sintomasDoencas.setText(dto.getSintomasDoencas());
-						CadastroPessoaScreen.this.medicamentos.setText(dto.getMedicamentos());
-						CadastroPessoaScreen.this.lesoes.setText(dto.getLesoes());
-						CadastroPessoaScreen.this.alergias.setText(dto.getAlergias());
-						CadastroPessoaScreen.this.outros.setText(dto.getOutros());
+						CadastroPessoaScreen.this.cirurgias.setText(utils.emptyOrString(dto.getCirurgias()));
+						CadastroPessoaScreen.this.sintomasDoencas.setText(utils.emptyOrString(dto.getSintomasDoencas()));
+						CadastroPessoaScreen.this.medicamentos.setText(utils.emptyOrString(dto.getMedicamentos()));
+						CadastroPessoaScreen.this.lesoes.setText(utils.emptyOrString(dto.getLesoes()));
+						CadastroPessoaScreen.this.alergias.setText(utils.emptyOrString(dto.getAlergias()));
+						CadastroPessoaScreen.this.outros.setText(utils.emptyOrString(dto.getOutros()));
 						
 						CadastroPessoaScreen.this.cardiopatia.setChecked(dto.isCardiopatia());
 						CadastroPessoaScreen.this.hipertensao.setChecked(dto.isHipertensao());
@@ -981,9 +981,9 @@ public class CadastroPessoaScreen extends Tela {
 					
 					if (dto != null){
 						
-						CadastroPessoaScreen.this.dieta.setSelected(dto.getDieta().getDescricao());
-						CadastroPessoaScreen.this.atividadeFisica.setText(dto.getPraticaAtivFisica());
-						CadastroPessoaScreen.this.ultimoExame.setText(dto.getDataUltimoExameMedico());
+						CadastroPessoaScreen.this.dieta.setSelected(utils.emptyOrString(dto.getDieta().getDescricao()));
+						CadastroPessoaScreen.this.atividadeFisica.setText(utils.emptyOrString(dto.getPraticaAtivFisica()));
+						CadastroPessoaScreen.this.ultimoExame.setText(utils.emptyOrString(dto.getDataUltimoExameMedico()));
 						
 						if (dto.getPeriodExameMedico() != null){
 							
@@ -1019,7 +1019,7 @@ public class CadastroPessoaScreen extends Tela {
 			@Override
 			public void failed(Throwable t) {
 				
-				utils.mostarAlerta("Erro:", "Erro ao tentar carregar história patológica: " + t.getMessage() , stage, skin);
+				utils.mostarAlerta("Erro:", "Erro ao tentar carregar hábitos: " + t.getMessage() , stage, skin);
 			}
 			
 			@Override
@@ -1282,7 +1282,10 @@ public class CadastroPessoaScreen extends Tela {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				
-				CadastroPessoaScreen.this.carregarMedidas();
+				if (botaoTabMedidas.isChecked()){
+					
+					CadastroPessoaScreen.this.carregarMedidas();
+				}
 			}
 		});
 		
@@ -1319,36 +1322,51 @@ public class CadastroPessoaScreen extends Tela {
 					
 					if (dto != null){
 						
-						CadastroPessoaScreen.this.maPesoCorporal.setText(dto.getMaPesoCorporal());
-						CadastroPessoaScreen.this.maAltura.setText(dto.getMaAltura());
-						CadastroPessoaScreen.this.maPesoMagro.setText(dto.getMaPesoMagro());
-						CadastroPessoaScreen.this.maPesoGordura.setText(dto.getMaPesoGordura());
-						CadastroPessoaScreen.this.maPorcentagemPG.setText(dto.getMaPorcentagemPG());
-						CadastroPessoaScreen.this.maImc.setText(dto.getMaImc());
-						CadastroPessoaScreen.this.maCintura.setText(dto.getMaCintura());
-						CadastroPessoaScreen.this.maQuadril.setText(dto.getMaQuadril());
-						CadastroPessoaScreen.this.maPmrc.setText(dto.getMaPmrc());
+						CadastroPessoaScreen.this.maPesoCorporal.setText(utils.emptyOrString(dto.getMaPesoCorporal()));
+						CadastroPessoaScreen.this.maAltura.setText(utils.emptyOrString(dto.getMaAltura()));
+						CadastroPessoaScreen.this.maPesoMagro.setText(utils.emptyOrString(dto.getMaPesoMagro()));
+						CadastroPessoaScreen.this.maPesoGordura.setText(utils.emptyOrString(dto.getMaPesoGordura()));
+						CadastroPessoaScreen.this.maPorcentagemPG.setText(utils.emptyOrString(dto.getMaPorcentagemPG()));
+						CadastroPessoaScreen.this.maImc.setText(utils.emptyOrString(dto.getMaImc()));
+						CadastroPessoaScreen.this.maCintura.setText(utils.emptyOrString(dto.getMaCintura()));
+						CadastroPessoaScreen.this.maQuadril.setText(utils.emptyOrString(dto.getMaQuadril()));
+						CadastroPessoaScreen.this.maPmrc.setText(utils.emptyOrString(dto.getMaPmrc()));
 						
-						CadastroPessoaScreen.this.mcTorax.setText(dto.getMcTorax());
-						CadastroPessoaScreen.this.mcAbdomen.setText(dto.getMcAbdomen());
-						CadastroPessoaScreen.this.mcCintura.setText(dto.getMcCintura());
-						CadastroPessoaScreen.this.mcBiceps.setText(dto.getMcBiceps());
-						CadastroPessoaScreen.this.mcTriceps.setText(dto.getMcTriceps());
-						CadastroPessoaScreen.this.mcCoxa.setText(dto.getMcCoxa());
-						CadastroPessoaScreen.this.mcAntebraco.setText(dto.getMcAntebraco());
+						CadastroPessoaScreen.this.mcTorax.setText(utils.emptyOrString(dto.getMcTorax()));
+						CadastroPessoaScreen.this.mcAbdomen.setText(utils.emptyOrString(dto.getMcAbdomen()));
+						CadastroPessoaScreen.this.mcCintura.setText(utils.emptyOrString(dto.getMcCintura()));
+						CadastroPessoaScreen.this.mcBiceps.setText(utils.emptyOrString(dto.getMcBiceps()));
+						CadastroPessoaScreen.this.mcTriceps.setText(utils.emptyOrString(dto.getMcTriceps()));
+						CadastroPessoaScreen.this.mcCoxa.setText(utils.emptyOrString(dto.getMcCoxa()));
+						CadastroPessoaScreen.this.mcAntebraco.setText(utils.emptyOrString(dto.getMcAntebraco()));
 						
-						CadastroPessoaScreen.this.dcBiceps.setText(dto.getDcBiceps());
-						CadastroPessoaScreen.this.dcTriceps.setText(dto.getDcTriceps());
-						CadastroPessoaScreen.this.dcSubAxilar.setText(dto.getDcSubAxilar());
-						CadastroPessoaScreen.this.dcSupraIliacas.setText(dto.getDcSupraIliacas());
-						CadastroPessoaScreen.this.dcSubEscapular.setText(dto.getDcSubEscapular());
-						CadastroPessoaScreen.this.dcToraxica.setText(dto.getDcToraxica());
-						CadastroPessoaScreen.this.dcAbdominal.setText(dto.getDcAbdominal());
-						CadastroPessoaScreen.this.dcCoxa.setText(dto.getDcCoxa());
-						CadastroPessoaScreen.this.dcPerna.setText(dto.getDcPerna());
+						CadastroPessoaScreen.this.dcBiceps.setText(utils.emptyOrString(dto.getDcBiceps()));
+						CadastroPessoaScreen.this.dcTriceps.setText(utils.emptyOrString(dto.getDcTriceps()));
+						CadastroPessoaScreen.this.dcSubAxilar.setText(utils.emptyOrString(dto.getDcSubAxilar()));
+						CadastroPessoaScreen.this.dcSupraIliacas.setText(utils.emptyOrString(dto.getDcSupraIliacas()));
+						CadastroPessoaScreen.this.dcSubEscapular.setText(utils.emptyOrString(dto.getDcSubEscapular()));
+						CadastroPessoaScreen.this.dcToraxica.setText(utils.emptyOrString(dto.getDcToraxica()));
+						CadastroPessoaScreen.this.dcAbdominal.setText(utils.emptyOrString(dto.getDcAbdominal()));
+						CadastroPessoaScreen.this.dcCoxa.setText(utils.emptyOrString(dto.getDcCoxa()));
+						CadastroPessoaScreen.this.dcPerna.setText(utils.emptyOrString(dto.getDcPerna()));
 					}
 					
-					//TODO carregar datas ref
+					final String ultimaSelecao = CadastroPessoaScreen.this.dataReferenteMedida.getSelected();
+					
+					CadastroPessoaScreen.this.dataReferenteMedida.removeListener(dataRefChangeListener);
+					CadastroPessoaScreen.this.dataReferenteMedida.clearItems();
+					
+					final String[] es = new String[resp.getDatasRef().size];
+					
+					int index = 0;
+					for (String e : resp.getDatasRef()){
+						es[index] = e;
+						index++;
+					}
+					
+					CadastroPessoaScreen.this.dataReferenteMedida.setItems(es);
+					CadastroPessoaScreen.this.dataReferenteMedida.setSelected(ultimaSelecao);
+					CadastroPessoaScreen.this.dataReferenteMedida.addListener(dataRefChangeListener);
 					
 				} else {
 					
