@@ -11,15 +11,20 @@ import br.com.tapananuca.gereacademia.comunicacao.JsonSerializer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.Net.HttpRequest;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.Net.HttpResponse;
+import com.badlogic.gdx.Net.HttpResponseListener;
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldFilter;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
@@ -33,8 +38,6 @@ public class Utils {
 	
 	public static final String URL_LOGIN = "/login";
 	public static final String URL_PESSOA = "/pessoa";
-	public static final String URL_PESSOA_A_RECEBER = URL_PESSOA + "/receber";
-	public static final String URL_PESSOA_PAGAR = URL_PESSOA + "/pagar";
 	public static final String URL_PESSOA_ANIVERSARIOS = URL_PESSOA + "/aniversarios";
 	public static final String URL_PESSOA_DADOS_NOMES = URL_PESSOA + "/nomes";
 	public static final String URL_PESSOA_DADOS_BASICOS = URL_PESSOA + "/basicos";
@@ -47,6 +50,10 @@ public class Utils {
 	public static final String URL_PESSOA_HABITO_SALVAR = URL_PESSOA_HABITOS + "/salvar";
 	public static final String URL_PESSOA_MEDIDAS = URL_PESSOA + "/medida";
 	public static final String URL_PESSOA_MEDIDAS_SALVAR = URL_PESSOA_MEDIDAS + "/salvar";
+	
+	public static final String URL_PAGAMENTOS = "/pagamentos";
+	public static final String URL_A_RECEBER = URL_PAGAMENTOS + "/receber";
+	public static final String URL_PAGAR = URL_PAGAMENTOS + "/pagar";
 	
 	private final Json json;
 	
@@ -101,7 +108,7 @@ public class Utils {
 	}
 	
 	public <T> T fromJson(Class<T> clazz, String jsonString){
-		return json.fromJson(clazz, jsonString);
+		return json.fromJson(clazz, jsonString.replace("\n", "<br>"));
 	}
 	
 	public String toJson(JsonSerializer jsonSerializer){
@@ -117,12 +124,51 @@ public class Utils {
         request.setHeader("Accept", "application/json");
         
         if (sessionId != null){
-        	request.setHeader("JSESSIONID", utils.sessionId);
+        	request.setHeader("Cookie", "JSESSIONID=" + utils.sessionId);
         }
         
 		request.setContent(utils.toJson(parametros));
 		
 		return request;
+	}
+	
+	public void enviarRequest(final HttpRequest request, final Stage stage, 
+			final Skin skin, final HttpResponseListener callback){
+		
+		final Window telaBloqueio = new Window("", skin);
+		telaBloqueio.setHeight(Gdx.graphics.getHeight());
+		telaBloqueio.setWidth(Gdx.graphics.getWidth());
+		telaBloqueio.setColor(telaBloqueio.getColor().r, telaBloqueio.getColor().g, telaBloqueio.getColor().b, 0.7f);
+		telaBloqueio.add("Aguarde...").center();
+		stage.addActor(telaBloqueio);
+		
+		Gdx.net.sendHttpRequest(request, new HttpResponseListener() {
+			
+			@Override
+			public void handleHttpResponse(HttpResponse httpResponse) {
+				
+				
+				telaBloqueio.addAction(Actions.sequence(Actions.fadeOut(0.4f, Interpolation.fade), Actions.removeActor()));
+				
+				callback.handleHttpResponse(httpResponse);
+			}
+			
+			@Override
+			public void failed(Throwable t) {
+				
+				telaBloqueio.addAction(Actions.sequence(Actions.fadeOut(0.4f, Interpolation.fade), Actions.removeActor()));
+				
+				callback.failed(t);
+			}
+			
+			@Override
+			public void cancelled() {
+				
+				telaBloqueio.addAction(Actions.sequence(Actions.fadeOut(0.4f, Interpolation.fade), Actions.removeActor()));
+				
+				callback.cancelled();
+			}
+		});
 	}
 
 	public void setSessionId(String sessionId) {
@@ -175,27 +221,29 @@ public class Utils {
 	public void mostarAlerta(String titulo, String msg, Stage stage, Skin skin){
 		
 		final Window window = new Window(titulo == null ? "--- --- ---" : titulo, skin);
-		window.setWidth(Gdx.graphics.getWidth());
 		
 		final Table table = new Table(skin);
-		final Label label = new Label(msg, skin);
-		label.setWrap(true);
+		final ScrollPane scroll = new ScrollPane(table, skin);
+		table.add(msg);
 		
-		table.add(label).width(Gdx.graphics.getWidth()).height(label.getPrefHeight());
-		
-		window.add(table);
-		window.addListener(new ClickListener(){
-			
+		window.add(scroll).width(300).height(300).row();
+		TextButton ok = new TextButton("Ok", skin);
+		ok.addListener(new ChangeListener(){
+
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				window.remove();
+			public void changed(ChangeEvent event, Actor actor) {
+				
+				window.addAction(Actions.sequence(Actions.fadeOut(0.4f, Interpolation.fade), Actions.removeActor()));
 			}
 		});
-		//window.pack();
-		window.setHeight(window.getPrefHeight());
+		window.add(ok);
+		
+		window.pack();
+		window.setWidth(Gdx.graphics.getWidth());
+		
 		window.setPosition(
-				(Gdx.graphics.getWidth() / 2) - (window.getWidth() / 2) ,
-				(Gdx.graphics.getHeight() / 2) - (window.getHeight() / 2));
+				(int)((Gdx.graphics.getWidth() / 2) - (window.getWidth() / 2)) ,
+				(int)((Gdx.graphics.getHeight() / 2) - (window.getHeight() / 2)));
 		
 		stage.addActor(window);
 	}

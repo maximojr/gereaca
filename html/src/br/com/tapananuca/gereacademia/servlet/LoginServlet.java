@@ -41,22 +41,30 @@ public class LoginServlet extends HttpServlet{
 		
 		final LoginDTO loginDTO = utilsInstace.fromJson(LoginDTO.class, req.getReader().readLine());
 		
-		final UsuarioService usuarioService = new UsuarioService();
-		final Usuario usuario = usuarioService.login(loginDTO);
-		
 		final GAResponse ga = new GAResponse();
 		
-		if (usuario != null){
-
-			final HttpSession session = req.getSession();
-			session.setAttribute(LoginServlet.PARAM_LOGED_USER, usuario);
+		if (loginDTO == null || loginDTO.getSenha() == null || loginDTO.getUsuario() == null){
 			
-			ga.setSessionId(session.getId());
-			ga.setMsg("Teste login: user: " + req.getParameter("user") + ", pass: " + req.getParameter("password"));
+			req.getSession().invalidate();
+			
 		} else {
+		
+			final UsuarioService usuarioService = new UsuarioService();
+			final Usuario usuario = usuarioService.login(loginDTO);
 			
-			ga.setSucesso(false);
-			ga.setMsg("Usuário e/ou senha incorreto(s)");
+			if (usuario != null){
+	
+				final HttpSession session = req.getSession();
+				session.setAttribute(LoginServlet.PARAM_LOGED_USER, usuario);
+				
+				ga.setSessionId(session.getId());
+				ga.setMsg("Teste login: user: " + req.getParameter("user") + ", pass: " + req.getParameter("password"));
+			} else {
+				
+				ga.setSucesso(false);
+				ga.setMsg("Usuário e/ou senha incorreto(s)");
+			}
+		
 		}
 		
 		final OutputStream out = resp.getOutputStream();

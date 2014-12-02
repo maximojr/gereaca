@@ -8,6 +8,10 @@ import br.com.tapananuca.gereacademia.GereAcademia;
 import br.com.tapananuca.gereacademia.Utils;
 import br.com.tapananuca.gereacademia.comunicacao.AReceberDTO;
 import br.com.tapananuca.gereacademia.comunicacao.AReceberPaginaDTO;
+import br.com.tapananuca.gereacademia.comunicacao.Baixa;
+import br.com.tapananuca.gereacademia.comunicacao.DadosBaixa;
+import br.com.tapananuca.gereacademia.comunicacao.GAResponse;
+import br.com.tapananuca.gereacademia.comunicacao.LoginDTO;
 import br.com.tapananuca.gereacademia.comunicacao.MesUtil;
 
 import com.badlogic.gdx.Gdx;
@@ -26,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -43,7 +48,7 @@ public class MenuPrincipalScreen extends Tela {
 	private final SelectBox<String> datasRefPagamento;
 	private final SelectBox<String> datasRefAniversario;
 	
-	private List<DataHolder> dados;
+	private List<DataHolder> dataHolderBaixa;
 	
 	private final ChangeListener dataRefPgto, dataRefAnin;
 	
@@ -57,7 +62,7 @@ public class MenuPrincipalScreen extends Tela {
 		
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		
-		dados = new ArrayList<MenuPrincipalScreen.DataHolder>();
+		dataHolderBaixa = new ArrayList<MenuPrincipalScreen.DataHolder>();
 		
 		utils = Utils.getInstance();
 		
@@ -85,7 +90,10 @@ public class MenuPrincipalScreen extends Tela {
 		tablePrincipal.setSkin(skin);
 		tablePrincipal.setFillParent(true);
 		tablePrincipal.top();
+		tablePrincipal.padTop(10);
 		
+		final Table tableBotoes = new Table(skin);
+		//tableBotoes.debugAll();
 		final TextButton cadastrarPessoaButton = new TextButton("Cadastrar Pessoa", skin);
 		cadastrarPessoaButton.addListener(new ChangeListener(){
 
@@ -98,13 +106,67 @@ public class MenuPrincipalScreen extends Tela {
 			}
 		});
 		
-		tablePrincipal.add(cadastrarPessoaButton).colspan(3).row().padTop(50);
+		tableBotoes.add(cadastrarPessoaButton);
+		
+		final TextButton logOut = new TextButton("Sair", skin);
+		logOut.addListener(new ChangeListener(){
+
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				
+				final HttpRequest httpRequest = utils.criarRequest(Utils.URL_LOGIN, new LoginDTO());
+				
+				utils.enviarRequest(httpRequest, stage, skin, new HttpResponseListener() {
+					
+					@Override
+					public void handleHttpResponse(HttpResponse httpResponse) {
+						
+						final GAResponse ga = utils.fromJson(GAResponse.class, httpResponse.getResultAsString());
+						
+						if (ga != null && ga.isSucesso()){
+							
+							Gdx.app.postRunnable(new Runnable() {
+								
+								@Override
+								public void run() {
+							
+									utils.setSessionId(null);
+									final GereAcademia ger = MenuPrincipalScreen.this.applicationListener;
+									final LoginScreen loginScreen = new LoginScreen(ger);
+									ger.setTelaAtual(loginScreen);
+								}
+							});
+							
+						} else {
+							
+							utils.mostarAlerta("Erro", "Erro ao tentar logout O.o", stage, skin);
+						}
+					}
+					
+					@Override
+					public void failed(Throwable t) {
+						
+						utils.mostarAlerta("Erro ao tentar logout O.o", t.getLocalizedMessage(), stage, skin);
+					}
+					
+					@Override
+					public void cancelled() {
+						
+						utils.mostarAlerta("Eeeepa", "requisição de logout cancelada O.o", stage, skin);
+					}
+				});
+			}
+		});
+		
+		tableBotoes.add(logOut).padLeft(5);
+		tableBotoes.align(Align.left);
+		tablePrincipal.add(tableBotoes).fill().row().padTop(50);
 		
 		tablePagamentos = new Table(skin);
 		
 		tablePrincipal.add(tablePagamentos);
 		
-		tablePrincipal.row().padTop(10);
+		tablePrincipal.row().padTop(30);
 		
 		tableAniversarios = new Table(skin);
 		
@@ -160,6 +222,7 @@ public class MenuPrincipalScreen extends Tela {
 	private void carregarPagamentosAReceber(final int pagina, final String dataRef){
 		
 		tablePagamentos.clear();
+		dataHolderBaixa.clear();
 		
 		final Table inTable = new Table(skin);
 		
@@ -168,17 +231,13 @@ public class MenuPrincipalScreen extends Tela {
 		
 		tablePagamentos.add(inTable).colspan(3).row();
 		
-		tablePagamentos.add("Nome").center().width(300);
-		tablePagamentos.add("Valor");
-		tablePagamentos.add("Pago").row();
-		
 		final AReceberDTO dto = new AReceberDTO();
 		dto.setPaginaAtual(String.valueOf(pagina));
 		dto.setDataRef(dataRef);
 		
-		final HttpRequest req = this.utils.criarRequest(Utils.URL_PESSOA_A_RECEBER, dto);
+		final HttpRequest req = this.utils.criarRequest(Utils.URL_A_RECEBER, dto);
 		
-		Gdx.net.sendHttpRequest(req, new HttpResponseListener() {
+		utils.enviarRequest(req, stage, skin, new HttpResponseListener() {
 			
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
@@ -188,6 +247,10 @@ public class MenuPrincipalScreen extends Tela {
 				if (aReceberPaginaDTO.isSucesso()){
 					
 					if (aReceberPaginaDTO.getaReceber() != null && aReceberPaginaDTO.getaReceber().size != 0){
+						
+						tablePagamentos.add("Nome").center().width(300);
+						tablePagamentos.add("Valor");
+						tablePagamentos.add("Pago").row();
 						
 						int index = 0;
 						for (AReceberDTO dto : aReceberPaginaDTO.getaReceber()){
@@ -238,7 +301,7 @@ public class MenuPrincipalScreen extends Tela {
 							
 							tablePagamentos.row();
 							
-							MenuPrincipalScreen.this.dados.add(dh);
+							MenuPrincipalScreen.this.dataHolderBaixa.add(dh);
 							
 							index++;
 						}
@@ -276,13 +339,26 @@ public class MenuPrincipalScreen extends Tela {
 						paginacaoTable.add(proximaPaginaAReceber);
 						
 						tablePagamentos.add(paginacaoTable).left().padTop(10);
-						tablePagamentos.add(new TextButton("Salvar", skin)).colspan(2);
+						
+						final TextButton botaoPagar = new TextButton("Pagar", skin);
+						botaoPagar.addListener(new ChangeListener() {
+							
+							@Override
+							public void changed(ChangeEvent event, Actor actor) {
+								
+								MenuPrincipalScreen.this.efetuarBaixa();
+							}
+						});
+						
+						tablePagamentos.add(botaoPagar).colspan(2);
 						
 						tablePagamentos.row().padTop(50);
 					} else {
 
-						tablePagamentos.add("Todos os pagamentos foram efetuados.");
+						tablePagamentos.add("Todos os pagamentos do mês " + dataRef + " foram efetuados.");
 					}
+					
+					tablePagamentos.validate();
 					
 					datasRefPagamento.removeListener(dataRefPgto);
 					datasRefPagamento.clearItems();
@@ -325,6 +401,63 @@ public class MenuPrincipalScreen extends Tela {
 		});
 	}
 
+	private void efetuarBaixa() {
+		
+		final DadosBaixa dadosBaixa = new DadosBaixa();
+		
+		Baixa baixa = null;
+		for (DataHolder data : this.dataHolderBaixa){
+			
+			if (data.chec.isChecked()){
+				
+				baixa = new Baixa();
+				baixa.setId(data.id);
+				baixa.setValor(data.valor.getText().replace(",", "."));
+				
+				dadosBaixa.getBaixas().add(baixa);
+			}
+		}
+		
+		if (dadosBaixa.getBaixas().size == 0){
+			return;
+		}
+		
+		final HttpRequest httpRequest = utils.criarRequest(Utils.URL_PAGAR, dadosBaixa);
+		
+		utils.enviarRequest(httpRequest, stage, skin, new HttpResponseListener() {
+			
+			@Override
+			public void handleHttpResponse(HttpResponse httpResponse) {
+				
+				final GAResponse ga = utils.fromJson(GAResponse.class, httpResponse.getResultAsString());
+				
+				if (ga != null && ga.isSucesso()){
+					
+					utils.mostarAlerta(null, "Baixa efetuada com sucesso.", stage, skin);
+				} else {
+					
+					utils.mostarAlerta(null, "Erro ao efetuar baixa " + ga != null ? ga.getMsg() : "", stage, skin);
+				}
+				
+				MenuPrincipalScreen.this.carregarPagamentosAReceber(1, datasRefPagamento.getSelected());
+			}
+			
+			@Override
+			public void failed(Throwable t) {
+				
+				utils.mostarAlerta(null, "Erro ao efetuar baixa: " + t.getLocalizedMessage(), stage, skin);
+				MenuPrincipalScreen.this.carregarPagamentosAReceber(1, datasRefPagamento.getSelected());
+			}
+			
+			@Override
+			public void cancelled() {
+				
+				utils.mostarAlerta(null, "Requisição cancelada", stage, skin);
+				MenuPrincipalScreen.this.carregarPagamentosAReceber(1, datasRefPagamento.getSelected());
+			}
+		});
+	}
+
 	private void carregarAniversariantes(final int pagina, final MesUtil dataRef) {
 		
 		tableAniversarios.clear();
@@ -336,16 +469,13 @@ public class MenuPrincipalScreen extends Tela {
 		
 		tableAniversarios.add(inTable).colspan(3).row();
 		
-		tableAniversarios.add("Nome").width(300);
-		tableAniversarios.add("Dia").row().padTop(10);
-		
 		final AReceberDTO dto = new AReceberDTO();
 		dto.setPaginaAtual(String.valueOf(pagina));
 		dto.setDataRef(String.valueOf(dataRef.getCodigo()));
 		
 		final HttpRequest req = this.utils.criarRequest(Utils.URL_PESSOA_ANIVERSARIOS, dto);
 		
-		Gdx.net.sendHttpRequest(req, new HttpResponseListener() {
+		utils.enviarRequest(req, stage, skin, new HttpResponseListener() {
 			
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
@@ -355,6 +485,9 @@ public class MenuPrincipalScreen extends Tela {
 				if (aReceberPaginaDTO.isSucesso()){
 					
 					if (aReceberPaginaDTO.getaReceber() != null && aReceberPaginaDTO.getaReceber().size != 0){
+						
+						tableAniversarios.add("Nome").width(300);
+						tableAniversarios.add("Dia").row().padTop(10);
 						
 						int index = 0;
 						for (AReceberDTO dto : aReceberPaginaDTO.getaReceber()){
@@ -423,6 +556,8 @@ public class MenuPrincipalScreen extends Tela {
 						
 						tableAniversarios.add("Nenhum aniversariante no mês de " + datasRefAniversario.getSelected());
 					}
+					
+					tableAniversarios.validate();
 				} else {
 					
 					utils.mostarAlerta("Atenção", aReceberPaginaDTO.getMsg(), stage, skin);

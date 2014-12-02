@@ -1,5 +1,7 @@
 package br.com.tapananuca.gereacademia.comunicacao;
 
+import br.com.tapananuca.gereacademia.Utils;
+
 public class LoginDTO implements GARequest{
 
 	private String usuario, senha;
@@ -23,15 +25,14 @@ public class LoginDTO implements GARequest{
 	@Override
 	public String toJson() {
 		
+		final Utils utils = Utils.getInstance();
+		
 		final StringBuilder json = new StringBuilder("{");
-		json.append("\"usuario\"")
-		    .append(":")
-		    .append(usuario)
-		    .append(",")
-		    .append("\"senha\"")
-		    .append(":")
-		    .append(senha)
-		    .append("}");
+		
+		utils.addStringToJson(json, "usuario", usuario);
+		utils.addStringToJson(json, "senha", senha);
+		
+		json.append("}");
 		
 		return json.toString();
 	}

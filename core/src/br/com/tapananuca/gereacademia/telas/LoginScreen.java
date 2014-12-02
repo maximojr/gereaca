@@ -64,7 +64,7 @@ public class LoginScreen extends Tela {
 				
 				final HttpRequest request = utilsInstance.criarRequest(Utils.URL_LOGIN, loginDTO);
 				
-				Gdx.net.sendHttpRequest(request, new HttpResponseListener() {
+				utilsInstance.enviarRequest(request, stage, skin, new HttpResponseListener() {
 					
 					@Override
 					public void handleHttpResponse(HttpResponse httpResponse) {

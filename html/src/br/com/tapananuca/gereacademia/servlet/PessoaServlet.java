@@ -47,67 +47,70 @@ public class PessoaServlet extends HttpServlet {
 		
 		final Utils utilsInstace = Utils.getInstance();
 		
-		final String dados = req.getReader().readLine();
+		final StringBuilder dados = new StringBuilder();
+		
+		String aux = req.getReader().readLine();
+		while (aux != null){
+			
+			dados.append(aux);
+			aux = req.getReader().readLine();
+			
+			if (aux != null){
+				dados.append("\n");
+			}
+		}
 		
 		final String url = req.getRequestURI();
 		
 		GAResponse ga = null;
 		
-		if (url.endsWith(Utils.URL_PESSOA_A_RECEBER)){
+		if (url.endsWith(Utils.URL_PESSOA_ANIVERSARIOS)){
 			
-			ga = this.buscarPagamentosAReceber(dados);
-			
-		} else if (url.endsWith(Utils.URL_PESSOA_PAGAR)){
-			
-			ga = this.darBaixaPagamento(dados);
-			
-		} else if (url.endsWith(Utils.URL_PESSOA_ANIVERSARIOS)){
-			
-			ga = this.buscarAniversarios(dados);
+			ga = this.buscarAniversarios(dados.toString());
 			
 		} else if (url.endsWith(Utils.URL_PESSOA_DADOS_NOMES)){
 			
-			ga = this.buscarNomesPessoa(dados);
+			ga = this.buscarNomesPessoa(dados.toString());
 			
 		} else if (url.endsWith(Utils.URL_PESSOA_DADOS_BASICOS)){
 			
-			ga = this.buscarDadosPessoa(dados);
+			ga = this.buscarDadosPessoa(dados.toString());
 			
 		} else if (url.endsWith(Utils.URL_PESSOA_DADOS_BASICOS_SALVAR)){
 			
-			ga = this.salvarDadosPessoa(dados);
+			ga = this.salvarDadosPessoa(dados.toString());
 			
 		} else if (url.endsWith(Utils.URL_PESSOA_OBJETIVOS)){
 			
-			ga = this.buscarObjetivosPessoa(dados);
+			ga = this.buscarObjetivosPessoa(dados.toString());
 			
 		} else if (url.endsWith(Utils.URL_PESSOA_OBJETIVOS_SALVAR)){
 			
-			ga = this.salvarObjetivosPessoa(dados);
+			ga = this.salvarObjetivosPessoa(dados.toString());
 			
 		} else if (url.endsWith(Utils.URL_PESSOA_HIST_PAT)){
 			
-			ga = this.buscarHistPatologicaPessoa(dados);
+			ga = this.buscarHistPatologicaPessoa(dados.toString());
 			
 		} else if (url.endsWith(Utils.URL_PESSOA_HIST_PAT_SALVAR)){
 			
-			ga = this.salvarHistPatologicaPessoa(dados);
+			ga = this.salvarHistPatologicaPessoa(dados.toString());
 			
 		} else if (url.endsWith(Utils.URL_PESSOA_HABITOS)){
 			
-			ga = this.buscarHabitosPessoa(dados);
+			ga = this.buscarHabitosPessoa(dados.toString());
 			
 		} else if (url.endsWith(Utils.URL_PESSOA_HABITO_SALVAR)){
 			
-			ga = this.salvarHabitosPessoa(dados);
+			ga = this.salvarHabitosPessoa(dados.toString());
 			
 		} else if (url.endsWith(Utils.URL_PESSOA_MEDIDAS)){
 			
-			ga = this.buscarMedidasPessoa(dados);
+			ga = this.buscarMedidasPessoa(dados.toString());
 			
 		} else if (url.endsWith(Utils.URL_PESSOA_MEDIDAS_SALVAR)){
 			
-			ga = this.salvarMedidasPessoa(dados);
+			ga = this.salvarMedidasPessoa(dados.toString());
 		} else {
 			
 			ga = new GAResponse();
@@ -119,41 +122,6 @@ public class PessoaServlet extends HttpServlet {
 		out.write(utilsInstace.toJson(ga).getBytes());
 		out.flush();
 		out.close();
-	}
-
-	private GAResponse buscarPagamentosAReceber(String dados) {
-		
-		final AReceberDTO aReceberDTO = Utils.getInstance().fromJson(AReceberDTO.class, dados);
-		
-		final PessoaService pessoaService = new PessoaService();
-		
-		final String[] strData = aReceberDTO.getDataRef().split("/");
-		final Calendar calendar = Calendar.getInstance();
-		calendar.set(Integer.valueOf(strData[1]), Integer.valueOf(strData[0]) - 1, 1);
-		
-		try {
-			final AReceberPaginaDTO resp = 
-					pessoaService.buscarPagamentos(
-							calendar.getTime(), 
-							null, 
-							10, 
-							Integer.valueOf(aReceberDTO.getPaginaAtual()), 
-							true);
-			
-			return resp;
-		} catch (Exception e) {
-			
-			final GAResponse ga = new GAResponse();
-			ga.setSucesso(false);
-			ga.setMsg(e.getMessage());
-			
-			return ga;
-		}
-	}
-
-	private GAResponse darBaixaPagamento(String dados) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 	
 	private GAResponse buscarAniversarios(String dados){

@@ -27,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -59,6 +60,7 @@ public class CadastroPessoaScreen extends Tela {
 	private TextField email;
 	private TextField dataInicio;
 	private TextField valorMensal;
+	private CheckBox ativo;
 	
 	//campos objetivos com o personal
 	private CheckBox checkEstetica;
@@ -187,7 +189,7 @@ public class CadastroPessoaScreen extends Tela {
 		
 		final HttpRequest httpRequest = utils.criarRequest(Utils.URL_PESSOA_DADOS_BASICOS, dto);
 		
-		Gdx.net.sendHttpRequest(httpRequest, new HttpResponseListener() {
+		utils.enviarRequest(httpRequest, stage, skin, new HttpResponseListener() {
 			
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
@@ -211,6 +213,7 @@ public class CadastroPessoaScreen extends Tela {
 						CadastroPessoaScreen.this.valorMensal.setText(pessoaDTO.getValorMensal().toString().replace(".", ","));
 						CadastroPessoaScreen.this.dataInicio.setText(pessoaDTO.getDataInicio());
 						CadastroPessoaScreen.this.listEstadoCivil.setSelected(pessoaDTO.getEstadoCivil().getDescricao());
+						CadastroPessoaScreen.this.ativo.setChecked(pessoaDTO.isAtivo());
 						
 						CadastroPessoaScreen.this.botaoTabObjetivos.setDisabled(false);
 						CadastroPessoaScreen.this.botaoTabHistPat.setDisabled(false);
@@ -241,7 +244,7 @@ public class CadastroPessoaScreen extends Tela {
 	private void salvarDadosCadastrais(){
 		
 		final PessoaDTO pessoaDTO = new PessoaDTO();
-		pessoaDTO.setId(this.pessoaEdicaoId);
+		pessoaDTO.setId(this.pessoaEdicaoId == null ? null : this.pessoaEdicaoId.toString());
 		pessoaDTO.setNome(this.nome.getText());
 		pessoaDTO.setDataNascimento(this.dataNasc.getText());
 		pessoaDTO.setSexo(this.listSexo.getSelected().toString().charAt(0));
@@ -250,13 +253,13 @@ public class CadastroPessoaScreen extends Tela {
 		pessoaDTO.setBairro(this.bairro.getText());
 		pessoaDTO.setTelefone(this.telefone.getText());
 		pessoaDTO.setEmail(this.email.getText());
-		pessoaDTO.setValorMensal(Float.valueOf(this.valorMensal.getText().replace(",", ".")));
+		pessoaDTO.setValorMensal(this.valorMensal.getText().replace(",", "."));
 		pessoaDTO.setEstadoCivil(EstadoCivil.getEnumByValue(this.listEstadoCivil.getSelected()));
 		pessoaDTO.setDataInicio(this.dataInicio.getText());
 		
 		final HttpRequest httpRequest = utils.criarRequest(Utils.URL_PESSOA_DADOS_BASICOS_SALVAR, pessoaDTO);
 		
-		Gdx.net.sendHttpRequest(httpRequest, new HttpResponseListener() {
+		utils.enviarRequest(httpRequest, stage, skin, new HttpResponseListener() {
 			
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
@@ -398,8 +401,12 @@ public class CadastroPessoaScreen extends Tela {
 		
 		valorMensal = new TextField("", skin);
 		valorMensal.setTextFieldFilter(utils.currencyFilter);
-		conteudo.add(valorMensal).left().row().padTop(30);
+		conteudo.add(valorMensal).left().row();
 		elementosFocaveis.add(valorMensal);
+		
+		ativo = new CheckBox("ativo", skin);
+		ativo.setChecked(true);
+		conteudo.add(ativo).left().row().padTop(30);
 		
 		final TextButton botaoSalvar = new TextButton("Salvar", skin);
 		botaoSalvar.addListener(new ChangeListener(){
@@ -428,10 +435,11 @@ public class CadastroPessoaScreen extends Tela {
 	
 	private void abrirDialogPesquisaPessoa() {
 		
-		final Window window = new Window("Escolha: ", skin);
+		final Window window = new Window("Pesquisa por nome: ", skin);
+		window.setModal(true);
 		final Table table = new Table(skin);
-		
-		window.add(table);
+		final ScrollPane scroll = new ScrollPane(table, skin);
+		window.add(scroll).width(400).height(400);
 		
 		final TextButton botaoCancelar = new TextButton("Cancelar", skin);
 		botaoCancelar.addListener(new ChangeListener() {
@@ -447,14 +455,14 @@ public class CadastroPessoaScreen extends Tela {
 		
 		final HttpRequest httpRequest = utils.criarRequest(Utils.URL_PESSOA_DADOS_NOMES, dto);
 		
-		Gdx.net.sendHttpRequest(httpRequest, new HttpResponseListener() {
+		utils.enviarRequest(httpRequest, stage, skin, new HttpResponseListener() {
 			
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				
 				final PessoaDTOResponse resp = utils.fromJson(PessoaDTOResponse.class, httpResponse.getResultAsString());
 				
-				if (resp.isSucesso()){
+				if (resp != null && resp.isSucesso()){
 					
 					if (resp.getPessoasDTO() != null && resp.getPessoasDTO().size != 0){
 						
@@ -480,28 +488,26 @@ public class CadastroPessoaScreen extends Tela {
 						table.add("Nenhuma pessoa encontrada.").row();
 					}
 					
-					table.add(botaoCancelar);
+					window.row();
+					window.add(botaoCancelar);
 					
-					//window.pack();
-					table.pack();
-					window.setWidth(table.getPrefWidth() + 10);
-					window.setHeight(table.getHeight() + 20);
+					window.pack();
 					
 					window.setPosition(
-							(Gdx.graphics.getWidth() / 2) - (window.getWidth() / 2) ,
-							(Gdx.graphics.getHeight() / 2) - (window.getHeight() / 2));
+							(int)((Gdx.graphics.getWidth() / 2) - (window.getWidth() / 2)) ,
+							(int)((Gdx.graphics.getHeight() / 2) - (window.getHeight() / 2)));
 					
 					CadastroPessoaScreen.this.stage.addActor(window);
 				} else {
 					
-					utils.mostarAlerta("Atenção:", resp.getMsg(), stage, skin);
+					utils.mostarAlerta("Atenção:", resp == null ? "null" : resp.getMsg(), stage, skin);
 				}
 			}
 			
 			@Override
 			public void failed(Throwable t) {
 				
-				utils.mostarAlerta("Erro:", "Erro ao tentar salvar objetivos: " + t.getMessage() , stage, skin);
+				utils.mostarAlerta("Erro:", "Erro ao tentar pesquisar por nome: " + t.getMessage() , stage, skin);
 			}
 			
 			@Override
@@ -586,7 +592,7 @@ public class CadastroPessoaScreen extends Tela {
 		
 		final HttpRequest httpRequest = utils.criarRequest(Utils.URL_PESSOA_OBJETIVOS, dto);
 		
-		Gdx.net.sendHttpRequest(httpRequest, new HttpResponseListener() {
+		utils.enviarRequest(httpRequest, stage, skin, new HttpResponseListener() {
 			
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
@@ -654,7 +660,7 @@ public class CadastroPessoaScreen extends Tela {
 		
 		final HttpRequest httpRequest = utils.criarRequest(Utils.URL_PESSOA_OBJETIVOS_SALVAR, objetivoDTO);
 		
-		Gdx.net.sendHttpRequest(httpRequest, new HttpResponseListener() {
+		utils.enviarRequest(httpRequest, stage, skin, new HttpResponseListener() {
 			
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
@@ -780,7 +786,7 @@ public class CadastroPessoaScreen extends Tela {
 		
 		final HttpRequest httpRequest = utils.criarRequest(Utils.URL_PESSOA_HIST_PAT, dto);
 		
-		Gdx.net.sendHttpRequest(httpRequest, new HttpResponseListener() {
+		utils.enviarRequest(httpRequest, stage, skin, new HttpResponseListener() {
 			
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
@@ -794,12 +800,12 @@ public class CadastroPessoaScreen extends Tela {
 					
 					if (dto != null){
 						
-						CadastroPessoaScreen.this.cirurgias.setText(utils.emptyOrString(dto.getCirurgias()));
-						CadastroPessoaScreen.this.sintomasDoencas.setText(utils.emptyOrString(dto.getSintomasDoencas()));
-						CadastroPessoaScreen.this.medicamentos.setText(utils.emptyOrString(dto.getMedicamentos()));
-						CadastroPessoaScreen.this.lesoes.setText(utils.emptyOrString(dto.getLesoes()));
-						CadastroPessoaScreen.this.alergias.setText(utils.emptyOrString(dto.getAlergias()));
-						CadastroPessoaScreen.this.outros.setText(utils.emptyOrString(dto.getOutros()));
+						CadastroPessoaScreen.this.cirurgias.setText(utils.emptyOrString(dto.getCirurgias()).replace("<br>", "\n"));
+						CadastroPessoaScreen.this.sintomasDoencas.setText(utils.emptyOrString(dto.getSintomasDoencas()).replace("<br>", "\n"));
+						CadastroPessoaScreen.this.medicamentos.setText(utils.emptyOrString(dto.getMedicamentos()).replace("<br>", "\n"));
+						CadastroPessoaScreen.this.lesoes.setText(utils.emptyOrString(dto.getLesoes()).replace("<br>", "\n"));
+						CadastroPessoaScreen.this.alergias.setText(utils.emptyOrString(dto.getAlergias()).replace("<br>", "\n"));
+						CadastroPessoaScreen.this.outros.setText(utils.emptyOrString(dto.getOutros()).replace("<br>", "\n"));
 						
 						CadastroPessoaScreen.this.cardiopatia.setChecked(dto.isCardiopatia());
 						CadastroPessoaScreen.this.hipertensao.setChecked(dto.isHipertensao());
@@ -848,7 +854,7 @@ public class CadastroPessoaScreen extends Tela {
 		
 		final HttpRequest httpRequest = utils.criarRequest(Utils.URL_PESSOA_HIST_PAT_SALVAR, historiaPatologicaDTO);
 		
-		Gdx.net.sendHttpRequest(httpRequest, new HttpResponseListener() {
+		utils.enviarRequest(httpRequest, stage, skin, new HttpResponseListener() {
 			
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
@@ -967,7 +973,7 @@ public class CadastroPessoaScreen extends Tela {
 		
 		final HttpRequest httpRequest = utils.criarRequest(Utils.URL_PESSOA_HABITOS, dto);
 		
-		Gdx.net.sendHttpRequest(httpRequest, new HttpResponseListener() {
+		utils.enviarRequest(httpRequest, stage, skin, new HttpResponseListener() {
 			
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
@@ -981,8 +987,19 @@ public class CadastroPessoaScreen extends Tela {
 					
 					if (dto != null){
 						
-						CadastroPessoaScreen.this.dieta.setSelected(utils.emptyOrString(dto.getDieta().getDescricao()));
-						CadastroPessoaScreen.this.atividadeFisica.setText(utils.emptyOrString(dto.getPraticaAtivFisica()));
+						if (dto.getDieta() != null){
+							
+							CadastroPessoaScreen.this.dieta.setSelected(dto.getDieta().getDescricao());
+						}
+						
+						if (dto.getPraticaAtivFisica() == null || dto.getPraticaAtivFisica().isEmpty()){
+							
+							CadastroPessoaScreen.this.atividadeFisica.setText("Não pratica");
+						} else {
+							
+							CadastroPessoaScreen.this.atividadeFisica.setText(dto.getPraticaAtivFisica());
+						}
+						
 						CadastroPessoaScreen.this.ultimoExame.setText(utils.emptyOrString(dto.getDataUltimoExameMedico()));
 						
 						if (dto.getPeriodExameMedico() != null){
@@ -1057,7 +1074,7 @@ public class CadastroPessoaScreen extends Tela {
 		
 		final HttpRequest httpRequest = utils.criarRequest(Utils.URL_PESSOA_HABITO_SALVAR, habitosDTO);
 		
-		Gdx.net.sendHttpRequest(httpRequest, new HttpResponseListener() {
+		utils.enviarRequest(httpRequest, stage, skin, new HttpResponseListener() {
 			
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
@@ -1308,7 +1325,7 @@ public class CadastroPessoaScreen extends Tela {
 		
 		final HttpRequest httpRequest = utils.criarRequest(Utils.URL_PESSOA_MEDIDAS, dto);
 		
-		Gdx.net.sendHttpRequest(httpRequest, new HttpResponseListener() {
+		utils.enviarRequest(httpRequest, stage, skin, new HttpResponseListener() {
 			
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
@@ -1322,33 +1339,33 @@ public class CadastroPessoaScreen extends Tela {
 					
 					if (dto != null){
 						
-						CadastroPessoaScreen.this.maPesoCorporal.setText(utils.emptyOrString(dto.getMaPesoCorporal()));
-						CadastroPessoaScreen.this.maAltura.setText(utils.emptyOrString(dto.getMaAltura()));
-						CadastroPessoaScreen.this.maPesoMagro.setText(utils.emptyOrString(dto.getMaPesoMagro()));
-						CadastroPessoaScreen.this.maPesoGordura.setText(utils.emptyOrString(dto.getMaPesoGordura()));
-						CadastroPessoaScreen.this.maPorcentagemPG.setText(utils.emptyOrString(dto.getMaPorcentagemPG()));
-						CadastroPessoaScreen.this.maImc.setText(utils.emptyOrString(dto.getMaImc()));
-						CadastroPessoaScreen.this.maCintura.setText(utils.emptyOrString(dto.getMaCintura()));
-						CadastroPessoaScreen.this.maQuadril.setText(utils.emptyOrString(dto.getMaQuadril()));
-						CadastroPessoaScreen.this.maPmrc.setText(utils.emptyOrString(dto.getMaPmrc()));
+						CadastroPessoaScreen.this.maPesoCorporal.setText(utils.emptyOrString(dto.getMaPesoCorporal()).replace(".", ","));
+						CadastroPessoaScreen.this.maAltura.setText(utils.emptyOrString(dto.getMaAltura()).replace(".", ","));
+						CadastroPessoaScreen.this.maPesoMagro.setText(utils.emptyOrString(dto.getMaPesoMagro()).replace(".", ","));
+						CadastroPessoaScreen.this.maPesoGordura.setText(utils.emptyOrString(dto.getMaPesoGordura()).replace(".", ","));
+						CadastroPessoaScreen.this.maPorcentagemPG.setText(utils.emptyOrString(dto.getMaPorcentagemPG()).replace(".", ","));
+						CadastroPessoaScreen.this.maImc.setText(utils.emptyOrString(dto.getMaImc()).replace(".", ","));
+						CadastroPessoaScreen.this.maCintura.setText(utils.emptyOrString(dto.getMaCintura()).replace(".", ","));
+						CadastroPessoaScreen.this.maQuadril.setText(utils.emptyOrString(dto.getMaQuadril()).replace(".", ","));
+						CadastroPessoaScreen.this.maPmrc.setText(utils.emptyOrString(dto.getMaPmrc()).replace(".", ","));
 						
-						CadastroPessoaScreen.this.mcTorax.setText(utils.emptyOrString(dto.getMcTorax()));
-						CadastroPessoaScreen.this.mcAbdomen.setText(utils.emptyOrString(dto.getMcAbdomen()));
-						CadastroPessoaScreen.this.mcCintura.setText(utils.emptyOrString(dto.getMcCintura()));
-						CadastroPessoaScreen.this.mcBiceps.setText(utils.emptyOrString(dto.getMcBiceps()));
-						CadastroPessoaScreen.this.mcTriceps.setText(utils.emptyOrString(dto.getMcTriceps()));
-						CadastroPessoaScreen.this.mcCoxa.setText(utils.emptyOrString(dto.getMcCoxa()));
-						CadastroPessoaScreen.this.mcAntebraco.setText(utils.emptyOrString(dto.getMcAntebraco()));
+						CadastroPessoaScreen.this.mcTorax.setText(utils.emptyOrString(dto.getMcTorax()).replace(".", ","));
+						CadastroPessoaScreen.this.mcAbdomen.setText(utils.emptyOrString(dto.getMcAbdomen()).replace(".", ","));
+						CadastroPessoaScreen.this.mcCintura.setText(utils.emptyOrString(dto.getMcCintura()).replace(".", ","));
+						CadastroPessoaScreen.this.mcBiceps.setText(utils.emptyOrString(dto.getMcBiceps()).replace(".", ","));
+						CadastroPessoaScreen.this.mcTriceps.setText(utils.emptyOrString(dto.getMcTriceps()).replace(".", ","));
+						CadastroPessoaScreen.this.mcCoxa.setText(utils.emptyOrString(dto.getMcCoxa()).replace(".", ","));
+						CadastroPessoaScreen.this.mcAntebraco.setText(utils.emptyOrString(dto.getMcAntebraco()).replace(".", ","));
 						
-						CadastroPessoaScreen.this.dcBiceps.setText(utils.emptyOrString(dto.getDcBiceps()));
-						CadastroPessoaScreen.this.dcTriceps.setText(utils.emptyOrString(dto.getDcTriceps()));
-						CadastroPessoaScreen.this.dcSubAxilar.setText(utils.emptyOrString(dto.getDcSubAxilar()));
-						CadastroPessoaScreen.this.dcSupraIliacas.setText(utils.emptyOrString(dto.getDcSupraIliacas()));
-						CadastroPessoaScreen.this.dcSubEscapular.setText(utils.emptyOrString(dto.getDcSubEscapular()));
-						CadastroPessoaScreen.this.dcToraxica.setText(utils.emptyOrString(dto.getDcToraxica()));
-						CadastroPessoaScreen.this.dcAbdominal.setText(utils.emptyOrString(dto.getDcAbdominal()));
-						CadastroPessoaScreen.this.dcCoxa.setText(utils.emptyOrString(dto.getDcCoxa()));
-						CadastroPessoaScreen.this.dcPerna.setText(utils.emptyOrString(dto.getDcPerna()));
+						CadastroPessoaScreen.this.dcBiceps.setText(utils.emptyOrString(dto.getDcBiceps()).replace(".", ","));
+						CadastroPessoaScreen.this.dcTriceps.setText(utils.emptyOrString(dto.getDcTriceps()).replace(".", ","));
+						CadastroPessoaScreen.this.dcSubAxilar.setText(utils.emptyOrString(dto.getDcSubAxilar()).replace(".", ","));
+						CadastroPessoaScreen.this.dcSupraIliacas.setText(utils.emptyOrString(dto.getDcSupraIliacas()).replace(".", ","));
+						CadastroPessoaScreen.this.dcSubEscapular.setText(utils.emptyOrString(dto.getDcSubEscapular()).replace(".", ","));
+						CadastroPessoaScreen.this.dcToraxica.setText(utils.emptyOrString(dto.getDcToraxica()).replace(".", ","));
+						CadastroPessoaScreen.this.dcAbdominal.setText(utils.emptyOrString(dto.getDcAbdominal()).replace(".", ","));
+						CadastroPessoaScreen.this.dcCoxa.setText(utils.emptyOrString(dto.getDcCoxa()).replace(".", ","));
+						CadastroPessoaScreen.this.dcPerna.setText(utils.emptyOrString(dto.getDcPerna()).replace(".", ","));
 					}
 					
 					final String ultimaSelecao = CadastroPessoaScreen.this.dataReferenteMedida.getSelected();
@@ -1432,7 +1449,7 @@ public class CadastroPessoaScreen extends Tela {
 		
 		final HttpRequest httpRequest = utils.criarRequest(Utils.URL_PESSOA_MEDIDAS_SALVAR, medidaDTO);
 		
-		Gdx.net.sendHttpRequest(httpRequest, new HttpResponseListener() {
+		utils.enviarRequest(httpRequest, stage, skin, new HttpResponseListener() {
 			
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {

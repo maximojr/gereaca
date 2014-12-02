@@ -8,7 +8,7 @@ import br.com.tapananuca.gereacademia.Utils;
 
 public class PessoaDTO implements GARequest {
 
-	private Long id;
+	private String id;
 	
 	private String nome;
 	
@@ -20,7 +20,7 @@ public class PessoaDTO implements GARequest {
 	
 	private String dataInicio;
 	
-	private Float valorMensal;
+	private String valorMensal;
 	
 	private String endereco;
 	
@@ -32,17 +32,19 @@ public class PessoaDTO implements GARequest {
 	
 	private EstadoCivil estadoCivil;
 	
+	private boolean ativo;
+	
 	public PessoaDTO() {}
 	
 	public PessoaDTO(Long id, String nome){
 		
-		this.id = id;
+		this.id = id.toString();
 		this.nome = nome;
 	}
 	
 	public PessoaDTO(String nome, int diaDtNasc, int mesDtNasc, int anoDtNasc, EstadoCivil estadoCivil, Character sexo,
 			String endereco, String numero, String bairro, String telefone, String email,
-			int diaDtInic, int mesDtInic, int anoDtInic, BigDecimal valorMensal) {
+			int diaDtInic, int mesDtInic, int anoDtInic, BigDecimal valorMensal, Boolean ativo) {
 		
 		this.nome = nome;
 		this.dataNascimento = diaDtNasc + "/" + mesDtNasc + "/" + anoDtNasc;
@@ -54,7 +56,8 @@ public class PessoaDTO implements GARequest {
 		this.telefone = telefone;
 		this.email = email;
 		this.dataInicio = diaDtInic + "/" + mesDtInic + "/" + anoDtInic;
-		this.valorMensal = valorMensal.floatValue();
+		this.valorMensal = String.valueOf(valorMensal.floatValue());
+		this.ativo = ativo == null ? false : ativo;
 	}
 	
 	@Override
@@ -64,7 +67,7 @@ public class PessoaDTO implements GARequest {
 		
 		final StringBuilder json = new StringBuilder("{");
 		
-		utils.addNumberToJson(json, "id", id);
+		utils.addStringToJson(json, "id", id);
 		utils.addStringToJson(json, "nome", nome);
 		
 		if (sexo != null){
@@ -75,11 +78,12 @@ public class PessoaDTO implements GARequest {
 		utils.addStringToJson(json, "email", email);
 		utils.addStringToJson(json, "dataNascimento", dataNascimento);
 		utils.addStringToJson(json, "dataInicio", dataInicio);
-		utils.addNumberToJson(json, "valorMensal", valorMensal);
+		utils.addStringToJson(json, "valorMensal", valorMensal);
 		utils.addStringToJson(json, "endereco", endereco);
 		utils.addStringToJson(json, "numero", numero);
 		utils.addStringToJson(json, "bairro", bairro);
 		utils.addStringToJson(json, "telefone", telefone);
+		utils.addBooleanToJson(json, "ativo", ativo);
 		
 		if (estadoCivil != null){
 		
@@ -91,11 +95,11 @@ public class PessoaDTO implements GARequest {
 		return json.toString();
 	}
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -139,11 +143,11 @@ public class PessoaDTO implements GARequest {
 		this.dataInicio = dataInicio;
 	}
 
-	public Float getValorMensal() {
+	public String getValorMensal() {
 		return valorMensal;
 	}
 
-	public void setValorMensal(Float valorMensal) {
+	public void setValorMensal(String valorMensal) {
 		this.valorMensal = valorMensal;
 	}
 
@@ -185,5 +189,13 @@ public class PessoaDTO implements GARequest {
 
 	public void setEstadoCivil(EstadoCivil estadoCivil) {
 		this.estadoCivil = estadoCivil;
+	}
+
+	public boolean isAtivo() {
+		return ativo;
+	}
+
+	public void setAtivo(boolean ativo) {
+		this.ativo = ativo;
 	}
 }
