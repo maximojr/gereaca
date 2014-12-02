@@ -10,15 +10,7 @@
 
 		<properties>
 			
-		    <!-- heroku database 
 		    
-			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"></property>
-			<property name="javax.persistence.jdbc.user" value="etdxybmkzsllda"></property>
-			<property name="javax.persistence.jdbc.password" value="XAPxvtaoXy6P_3E3O1-lvndUA1"></property>
-			<property name="javax.persistence.jdbc.url"
-				value="jdbc:postgresql://ec2-54-83-204-244.compute-1.amazonaws.com:5432/d3vvhrhr43a3ue"></property>
-				
-			-->
 			
 			<!-- local database 
 			-->
