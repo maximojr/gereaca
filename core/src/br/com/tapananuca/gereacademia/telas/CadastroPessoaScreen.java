@@ -210,7 +210,7 @@ public class CadastroPessoaScreen extends Tela {
 						CadastroPessoaScreen.this.bairro.setText(pessoaDTO.getBairro());
 						CadastroPessoaScreen.this.telefone.setText(pessoaDTO.getTelefone());
 						CadastroPessoaScreen.this.email.setText(pessoaDTO.getEmail());
-						CadastroPessoaScreen.this.valorMensal.setText(pessoaDTO.getValorMensal().toString().replace(".", ","));
+						CadastroPessoaScreen.this.valorMensal.setText(utils.formatCurrency(pessoaDTO.getValorMensal()));
 						CadastroPessoaScreen.this.dataInicio.setText(pessoaDTO.getDataInicio());
 						CadastroPessoaScreen.this.listEstadoCivil.setSelected(pessoaDTO.getEstadoCivil().getDescricao());
 						CadastroPessoaScreen.this.ativo.setChecked(pessoaDTO.isAtivo());
@@ -326,7 +326,7 @@ public class CadastroPessoaScreen extends Tela {
 		inTableDataNasc.setSkin(skin);
 		
 		inTableDataNasc.add("Data nasc.:").left();
-		inTableDataNasc.add("Estado cívil:").padLeft(10).left();
+		inTableDataNasc.add("Estado civil:").padLeft(10).left();
 		inTableDataNasc.add("Sexo").left().padLeft(10).row();
 		
 		dataNasc = new TextField("", skin);
@@ -703,31 +703,37 @@ public class CadastroPessoaScreen extends Tela {
 		cirurgias = new TextArea("", skin);
 		cirurgias.setPrefRows(3);
 		leftTable.add(cirurgias).left().width(500).row();
+		elementosFocaveis.add(cirurgias);
 		
 		leftTable.add("Sintomas/Doenças:").left().row();
 		sintomasDoencas = new TextArea("", skin);
 		sintomasDoencas.setPrefRows(3);
 		leftTable.add(sintomasDoencas).left().width(500).row();
+		elementosFocaveis.add(sintomasDoencas);
 		
 		leftTable.add("Medicamentos:").left().row();
 		medicamentos = new TextArea("", skin);
 		medicamentos.setPrefRows(3);
 		leftTable.add(medicamentos).left().width(500).row();
+		elementosFocaveis.add(medicamentos);
 		
 		leftTable.add("Lesões:").left().row();
 		lesoes = new TextArea("", skin);
 		lesoes.setPrefRows(3);
 		leftTable.add(lesoes).left().width(500).row();
+		elementosFocaveis.add(lesoes);
 		
 		leftTable.add("Alergias:").left().row();
 		alergias = new TextArea("", skin);
 		alergias.setPrefRows(3);
 		leftTable.add(alergias).left().width(500).row();
+		elementosFocaveis.add(alergias);
 		
 		leftTable.add("Outras informações:").left().row();
 		outros = new TextArea("", skin);
 		outros.setPrefRows(3);
 		leftTable.add(outros).left().width(500);
+		elementosFocaveis.add(outros);
 		
 		conteudo.add(leftTable);
 		
@@ -897,11 +903,13 @@ public class CadastroPessoaScreen extends Tela {
 		conteudo.add("Pratica atividade física durante quanto tempo?").left().row();
 		atividadeFisica = new TextField("Não pratica", skin);
 		conteudo.add(atividadeFisica).left().row();
+		elementosFocaveis.add(atividadeFisica);
 		
 		conteudo.add("Data último exame médico:").left().row();
 		ultimoExame = new TextField("", skin);
 		ultimoExame.setTextFieldFilter(utils.dateFilter);
 		conteudo.add(ultimoExame).left().row();
+		elementosFocaveis.add(ultimoExame);
 		
 		conteudo.add("Periodicidade exame médico:").left().row();
 		
@@ -912,6 +920,7 @@ public class CadastroPessoaScreen extends Tela {
 		qtdTempoPeriodoExame = new TextField("", skin);
 		qtdTempoPeriodoExame.setTextFieldFilter(utils.numbersOnlyFilter);
 		inTable.add(qtdTempoPeriodoExame).left();
+		elementosFocaveis.add(qtdTempoPeriodoExame);
 		
 		periodoExame = new SelectBox<String>(skin);
 		
@@ -1142,14 +1151,17 @@ public class CadastroPessoaScreen extends Tela {
 		maPesoCorporal = new TextField("", skin);
 		maPesoCorporal.setTextFieldFilter(utils.currencyFilter);
 		inTable.add(maPesoCorporal).left();
+		elementosFocaveis.add(maPesoCorporal);
 		
 		maPesoMagro = new TextField("", skin);
 		maPesoMagro.setTextFieldFilter(utils.currencyFilter);
 		inTable.add(maPesoMagro).padLeft(10).left();
+		elementosFocaveis.add(maPesoMagro);
 		
 		maPesoGordura = new TextField("", skin);
 		maPesoGordura.setTextFieldFilter(utils.currencyFilter);
 		inTable.add(maPesoGordura).padLeft(10).left().row();
+		elementosFocaveis.add(maPesoGordura);
 		
 		inTable.add("Altura:").left();
 		inTable.add("P.G. %:").padLeft(10).left();
@@ -1158,14 +1170,17 @@ public class CadastroPessoaScreen extends Tela {
 		maAltura = new TextField("", skin);
 		maAltura.setTextFieldFilter(utils.currencyFilter);
 		inTable.add(maAltura).left();
+		elementosFocaveis.add(maAltura);
 		
 		maPorcentagemPG = new TextField("", skin);
 		maPorcentagemPG.setTextFieldFilter(utils.currencyFilter);
 		inTable.add(maPorcentagemPG).padLeft(10).left();
+		elementosFocaveis.add(maPorcentagemPG);
 		
 		maImc = new TextField("", skin);
 		maImc.setTextFieldFilter(utils.currencyFilter);
 		inTable.add(maImc).padLeft(10).left().row();
+		elementosFocaveis.add(maImc);
 		
 		inTable.add("Cintura:").left();
 		inTable.add("Quadril:").padLeft(10).left();
@@ -1174,14 +1189,17 @@ public class CadastroPessoaScreen extends Tela {
 		maCintura = new TextField("", skin);
 		maCintura.setTextFieldFilter(utils.currencyFilter);
 		inTable.add(maCintura).left();
+		elementosFocaveis.add(maCintura);
 		
 		maQuadril = new TextField("", skin);
 		maQuadril.setTextFieldFilter(utils.currencyFilter);
 		inTable.add(maQuadril).padLeft(10).left();
+		elementosFocaveis.add(maQuadril);
 		
 		maPmrc = new TextField("", skin);
 		maPmrc.setTextFieldFilter(utils.currencyFilter);
 		inTable.add(maPmrc).padLeft(10).left();
+		elementosFocaveis.add(maPmrc);
 		
 		conteudo.add(inTable).left().row();
 		
@@ -1196,18 +1214,22 @@ public class CadastroPessoaScreen extends Tela {
 		mcTorax = new TextField("", skin);
 		mcTorax.setTextFieldFilter(utils.currencyFilter);
 		inTable.add(mcTorax).left();
+		elementosFocaveis.add(mcTorax);
 		
 		mcAbdomen = new TextField("", skin);
 		mcAbdomen.setTextFieldFilter(utils.currencyFilter);
 		inTable.add(mcAbdomen).padLeft(10).left();
+		elementosFocaveis.add(mcAbdomen);
 		
 		mcCintura = new TextField("", skin);
 		mcCintura.setTextFieldFilter(utils.currencyFilter);
 		inTable.add(mcCintura).padLeft(10).left();
+		elementosFocaveis.add(mcCintura);
 		
 		mcBiceps = new TextField("", skin);
 		mcBiceps.setTextFieldFilter(utils.currencyFilter);
 		inTable.add(mcBiceps).padLeft(10).left().row();
+		elementosFocaveis.add(mcBiceps);
 		
 		inTable.add("Tríceps:").left();
 		inTable.add("Coxa:").padLeft(10).left();
@@ -1216,14 +1238,17 @@ public class CadastroPessoaScreen extends Tela {
 		mcTriceps = new TextField("", skin);
 		mcTriceps.setTextFieldFilter(utils.currencyFilter);
 		inTable.add(mcTriceps).left();
+		elementosFocaveis.add(mcTriceps);
 		
 		mcCoxa = new TextField("", skin);
 		mcCoxa.setTextFieldFilter(utils.currencyFilter);
 		inTable.add(mcCoxa).padLeft(10).left();
+		elementosFocaveis.add(mcCoxa);
 		
 		mcAntebraco = new TextField("", skin);
 		mcAntebraco.setTextFieldFilter(utils.currencyFilter);
 		inTable.add(mcAntebraco).padLeft(10).left();
+		elementosFocaveis.add(mcAntebraco);
 		
 		conteudo.add(inTable).left().row();
 		
@@ -1237,14 +1262,17 @@ public class CadastroPessoaScreen extends Tela {
 		dcBiceps = new TextField("", skin);
 		dcBiceps.setTextFieldFilter(utils.currencyFilter);
 		inTable.add(dcBiceps).left();
+		elementosFocaveis.add(dcBiceps);
 		
 		dcTriceps = new TextField("", skin);
 		dcTriceps.setTextFieldFilter(utils.currencyFilter);
 		inTable.add(dcTriceps).padLeft(10).left();
+		elementosFocaveis.add(dcTriceps);
 		
 		dcSubAxilar = new TextField("", skin);
 		dcSubAxilar.setTextFieldFilter(utils.currencyFilter);
 		inTable.add(dcSubAxilar).padLeft(10).left().row();
+		elementosFocaveis.add(dcSubAxilar);
 		
 		inTable.add("Supra-ilíacas:").left();
 		inTable.add("Subescapular:").padLeft(10).left();
@@ -1253,14 +1281,17 @@ public class CadastroPessoaScreen extends Tela {
 		dcSupraIliacas = new TextField("", skin);
 		dcSupraIliacas.setTextFieldFilter(utils.currencyFilter);
 		inTable.add(dcSupraIliacas).left();
+		elementosFocaveis.add(dcSupraIliacas);
 		
 		dcSubEscapular = new TextField("", skin);
 		dcSubEscapular.setTextFieldFilter(utils.currencyFilter);
 		inTable.add(dcSubEscapular).padLeft(10).left();
+		elementosFocaveis.add(dcSubEscapular);
 		
 		dcToraxica = new TextField("", skin);
 		dcToraxica.setTextFieldFilter(utils.currencyFilter);
 		inTable.add(dcToraxica).padLeft(10).left().row();
+		elementosFocaveis.add(dcToraxica);
 		
 		inTable.add("Abdominal:").left();
 		inTable.add("Coxa:").padLeft(10).left();
@@ -1269,14 +1300,17 @@ public class CadastroPessoaScreen extends Tela {
 		dcAbdominal = new TextField("", skin);
 		dcAbdominal.setTextFieldFilter(utils.currencyFilter);
 		inTable.add(dcAbdominal).left();
+		elementosFocaveis.add(dcAbdominal);
 		
 		dcCoxa = new TextField("", skin);
 		dcCoxa.setTextFieldFilter(utils.currencyFilter);
 		inTable.add(dcCoxa).padLeft(10).left();
+		elementosFocaveis.add(dcCoxa);
 		
 		dcPerna = new TextField("", skin);
 		dcPerna.setTextFieldFilter(utils.currencyFilter);
 		inTable.add(dcPerna).padLeft(10).left().row();
+		elementosFocaveis.add(dcPerna);
 		
 		conteudo.add(inTable).left().row();
 		

@@ -15,7 +15,6 @@ import br.com.tapananuca.gereacademia.comunicacao.AReceberDTO;
 import br.com.tapananuca.gereacademia.comunicacao.AReceberPaginaDTO;
 import br.com.tapananuca.gereacademia.comunicacao.DadosBaixa;
 import br.com.tapananuca.gereacademia.comunicacao.GAResponse;
-import br.com.tapananuca.gereacademia.model.Usuario;
 import br.com.tapananuca.gereacademia.service.PagamentoService;
 
 @WebServlet(name="pagamento", urlPatterns=Utils.URL_PAGAMENTOS + "/*")
@@ -62,9 +61,9 @@ public class PagamentoServlet extends HttpServlet {
 			
 		} else if (url.endsWith(Utils.URL_PAGAR)){
 			
-			final Usuario usuarioLogado = (Usuario) req.getSession().getAttribute(LoginServlet.PARAM_LOGED_USER);
+			final Long idUsuarioLogado = (Long) req.getSession().getAttribute(LoginServlet.PARAM_ID_LOGED_USER);
 			
-			ga = this.darBaixaPagamento(dados.toString(), usuarioLogado);
+			ga = this.darBaixaPagamento(dados.toString(), idUsuarioLogado);
 			
 		} else {
 			
@@ -79,7 +78,7 @@ public class PagamentoServlet extends HttpServlet {
 		out.close();
 	}
 	
-	private GAResponse darBaixaPagamento(String dados, Usuario usuarioLogado) {
+	private GAResponse darBaixaPagamento(String dados, Long idUusuarioLogado) {
 		
 		final DadosBaixa dadosBaixa = Utils.getInstance().fromJson(DadosBaixa.class, dados);
 		
@@ -90,7 +89,7 @@ public class PagamentoServlet extends HttpServlet {
 		String msg = null;
 		try {
 			
-			msg = pagamentoService.efetuarBaixa(dadosBaixa, usuarioLogado);
+			msg = pagamentoService.efetuarBaixa(dadosBaixa, idUusuarioLogado);
 			
 		} catch (Exception e) {
 			

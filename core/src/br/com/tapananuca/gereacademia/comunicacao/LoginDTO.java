@@ -4,7 +4,23 @@ import br.com.tapananuca.gereacademia.Utils;
 
 public class LoginDTO implements GARequest{
 
-	private String usuario, senha;
+	private String usuario, senha, novaSenha;
+	
+	@Override
+	public String toJson() {
+		
+		final Utils utils = Utils.getInstance();
+		
+		final StringBuilder json = new StringBuilder("{");
+		
+		utils.addStringToJson(json, "usuario", usuario);
+		utils.addStringToJson(json, "senha", senha);
+		utils.addStringToJson(json, "novaSenha", novaSenha);
+		
+		json.append("}");
+		
+		return json.toString();
+	}
 
 	public String getUsuario() {
 		return usuario;
@@ -22,18 +38,12 @@ public class LoginDTO implements GARequest{
 		this.senha = senha;
 	}
 
-	@Override
-	public String toJson() {
-		
-		final Utils utils = Utils.getInstance();
-		
-		final StringBuilder json = new StringBuilder("{");
-		
-		utils.addStringToJson(json, "usuario", usuario);
-		utils.addStringToJson(json, "senha", senha);
-		
-		json.append("}");
-		
-		return json.toString();
+
+	public String getNovaSenha() {
+		return novaSenha;
+	}
+
+	public void setNovaSenha(String novaSenha) {
+		this.novaSenha = novaSenha;
 	}
 }

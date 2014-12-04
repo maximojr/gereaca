@@ -94,7 +94,7 @@ public abstract class Tela implements Screen, InputProcessor {
 			
 			if (keycode == Input.Keys.TAB){
 				
-				Actor focused = this.stage.getKeyboardFocus();
+				final Actor focused = this.stage.getKeyboardFocus();
 				
 				for (int index = 0 ; index < this.elementosFocaveis.size() ; index++){
 					

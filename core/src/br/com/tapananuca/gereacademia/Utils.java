@@ -37,6 +37,9 @@ public class Utils {
 	public static final String WEB_APP_END_POINT = "web.app.endpoint";
 	
 	public static final String URL_LOGIN = "/login";
+	public static final String URL_LOGOUT = URL_LOGIN + "/out";
+	public static final String URL_TROCA_SENHA = URL_LOGIN + "/trsenha";
+	
 	public static final String URL_PESSOA = "/pessoa";
 	public static final String URL_PESSOA_ANIVERSARIOS = URL_PESSOA + "/aniversarios";
 	public static final String URL_PESSOA_DADOS_NOMES = URL_PESSOA + "/nomes";
@@ -127,7 +130,10 @@ public class Utils {
         	request.setHeader("Cookie", "JSESSIONID=" + utils.sessionId);
         }
         
-		request.setContent(utils.toJson(parametros));
+        if (parametros != null){
+        
+			request.setContent(utils.toJson(parametros));
+        }
 		
 		return request;
 	}
@@ -193,16 +199,24 @@ public class Utils {
 	
 	public String formatCurrency(String valor){
 		
-		if (valor == null){
+		if (valor == null || valor.isEmpty()){
 			
 			return "0,00";
 		}
 		
-		valor = valor.toString().replace(",", "").replace(".", ",");
+		valor = valor.replace(",", "").replace(".", ",");
 		
-		if (valor.endsWith(",0")){
+		if (valor.contains(",")){
 			
-			valor += "0";
+			final String decimal = valor.split(",")[1];
+			
+			if (decimal.length() < 2){
+				
+				valor += "0";
+			}
+		} else {
+			
+			valor += ",00";
 		}
 		
 		return valor;
@@ -221,6 +235,7 @@ public class Utils {
 	public void mostarAlerta(String titulo, String msg, Stage stage, Skin skin){
 		
 		final Window window = new Window(titulo == null ? "--- --- ---" : titulo, skin);
+		window.setModal(true);
 		
 		final Table table = new Table(skin);
 		final ScrollPane scroll = new ScrollPane(table, skin);

@@ -6,6 +6,8 @@ import javax.persistence.Persistence;
 
 public class Conexao {
 
+	private Conexao(){}
+	
 	private static final String UNIT_NAME = "PU";
 
 	private EntityManagerFactory emf = null;

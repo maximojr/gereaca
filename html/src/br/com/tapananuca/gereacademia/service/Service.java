@@ -42,34 +42,29 @@ public abstract class Service {
 				
 				final String herokuParams = System.getenv("DATABASE_URL");
 				
-				if (herokuParams == null){
+				final Map<String, String> params = new HashMap<String, String>();
+				
+				if (herokuParams != null){
 					
-					emf = Persistence.createEntityManagerFactory(UNIT_NAME);
-					
-				} else {
-					
-					URI dbUri = new URI(herokuParams);
+					final URI dbUri = new URI(herokuParams);
 					
 					final String username = dbUri.getUserInfo().split(":")[0];
 				    final String password = dbUri.getUserInfo().split(":")[1];
 				    final String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
 				    
-				    final Map<String, String> params = new HashMap<String, String>();
 				    params.put("javax.persistence.jdbc.user", username);
 				    params.put("javax.persistence.jdbc.password", password);
 				    params.put("javax.persistence.jdbc.url", dbUrl);
-					
-					emf = Persistence.createEntityManagerFactory(UNIT_NAME, params);
 				}
 				
+				emf = Persistence.createEntityManagerFactory(UNIT_NAME, params);
+				
 			} catch (URISyntaxException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
-
-		    emf = Persistence.createEntityManagerFactory(UNIT_NAME);
 			
-			for (int index = 0 ; index < poolSize ; index++){
+		    for (int index = 0 ; index < poolSize ; index++){
 				
 				emPoll.add(emf.createEntityManager());
 			}
@@ -87,7 +82,10 @@ public abstract class Service {
 			em = emPoll.poll();
 		}
 		
-		emf.close();
+		if (emf != null){
+		
+			emf.close();
+		}
 	}
 	
 	public EntityManager getEm(){

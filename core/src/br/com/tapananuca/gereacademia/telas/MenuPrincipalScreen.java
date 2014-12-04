@@ -30,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -108,13 +109,113 @@ public class MenuPrincipalScreen extends Tela {
 		
 		tableBotoes.add(cadastrarPessoaButton);
 		
+		final TextButton trocarSenha = new TextButton("Trocar senha", skin);
+		trocarSenha.addListener(new ChangeListener() {
+			
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				
+				final Window janela = new Window("Trocar senha: ", skin);
+				janela.setModal(true);
+				
+				final Table tableMudarSenha = new Table(skin);
+				
+				tableMudarSenha.add("Senha atual: ").right().padBottom(20);
+				
+				final TextField campoAtual = new TextField("", skin);
+				campoAtual.setPasswordMode(true);
+				campoAtual.setPasswordCharacter('*');
+				tableMudarSenha.add(campoAtual).width(200).left().padBottom(20).row();
+				
+				tableMudarSenha.add("Nova senha: ").right().padBottom(20);
+				
+				final TextField campoNova = new TextField("", skin);
+				campoNova.setPasswordMode(true);
+				campoNova.setPasswordCharacter('*');
+				tableMudarSenha.add(campoNova).width(200).left().padBottom(20).row();
+				
+				final Table tableBtns = new Table(skin);
+				final TextButton botaoOk = new TextButton("Ok", skin);
+				botaoOk.addListener(new ChangeListener() {
+					
+					@Override
+					public void changed(ChangeEvent event, Actor actor) {
+						
+						final LoginDTO loginDTO = new LoginDTO();
+						loginDTO.setSenha(campoAtual.getText());
+						loginDTO.setNovaSenha(campoNova.getText());
+						
+						final HttpRequest httpRequest = utils.criarRequest(Utils.URL_TROCA_SENHA, loginDTO);
+						
+						utils.enviarRequest(httpRequest, stage, skin, new HttpResponseListener() {
+							
+							@Override
+							public void handleHttpResponse(HttpResponse httpResponse) {
+								
+								final GAResponse ga = utils.fromJson(GAResponse.class, httpResponse.getResultAsString());
+								
+								if (ga.isSucesso()){
+									
+									janela.remove();
+									utils.mostarAlerta(null, "Senha trocada com sucesso", stage, skin);
+									
+								} else {
+									
+									utils.mostarAlerta("Atenção", ga.getMsg(), stage, skin);
+								}
+							}
+							
+							@Override
+							public void failed(Throwable t) {
+								
+								utils.mostarAlerta("Erro ao tentar troca de senha", t.getLocalizedMessage(), stage, skin);
+							}
+							
+							@Override
+							public void cancelled() {
+								
+								utils.mostarAlerta(null, "Requisição de troca de senha cancelada", stage, skin);
+							}
+						});
+					}
+				});
+				
+				tableBtns.add(botaoOk);
+				
+				final TextButton botaoCancelar = new TextButton("Cancelar", skin);
+				botaoCancelar.addListener(new ChangeListener() {
+					
+					@Override
+					public void changed(ChangeEvent event, Actor actor) {
+						janela.remove();
+					}
+				});
+				
+				tableBtns.add(botaoCancelar);
+				
+				tableMudarSenha.add(tableBtns).colspan(2);
+				
+				janela.add(tableMudarSenha).width(400).height(200);
+				
+				janela.pack();
+				
+				janela.setPosition(
+						(int)((Gdx.graphics.getWidth() / 2) - (janela.getWidth() / 2)) ,
+						(int)((Gdx.graphics.getHeight() / 2) - (janela.getHeight() / 2)));
+				
+				MenuPrincipalScreen.this.stage.addActor(janela);
+			}
+		});
+		
+		tableBotoes.add(trocarSenha);
+		
 		final TextButton logOut = new TextButton("Sair", skin);
 		logOut.addListener(new ChangeListener(){
 
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				
-				final HttpRequest httpRequest = utils.criarRequest(Utils.URL_LOGIN, new LoginDTO());
+				final HttpRequest httpRequest = utils.criarRequest(Utils.URL_LOGOUT, null);
 				
 				utils.enviarRequest(httpRequest, stage, skin, new HttpResponseListener() {
 					
@@ -171,8 +272,6 @@ public class MenuPrincipalScreen extends Tela {
 		tableAniversarios = new Table(skin);
 		
 		tablePrincipal.add(tableAniversarios).colspan(3).fill();
-		
-		Gdx.input.setInputProcessor(stage);
 	}
 	
 	class DataHolder{
@@ -293,7 +392,7 @@ public class MenuPrincipalScreen extends Tela {
 								
 								final CheckBox checkBox = new CheckBox("", skin);
 								
-								inTable.add(checkBox).fill();
+								inTable.add(checkBox);
 								tablePagamentos.add(inTable).fill();
 								
 								dh.chec = checkBox;

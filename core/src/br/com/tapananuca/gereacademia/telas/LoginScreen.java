@@ -12,7 +12,6 @@ import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -37,19 +36,19 @@ public class LoginScreen extends Tela {
 		table.setFillParent(true);
 		table.center();
 		
-		Label label = new Label("Usuário: ", skin);
-		table.add(label).right().padBottom(20);
+		table.add("Usuário: ").right().padBottom(20);
 		
 		final TextField campoUsuario = new TextField("", skin);
-		table.add(campoUsuario).left().padBottom(20).row();
+		table.add(campoUsuario).width(200).left().padBottom(20).row();
+		elementosFocaveis.add(campoUsuario);
 		
-		label = new Label("Senha: ", skin);
-		table.add(label).right().padBottom(40);
+		table.add("Senha: ").right().padBottom(40);
 		
 		final TextField campoSenha = new TextField("", skin);
 		campoSenha.setPasswordMode(true);
 		campoSenha.setPasswordCharacter('*');
-		table.add(campoSenha).left().padBottom(40).row();
+		table.add(campoSenha).width(200).left().padBottom(40).row();
+		elementosFocaveis.add(campoSenha);
 		
 		final TextButton b = new TextButton("Login", skin);
 		b.addListener(new ChangeListener(){
@@ -60,7 +59,7 @@ public class LoginScreen extends Tela {
 				
 				final LoginDTO loginDTO = new LoginDTO();
 				loginDTO.setUsuario(campoUsuario.getText());
-				loginDTO.setSenha(utilsInstance.criptografar(campoSenha.getText()));
+				loginDTO.setSenha(campoSenha.getText());
 				
 				final HttpRequest request = utilsInstance.criarRequest(Utils.URL_LOGIN, loginDTO);
 				
@@ -122,7 +121,5 @@ public class LoginScreen extends Tela {
 		});
 		
 		table.add(b).colspan(2).padBottom(40).row();
-		
-		Gdx.input.setInputProcessor(stage);
 	}
 }

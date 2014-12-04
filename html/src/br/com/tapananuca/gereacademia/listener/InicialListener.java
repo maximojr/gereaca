@@ -21,11 +21,11 @@ public class InicialListener implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
 		
-		System.out.println("----------- Atenção Kreuzeback, vai começar a putaria.");
-		
-		Service.iniciarPool(3);
+		System.out.println("----------- Atencao Kreuzeback, vai comecar a putaria.");
 		
 		try {
+			
+			Service.iniciarPool(3);
 			
 			final Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
 			
@@ -47,7 +47,7 @@ public class InicialListener implements ServletContextListener {
 			
 		} catch (Exception e) {
 			
-				e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 	

@@ -8,6 +8,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import com.badlogic.gdx.utils.Array;
+
 import br.com.tapananuca.gereacademia.comunicacao.AReceberDTO;
 import br.com.tapananuca.gereacademia.comunicacao.AReceberPaginaDTO;
 import br.com.tapananuca.gereacademia.comunicacao.Baixa;
@@ -34,11 +36,6 @@ public class PagamentoService extends Service {
 		
 		query.setParameter("ativo", true);
 		
-//		final Calendar calendar = Calendar.getInstance();
-		
-//		query.setParameter("mes", calendar.get(Calendar.MONTH) + 1);
-//		query.setParameter("ano", calendar.get(Calendar.YEAR));
-		
 		final List<Pessoa> pessoasACobrar = query.getResultList();
 		
 		Pagamento pagamento = null;
@@ -63,6 +60,8 @@ public class PagamentoService extends Service {
 	public AReceberPaginaDTO buscarPagamentos(Date dataRef, Long idPessoa, Integer qtdRegistros, Integer pagina, boolean emAberto){
 		
 		final EntityManager em = this.getEm();
+		
+		final Calendar calendar = Calendar.getInstance();
 		
 		StringBuilder hql = new StringBuilder("select new ");
 		hql.append(AReceberDTO.class.getCanonicalName())
@@ -97,7 +96,6 @@ public class PagamentoService extends Service {
 		
 		if (dataRef != null){
 			
-			final Calendar calendar = Calendar.getInstance();
 			calendar.setTime(dataRef);
 			
 			query.setParameter("mes", calendar.get(Calendar.MONTH) + 1);
@@ -146,7 +144,6 @@ public class PagamentoService extends Service {
 		
 		if (dataRef != null){
 			
-			final Calendar calendar = Calendar.getInstance();
 			calendar.setTime(dataRef);
 			
 			query.setParameter("mes", calendar.get(Calendar.MONTH) + 1);
@@ -160,33 +157,44 @@ public class PagamentoService extends Service {
 		
 		dto.setQtdPaginas(String.valueOf(((Long)query.getSingleResult() / qtdRegistros) + 1));
 		
-		hql = new StringBuilder("select ");
-		hql.append(" concat(month(pag.dataReferente), '/', year(pag.dataReferente)) ")
-		   .append(" from Pagamento pag ")
-		   .append(" order by pag.dataReferente ");
+		query = em.createQuery("select distinct "
+				+ " pag.dataReferente "
+				+ " from Pagamento pag "
+				+ " where pag.dataBaixa is null "
+				+ " order by pag.dataReferente ");
 		
-		query = em.createQuery(hql.toString());
+		final List<Date> dts = query.getResultList();
 		
-		dto.setDatasRef(this.getArrayFromList(query.getResultList()));
+		final Array<String> sDts = new Array<String>();
+		
+		for (Date d : dts){
+			
+			calendar.setTime(d);
+			sDts.add((calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR));
+		}
+		
+		dto.setDatasRef(sDts);
 		
 		this.returnEm(em);
 		
 		return dto;
 	}
 	
-	public String efetuarBaixa(DadosBaixa dadosBaixa, Usuario usuarioLogado){
+	public String efetuarBaixa(DadosBaixa dadosBaixa, Long idUsuarioLogado){
 		
 		if (dadosBaixa == null || dadosBaixa.getBaixas() == null || dadosBaixa.getBaixas().size == 0){
 			
 			return "Dados insuficientes para efetuar baixa.";
 		}
 		
-		if (usuarioLogado == null){
+		if (idUsuarioLogado == null){
 			
 			return "Faça login para executar essa ação.";
 		}
 		
 		final EntityManager em = this.getEm();
+		
+		final Usuario usuarioLogado = em.find(Usuario.class, idUsuarioLogado);
 		
 		try{
 			
