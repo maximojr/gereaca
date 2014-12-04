@@ -170,7 +170,12 @@ public class PagamentoService extends Service {
 		for (Date d : dts){
 			
 			calendar.setTime(d);
-			sDts.add((calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR));
+			String strData = (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
+			
+			if (!sDts.contains(strData, false)){
+				
+				sDts.add(strData);
+			}
 		}
 		
 		dto.setDatasRef(sDts);
