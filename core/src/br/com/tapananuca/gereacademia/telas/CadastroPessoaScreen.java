@@ -158,6 +158,7 @@ public class CadastroPessoaScreen extends Tela {
 		tabbedPanel.addTab(this.montarHistoriaPatologica());
 		tabbedPanel.addTab(this.montarHabitos());
 		tabbedPanel.addTab(this.montarMedidas());
+		tabbedPanel.addTab(this.montarPersoanal());
 		
 		//tabbedPanel.debugAll();
 		
@@ -1514,5 +1515,10 @@ public class CadastroPessoaScreen extends Tela {
 				utils.mostarAlerta(null, "Solicitação ao servidor cancelada.", stage, skin);
 			}
 		});
+	}
+	
+	private Tab montarPersoanal() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
