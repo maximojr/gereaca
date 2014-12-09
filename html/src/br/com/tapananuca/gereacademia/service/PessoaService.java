@@ -3,7 +3,6 @@ package br.com.tapananuca.gereacademia.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Calendar;
-import java.util.Date;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -15,13 +14,10 @@ import br.com.tapananuca.gereacademia.comunicacao.HabitosDTO;
 import br.com.tapananuca.gereacademia.comunicacao.HabitosDTOResponse;
 import br.com.tapananuca.gereacademia.comunicacao.HistoriaPatologicaDTO;
 import br.com.tapananuca.gereacademia.comunicacao.HistoriaPatologicaDTOResponse;
-import br.com.tapananuca.gereacademia.comunicacao.MedidaDTO;
-import br.com.tapananuca.gereacademia.comunicacao.MedidaDTOResponse;
 import br.com.tapananuca.gereacademia.comunicacao.ObjetivoDTO;
 import br.com.tapananuca.gereacademia.comunicacao.ObjetivoDTOResponse;
 import br.com.tapananuca.gereacademia.comunicacao.PessoaDTO;
 import br.com.tapananuca.gereacademia.comunicacao.PessoaDTOResponse;
-import br.com.tapananuca.gereacademia.model.Medida;
 import br.com.tapananuca.gereacademia.model.Pagamento;
 import br.com.tapananuca.gereacademia.model.Pessoa;
 
@@ -173,7 +169,6 @@ public class PessoaService extends Service{
 			pessoa.setPrepFisica(objetivoDTO.isPrepFisica());
 			pessoa.setAutoRend(objetivoDTO.isAutoRend());
 			pessoa.setHipertrofia(objetivoDTO.isHipertrofia());
-			pessoa.setEmagrecimento(objetivoDTO.isEmagrecimento());
 			
 			em.getTransaction().begin();
 			em.merge(pessoa);
@@ -203,7 +198,7 @@ public class PessoaService extends Service{
 		try {
 			final Query query = em.createQuery("select new " + 
 					ObjetivoDTO.class.getCanonicalName() + 
-					"(p.estetica, p.lazer, p.saude, p.terapeutico, p.condFisico, p.prepFisica, p.autoRend, p.hipertrofia, p.emagrecimento) " +
+					"(p.estetica, p.lazer, p.saude, p.terapeutico, p.condFisico, p.prepFisica, p.autoRend, p.hipertrofia) " +
 					" from Pessoa p " +
 					" where p.id = :id ");
 			
@@ -448,159 +443,5 @@ public class PessoaService extends Service{
 			
 			this.returnEm(em);
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	public MedidaDTOResponse buscarMedidas(Long idPessoa, Date dataRef) {
-		
-		final MedidaDTOResponse resp = new MedidaDTOResponse();
-		
-		if (idPessoa == null || dataRef == null){
-			
-			resp.setSucesso(false);
-			resp.setMsg("Dados insuficientes para buscar hábitos.");
-		}
-		
-		final EntityManager em = this.getEm();
-		
-		try {
-			Query query = em.createQuery("select new " +
-					MedidaDTO.class.getCanonicalName() +
-					"(m.maPesoCorporal, m.maAltura, m.maPesoMagro, m.maPesoGordura, m.maPorcentagemPG, " +
-					" m.maImc, m.maCintura, m.maQuadril, m.maPmrc, m.mcTorax, m.mcAbdomen, m.mcCintura, " +
-					" m.mcBiceps, m.mcTriceps, m.mcCoxa, m.mcAntebraco, m.dcBiceps, m.dcTriceps, " +
-					" m.dcSubAxilar, m.dcSupraIliacas, m.dcSubEscapular, m.dcToraxica, m.dcAbdominal, m.dcCoxa, m.dcPerna) " +
-					" from Medida m join m.pessoa p where p.id = :id and m.dataReferente = :dataRef ");
-			
-			query.setParameter("id", idPessoa);
-			query.setParameter("dataRef", dataRef);
-			
-			try {
-				resp.setMedidaDTO((MedidaDTO) query.getSingleResult());
-			} catch (NoResultException e) {
-				
-			}
-			
-			query = em.createQuery("select concat(day(m.dataReferente), '/', month(m.dataReferente), '/', year(m.dataReferente)) " +
-					" from Medida m join m.pessoa p where p.id = :id ");
-			
-			query.setParameter("id", idPessoa);
-			
-			final Array<String> dts = this.getArrayFromList(query.getResultList());
-			
-			final Calendar calendar = Calendar.getInstance();
-			calendar.setTime(dataRef);
-			
-			final String dtStr = 
-					calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
-			
-			if (!dts.contains(dtStr, false)){
-				
-				dts.add(dtStr);
-			}
-			
-			resp.setDatasRef(dts);
-			
-			return resp;
-		} finally {
-			
-			this.returnEm(em);
-		}
-	}
-
-	public String salvarMedidas(MedidaDTO medidaDTO) {
-		
-		if (medidaDTO == null || medidaDTO.getIdPessoa() == null || medidaDTO.getIdPessoa().isEmpty() ||
-				medidaDTO.getDataReferente() == null || medidaDTO.getDataReferente().isEmpty()){
-			
-			return "Dados insuficientes para salvar medidas";
-		}
-		
-		final Long idPessoa = Long.valueOf(medidaDTO.getIdPessoa());
-		
-		final String[] strData = medidaDTO.getDataReferente().split("/");
-		final Calendar calendar = Calendar.getInstance();
-		calendar.set(Integer.valueOf(strData[2]), Integer.valueOf(strData[1]) - 1, Integer.valueOf(strData[0]));
-		
-		final EntityManager em = this.getEm();
-		
-		try {
-			final Pessoa pessoa = em.find(Pessoa.class, idPessoa);
-			
-			if (pessoa == null){
-				
-				return "Pessoa não encontrada para cadastro de medidas.";
-			}
-			
-			final Query query = 
-				em.createQuery(
-					"select med from Medida med join med.pessoa pes where pes.id = :idPessoa and med.dataReferente = :dataRef");
-			
-			query.setParameter("idPessoa", idPessoa);
-			query.setParameter("dataRef", calendar.getTime());
-			
-			Medida medida = null;
-			
-			try {
-				medida = (Medida) query.getSingleResult();
-			} catch (NoResultException e) {
-				
-			}
-			
-			if (medida == null){
-				
-				medida = new Medida();
-				medida.setPessoa(pessoa);
-				medida.setDataReferente(calendar.getTime());
-			}
-			
-			medida.setDcAbdominal(this.floatOrNull(medidaDTO.getDcAbdominal()));
-			medida.setDcBiceps(this.floatOrNull(medidaDTO.getDcBiceps()));
-			medida.setDcCoxa(this.floatOrNull(medidaDTO.getDcCoxa()));
-			medida.setDcPerna(this.floatOrNull(medidaDTO.getDcPerna()));
-			medida.setDcSubAxilar(this.floatOrNull(medidaDTO.getDcSubAxilar()));
-			medida.setDcSubEscapular(this.floatOrNull(medidaDTO.getDcSubEscapular()));
-			medida.setDcSupraIliacas(this.floatOrNull(medidaDTO.getDcSupraIliacas()));
-			medida.setDcToraxica(this.floatOrNull(medidaDTO.getDcToraxica()));
-			medida.setDcTriceps(this.floatOrNull(medidaDTO.getDcTriceps()));
-			medida.setMaAltura(this.floatOrNull(medidaDTO.getMaAltura()));
-			medida.setMaCintura(this.floatOrNull(medidaDTO.getMaCintura()));
-			medida.setMaImc(this.floatOrNull(medidaDTO.getMaImc()));
-			medida.setMaPesoCorporal(this.floatOrNull(medidaDTO.getMaPesoCorporal()));
-			medida.setMaPesoGordura(this.floatOrNull(medidaDTO.getMaPesoGordura()));
-			medida.setMaPesoMagro(this.floatOrNull(medidaDTO.getMaPesoMagro()));
-			medida.setMaPmrc(this.floatOrNull(medidaDTO.getMaPmrc()));
-			medida.setMaPorcentagemPG(this.floatOrNull(medidaDTO.getMaPorcentagemPG()));
-			medida.setMaQuadril(this.floatOrNull(medidaDTO.getMaQuadril()));
-			medida.setMcAbdomen(this.floatOrNull(medidaDTO.getMcAbdomen()));
-			medida.setMcAntebraco(this.floatOrNull(medidaDTO.getMcAntebraco()));
-			medida.setMcBiceps(this.floatOrNull(medidaDTO.getMcBiceps()));
-			medida.setMcCintura(this.floatOrNull(medidaDTO.getMcCintura()));
-			medida.setMcCoxa(this.floatOrNull(medidaDTO.getMcCoxa()));
-			medida.setMcTorax(this.floatOrNull(medidaDTO.getMcTorax()));
-			medida.setMcTriceps(this.floatOrNull(medidaDTO.getMcTriceps()));
-			
-			em.getTransaction().begin();
-			
-			if (medida.getId() == null){
-				
-				em.persist(medida);
-			} else {
-				
-				em.merge(medida);
-			}
-			
-			em.getTransaction().commit();
-			
-			return null;
-		} finally {
-			
-			this.returnEm(em);
-		}
-	}
-	
-	private Float floatOrNull(String valor){
-		
-		return valor == null ? null : Float.valueOf(valor);
 	}
 }

@@ -24,6 +24,7 @@ import br.com.tapananuca.gereacademia.comunicacao.ObjetivoDTO;
 import br.com.tapananuca.gereacademia.comunicacao.ObjetivoDTOResponse;
 import br.com.tapananuca.gereacademia.comunicacao.PessoaDTO;
 import br.com.tapananuca.gereacademia.comunicacao.PessoaDTOResponse;
+import br.com.tapananuca.gereacademia.service.MedidaService;
 import br.com.tapananuca.gereacademia.service.PessoaService;
 
 @WebServlet(name="pessoa", urlPatterns=Utils.URL_PESSOA + "/*")
@@ -416,7 +417,7 @@ public class PessoaServlet extends HttpServlet {
 			return rs;
 		}
 		
-		final PessoaService pessoaService = new PessoaService();
+		final MedidaService medidaService = new MedidaService();
 		
 		try {
 			
@@ -425,7 +426,7 @@ public class PessoaServlet extends HttpServlet {
 			final Calendar calendar = Calendar.getInstance();
 			calendar.set(Integer.valueOf(strData[2]), Integer.valueOf(strData[1]) - 1, Integer.valueOf(strData[0]));
 			
-			rs = pessoaService.buscarMedidas(
+			rs = medidaService.buscarMedidas(
 					Long.valueOf(medidaDTO.getIdPessoa()),
 					calendar.getTime());
 			
@@ -444,12 +445,12 @@ public class PessoaServlet extends HttpServlet {
 		
 		final MedidaDTO medidaDTO = Utils.getInstance().fromJson(MedidaDTO.class, dados);
 		
-		final PessoaService pessoaService = new PessoaService();
+		final MedidaService medidaService = new MedidaService();
 		
 		String msg = null;
 		
 		try {
-			msg = pessoaService.salvarMedidas(medidaDTO);
+			msg = medidaService.salvarMedidas(medidaDTO);
 		} catch (Exception e) {
 			
 			msg = e.getLocalizedMessage();

@@ -23,13 +23,10 @@ public class ObjetivoDTO implements GARequest {
 	
 	private boolean hipertrofia;
 	
-	private boolean emagrecimento;
-	
 	public ObjetivoDTO() {}
 	
 	public ObjetivoDTO(Boolean estetica, Boolean lazer, Boolean saude, Boolean terapeutico, 
-			Boolean condFisico, Boolean prepFisica, Boolean autoRend, Boolean hipertrofia,
-			Boolean emagrecimento) {
+			Boolean condFisico, Boolean prepFisica, Boolean autoRend, Boolean hipertrofia) {
 		
 		this.estetica = estetica == null ? false : estetica;
 		this.lazer = lazer == null ? false : lazer;
@@ -39,7 +36,6 @@ public class ObjetivoDTO implements GARequest {
 		this.prepFisica = prepFisica == null ? false : prepFisica;
 		this.autoRend = autoRend == null ? false : autoRend;
 		this.hipertrofia = hipertrofia == null ? false : hipertrofia;
-		this.emagrecimento = emagrecimento == null ? false : emagrecimento;
 	}
 	
 	@Override
@@ -58,7 +54,6 @@ public class ObjetivoDTO implements GARequest {
 		utils.addBooleanToJson(json, "prepFisica", prepFisica);
 		utils.addBooleanToJson(json, "autoRend", autoRend);
 		utils.addBooleanToJson(json, "hipertrofia", hipertrofia);
-		utils.addBooleanToJson(json, "emagrecimento", emagrecimento);
 		
 		json.append("}");
 		
@@ -135,13 +130,5 @@ public class ObjetivoDTO implements GARequest {
 
 	public void setHipertrofia(boolean hipertrofia) {
 		this.hipertrofia = hipertrofia;
-	}
-
-	public boolean isEmagrecimento() {
-		return emagrecimento;
-	}
-
-	public void setEmagrecimento(boolean emagrecimento) {
-		this.emagrecimento = emagrecimento;
 	}
 }

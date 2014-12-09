@@ -11,13 +11,8 @@ public class MedidaDTO implements GARequest {
 	
 	private String maPesoCorporal;
 	private String maAltura;
-	private String maPesoMagro;
-	private String maPesoGordura;
-	private String maPorcentagemPG;
-	private String maImc;
 	private String maCintura;
 	private String maQuadril;
-	private String maPmrc;
 	
 	private String mcTorax;
 	private String mcAbdomen;
@@ -40,8 +35,7 @@ public class MedidaDTO implements GARequest {
 	public MedidaDTO() {}
 	
 	public MedidaDTO(Float maPesoCorporal, Float maAltura,
-			Float maPesoMagro, Float maPesoGordura, Float maPorcentagemPG,
-			Float maImc, Float maCintura, Float maQuadril, Float maPmrc,
+			Float maCintura, Float maQuadril,
 			Float mcTorax, Float mcAbdomen, Float mcCintura,
 			Float mcBiceps, Float mcTriceps, Float mcCoxa,
 			Float mcAntebraco, Float dcBiceps, Float dcTriceps,
@@ -50,13 +44,8 @@ public class MedidaDTO implements GARequest {
 		
 		this.maPesoCorporal = this.nullOrString(maPesoCorporal);
 		this.maAltura = this.nullOrString(maAltura);
-		this.maPesoMagro = this.nullOrString(maPesoMagro);
-		this.maPesoGordura = this.nullOrString(maPesoGordura);
-		this.maPorcentagemPG = this.nullOrString(maPorcentagemPG);
-		this.maImc = this.nullOrString(maImc);
 		this.maCintura = this.nullOrString(maCintura);
 		this.maQuadril = this.nullOrString(maQuadril);
-		this.maPmrc = this.nullOrString(maPmrc);
 		this.mcTorax = this.nullOrString(mcTorax);
 		this.mcAbdomen = this.nullOrString(mcAbdomen);
 		this.mcCintura = this.nullOrString(mcCintura);
@@ -92,13 +81,8 @@ public class MedidaDTO implements GARequest {
 		
 		utils.addStringToJson(json, "maPesoCorporal", maPesoCorporal);
 		utils.addStringToJson(json, "maAltura", maAltura);
-		utils.addStringToJson(json, "maPesoMagro", maPesoMagro);
-		utils.addStringToJson(json, "maPesoGordura", maPesoGordura);
-		utils.addStringToJson(json, "maPorcentagemPG", maPorcentagemPG);
-		utils.addStringToJson(json, "maImc", maImc);
 		utils.addStringToJson(json, "maCintura", maCintura);
 		utils.addStringToJson(json, "maQuadril", maQuadril);
-		utils.addStringToJson(json, "maPmrc", maPmrc);
 		
 		utils.addStringToJson(json, "mcTorax", mcTorax);
 		utils.addStringToJson(json, "mcAbdomen", mcAbdomen);
@@ -155,38 +139,6 @@ public class MedidaDTO implements GARequest {
 		this.maAltura = maAltura;
 	}
 
-	public String getMaPesoMagro() {
-		return maPesoMagro;
-	}
-
-	public void setMaPesoMagro(String maPesoMagro) {
-		this.maPesoMagro = maPesoMagro;
-	}
-
-	public String getMaPesoGordura() {
-		return maPesoGordura;
-	}
-
-	public void setMaPesoGordura(String maPesoGordura) {
-		this.maPesoGordura = maPesoGordura;
-	}
-
-	public String getMaPorcentagemPG() {
-		return maPorcentagemPG;
-	}
-
-	public void setMaPorcentagemPG(String maPorcentagemPG) {
-		this.maPorcentagemPG = maPorcentagemPG;
-	}
-
-	public String getMaImc() {
-		return maImc;
-	}
-
-	public void setMaImc(String maImc) {
-		this.maImc = maImc;
-	}
-
 	public String getMaCintura() {
 		return maCintura;
 	}
@@ -201,14 +153,6 @@ public class MedidaDTO implements GARequest {
 
 	public void setMaQuadril(String maQuadril) {
 		this.maQuadril = maQuadril;
-	}
-
-	public String getMaPmrc() {
-		return maPmrc;
-	}
-
-	public void setMaPmrc(String maPmrc) {
-		this.maPmrc = maPmrc;
 	}
 
 	public String getMcTorax() {

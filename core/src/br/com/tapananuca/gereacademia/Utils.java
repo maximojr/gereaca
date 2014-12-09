@@ -153,26 +153,37 @@ public class Utils {
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				
-				
-				telaBloqueio.addAction(Actions.sequence(Actions.fadeOut(0.4f, Interpolation.fade), Actions.removeActor()));
-				
-				callback.handleHttpResponse(httpResponse);
+				try {
+					
+					callback.handleHttpResponse(httpResponse);
+				} finally {
+					
+					telaBloqueio.addAction(Actions.sequence(Actions.fadeOut(0.4f, Interpolation.fade), Actions.removeActor()));
+				}
 			}
 			
 			@Override
 			public void failed(Throwable t) {
 				
-				telaBloqueio.addAction(Actions.sequence(Actions.fadeOut(0.4f, Interpolation.fade), Actions.removeActor()));
-				
-				callback.failed(t);
+				try {
+					
+					callback.failed(t);
+				} finally {
+					
+					telaBloqueio.addAction(Actions.sequence(Actions.fadeOut(0.4f, Interpolation.fade), Actions.removeActor()));
+				}
 			}
 			
 			@Override
 			public void cancelled() {
 				
-				telaBloqueio.addAction(Actions.sequence(Actions.fadeOut(0.4f, Interpolation.fade), Actions.removeActor()));
-				
-				callback.cancelled();
+				try {
+					
+					callback.cancelled();
+				} finally {
+					
+					telaBloqueio.addAction(Actions.sequence(Actions.fadeOut(0.4f, Interpolation.fade), Actions.removeActor()));
+				}
 			}
 		});
 	}

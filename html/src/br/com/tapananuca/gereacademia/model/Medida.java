@@ -38,26 +38,11 @@ public class Medida {
 	@Column(name="MA_ALTURA")
 	private Float maAltura;
 	
-	@Column(name="MA_PESO_MAGRO")
-	private Float maPesoMagro;
-	
-	@Column(name="MA_PESO_GORDURA")
-	private Float maPesoGordura;
-	
-	@Column(name="MA_PORCENTAGEM_PG")
-	private Float maPorcentagemPG;
-	
-	@Column(name="MA_IMC")
-	private Float maImc;
-	
 	@Column(name="MA_CINTURA")
 	private Float maCintura;
 	
 	@Column(name="MA_QUADRIL")
 	private Float maQuadril;
-	
-	@Column(name="MA_PMRC")
-	private Float maPmrc;
 	
 	@Column(name="MC_TORAX")
 	private Float mcTorax;
@@ -147,38 +132,6 @@ public class Medida {
 		this.maAltura = maAltura;
 	}
 
-	public Float getMaPesoMagro() {
-		return maPesoMagro;
-	}
-
-	public void setMaPesoMagro(Float maPesoMagro) {
-		this.maPesoMagro = maPesoMagro;
-	}
-
-	public Float getMaPesoGordura() {
-		return maPesoGordura;
-	}
-
-	public void setMaPesoGordura(Float maPesoGordura) {
-		this.maPesoGordura = maPesoGordura;
-	}
-
-	public Float getMaPorcentagemPG() {
-		return maPorcentagemPG;
-	}
-
-	public void setMaPorcentagemPG(Float maPorcentagemPG) {
-		this.maPorcentagemPG = maPorcentagemPG;
-	}
-
-	public Float getMaImc() {
-		return maImc;
-	}
-
-	public void setMaImc(Float maImc) {
-		this.maImc = maImc;
-	}
-
 	public Float getMaCintura() {
 		return maCintura;
 	}
@@ -193,14 +146,6 @@ public class Medida {
 
 	public void setMaQuadril(Float maQuadril) {
 		this.maQuadril = maQuadril;
-	}
-
-	public Float getMaPmrc() {
-		return maPmrc;
-	}
-
-	public void setMaPmrc(Float maPmrc) {
-		this.maPmrc = maPmrc;
 	}
 
 	public Float getMcTorax() {

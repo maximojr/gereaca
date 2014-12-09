@@ -5,6 +5,7 @@ import java.util.Date;
 import br.com.tapananuca.gereacademia.GereAcademia;
 import br.com.tapananuca.gereacademia.Utils;
 import br.com.tapananuca.gereacademia.comunicacao.Dieta;
+import br.com.tapananuca.gereacademia.comunicacao.Dobra;
 import br.com.tapananuca.gereacademia.comunicacao.EstadoCivil;
 import br.com.tapananuca.gereacademia.comunicacao.GAResponse;
 import br.com.tapananuca.gereacademia.comunicacao.HabitosDTO;
@@ -38,6 +39,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class CadastroPessoaScreen extends Tela {
@@ -47,6 +49,8 @@ public class CadastroPessoaScreen extends Tela {
 	private final Skin skin;
 	
 	private Long pessoaEdicaoId = null;
+	
+	private Label cabecalho;
 	
 	//campos dados cadastrais
 	private TextField nome;
@@ -71,7 +75,6 @@ public class CadastroPessoaScreen extends Tela {
 	private CheckBox checkPrepFisica;
 	private CheckBox checkAutoRend;
 	private CheckBox checkHipertrofia;
-	private CheckBox checkEmagrecimento;
 	
 	//campos história patologica
 	private TextArea cirurgias;
@@ -98,13 +101,9 @@ public class CadastroPessoaScreen extends Tela {
 	
 	private TextField maPesoCorporal;
 	private TextField maAltura;
-	private TextField maPesoMagro;
-	private TextField maPesoGordura;
-	private TextField maPorcentagemPG;
 	private TextField maImc;
 	private TextField maCintura;
 	private TextField maQuadril;
-	private TextField maPmrc;
 	
 	private TextField mcTorax;
 	private TextField mcAbdomen;
@@ -126,11 +125,15 @@ public class CadastroPessoaScreen extends Tela {
 	
 	private final ChangeListener dataRefChangeListener;
 	
+	//campos aba personal
+	
+	
 	//botões tabbed pannel
 	private TextButton botaoTabObjetivos;
 	private TextButton botaoTabHistPat;
 	private TextButton botaoTabHabitos;
 	private TextButton botaoTabMedidas;
+	private TextButton botaoPersonal;
 	
 	public CadastroPessoaScreen(GereAcademia applicationListener) {
 		super(applicationListener);
@@ -148,7 +151,9 @@ public class CadastroPessoaScreen extends Tela {
 		stage.addActor(table);
 		table.setSkin(skin);
 		
-		table.add("Novo cliente").colspan(2).row();
+		cabecalho = new Label("Novo cliente", skin);
+		
+		table.add(cabecalho).colspan(2).row();
 		
 		final TabbedPanel tabbedPanel = new TabbedPanel(skin, 650f, 700f);
 		table.add(tabbedPanel).row();
@@ -216,10 +221,13 @@ public class CadastroPessoaScreen extends Tela {
 						CadastroPessoaScreen.this.listEstadoCivil.setSelected(pessoaDTO.getEstadoCivil().getDescricao());
 						CadastroPessoaScreen.this.ativo.setChecked(pessoaDTO.isAtivo());
 						
+						CadastroPessoaScreen.this.cabecalho.setText("Editar dados cliente");
+						
 						CadastroPessoaScreen.this.botaoTabObjetivos.setDisabled(false);
 						CadastroPessoaScreen.this.botaoTabHistPat.setDisabled(false);
 						CadastroPessoaScreen.this.botaoTabHabitos.setDisabled(false);
 						CadastroPessoaScreen.this.botaoTabMedidas.setDisabled(false);
+						CadastroPessoaScreen.this.botaoPersonal.setDisabled(false);
 					}
 					
 				} else {
@@ -275,6 +283,9 @@ public class CadastroPessoaScreen extends Tela {
 					CadastroPessoaScreen.this.botaoTabHistPat.setDisabled(false);
 					CadastroPessoaScreen.this.botaoTabHabitos.setDisabled(false);
 					CadastroPessoaScreen.this.botaoTabMedidas.setDisabled(false);
+					CadastroPessoaScreen.this.botaoPersonal.setDisabled(false);
+					
+					CadastroPessoaScreen.this.cabecalho.setText("Editar dados cliente");
 					
 					CadastroPessoaScreen.this.pessoaEdicaoId = Long.valueOf(resp.getSessionId());
 				} else {
@@ -546,10 +557,7 @@ public class CadastroPessoaScreen extends Tela {
 		conteudo.add(checkSaude).left();
 		
 		checkPrepFisica = new CheckBox("Preparação Física", skin);
-		conteudo.add(checkPrepFisica).left();
-		
-		checkEmagrecimento = new CheckBox("Emagrecimento", skin);
-		conteudo.add(checkEmagrecimento).left().row();
+		conteudo.add(checkPrepFisica).left().row();
 		
 		final TextButton botaoSalvarObjetivos = new TextButton("Salvar", skin);
 		botaoSalvarObjetivos.addListener(new ChangeListener() {
@@ -614,7 +622,6 @@ public class CadastroPessoaScreen extends Tela {
 						CadastroPessoaScreen.this.checkPrepFisica.setChecked(dto.isPrepFisica());
 						CadastroPessoaScreen.this.checkAutoRend.setChecked(dto.isAutoRend());
 						CadastroPessoaScreen.this.checkHipertrofia.setChecked(dto.isHipertrofia());
-						CadastroPessoaScreen.this.checkEmagrecimento.setChecked(dto.isEmagrecimento());
 					}
 					
 				} else {
@@ -651,7 +658,6 @@ public class CadastroPessoaScreen extends Tela {
 		objetivoDTO.setIdPessoa(this.pessoaEdicaoId.toString());
 		objetivoDTO.setAutoRend(this.checkAutoRend.isChecked());
 		objetivoDTO.setCondFisico(this.checkCondFisico.isChecked());
-		objetivoDTO.setEmagrecimento(this.checkEmagrecimento.isChecked());
 		objetivoDTO.setEstetica(this.checkEstetica.isChecked());
 		objetivoDTO.setHipertrofia(this.checkHipertrofia.isChecked());
 		objetivoDTO.setLazer(this.checkLazer.isChecked());
@@ -1146,46 +1152,46 @@ public class CadastroPessoaScreen extends Tela {
 		
 		inTable = new Table(skin);
 		inTable.add("Peso corporal:").left();
-		inTable.add("Peso magro:").padLeft(10).left();
-		inTable.add("Peso gordura:").padLeft(10).left().row();
+		inTable.add("Altura:").padLeft(10).left();
+		inTable.add("I.M.C.:").padLeft(10).left().row();
 		
 		maPesoCorporal = new TextField("", skin);
 		maPesoCorporal.setTextFieldFilter(utils.currencyFilter);
 		inTable.add(maPesoCorporal).left();
+		maPesoCorporal.addListener(new FocusListener(){
+			
+			public void keyboardFocusChanged (FocusEvent event, Actor actor, boolean focused) {
+				
+				if (!focused){
+					
+					CadastroPessoaScreen.this.calcularIMC();
+				}
+			}
+		});
 		elementosFocaveis.add(maPesoCorporal);
-		
-		maPesoMagro = new TextField("", skin);
-		maPesoMagro.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(maPesoMagro).padLeft(10).left();
-		elementosFocaveis.add(maPesoMagro);
-		
-		maPesoGordura = new TextField("", skin);
-		maPesoGordura.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(maPesoGordura).padLeft(10).left().row();
-		elementosFocaveis.add(maPesoGordura);
-		
-		inTable.add("Altura:").left();
-		inTable.add("P.G. %:").padLeft(10).left();
-		inTable.add("I.M.C.:").padLeft(10).left().row();
 		
 		maAltura = new TextField("", skin);
 		maAltura.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(maAltura).left();
+		inTable.add(maAltura).padLeft(10).left();
+		maAltura.addListener(new FocusListener(){
+			
+			public void keyboardFocusChanged (FocusEvent event, Actor actor, boolean focused) {
+				
+				if (!focused){
+					
+					CadastroPessoaScreen.this.calcularIMC();
+				}
+			}
+		});
 		elementosFocaveis.add(maAltura);
-		
-		maPorcentagemPG = new TextField("", skin);
-		maPorcentagemPG.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(maPorcentagemPG).padLeft(10).left();
-		elementosFocaveis.add(maPorcentagemPG);
 		
 		maImc = new TextField("", skin);
 		maImc.setTextFieldFilter(utils.currencyFilter);
+		maImc.setDisabled(true);
 		inTable.add(maImc).padLeft(10).left().row();
-		elementosFocaveis.add(maImc);
 		
 		inTable.add("Cintura:").left();
-		inTable.add("Quadril:").padLeft(10).left();
-		inTable.add("P.M.R.C.:").padLeft(10).left().row();
+		inTable.add("Quadril:").padLeft(10).left().row();
 		
 		maCintura = new TextField("", skin);
 		maCintura.setTextFieldFilter(utils.currencyFilter);
@@ -1196,11 +1202,6 @@ public class CadastroPessoaScreen extends Tela {
 		maQuadril.setTextFieldFilter(utils.currencyFilter);
 		inTable.add(maQuadril).padLeft(10).left();
 		elementosFocaveis.add(maQuadril);
-		
-		maPmrc = new TextField("", skin);
-		maPmrc.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(maPmrc).padLeft(10).left();
-		elementosFocaveis.add(maPmrc);
 		
 		conteudo.add(inTable).left().row();
 		
@@ -1253,7 +1254,7 @@ public class CadastroPessoaScreen extends Tela {
 		
 		conteudo.add(inTable).left().row();
 		
-		conteudo.add("Dobras Cut�neas").padTop(15).left().row();
+		conteudo.add("Dobras Cutâneas").padTop(15).left().row();
 		
 		inTable = new Table(skin);
 		inTable.add("Bíceps:").left();
@@ -1328,7 +1329,7 @@ public class CadastroPessoaScreen extends Tela {
 		conteudo.add(botaoSalvarMedidas).left();
 		
 		botaoTabMedidas = new TextButton("Medidas", skin, "toggle");
-		botaoTabMedidas.setDisabled(true);
+		//botaoTabMedidas.setDisabled(true);
 		botaoTabMedidas.addListener(new ChangeListener(){
 
 			@Override
@@ -1376,13 +1377,8 @@ public class CadastroPessoaScreen extends Tela {
 						
 						CadastroPessoaScreen.this.maPesoCorporal.setText(utils.emptyOrString(dto.getMaPesoCorporal()).replace(".", ","));
 						CadastroPessoaScreen.this.maAltura.setText(utils.emptyOrString(dto.getMaAltura()).replace(".", ","));
-						CadastroPessoaScreen.this.maPesoMagro.setText(utils.emptyOrString(dto.getMaPesoMagro()).replace(".", ","));
-						CadastroPessoaScreen.this.maPesoGordura.setText(utils.emptyOrString(dto.getMaPesoGordura()).replace(".", ","));
-						CadastroPessoaScreen.this.maPorcentagemPG.setText(utils.emptyOrString(dto.getMaPorcentagemPG()).replace(".", ","));
-						CadastroPessoaScreen.this.maImc.setText(utils.emptyOrString(dto.getMaImc()).replace(".", ","));
 						CadastroPessoaScreen.this.maCintura.setText(utils.emptyOrString(dto.getMaCintura()).replace(".", ","));
 						CadastroPessoaScreen.this.maQuadril.setText(utils.emptyOrString(dto.getMaQuadril()).replace(".", ","));
-						CadastroPessoaScreen.this.maPmrc.setText(utils.emptyOrString(dto.getMaPmrc()).replace(".", ","));
 						
 						CadastroPessoaScreen.this.mcTorax.setText(utils.emptyOrString(dto.getMcTorax()).replace(".", ","));
 						CadastroPessoaScreen.this.mcAbdomen.setText(utils.emptyOrString(dto.getMcAbdomen()).replace(".", ","));
@@ -1401,6 +1397,8 @@ public class CadastroPessoaScreen extends Tela {
 						CadastroPessoaScreen.this.dcAbdominal.setText(utils.emptyOrString(dto.getDcAbdominal()).replace(".", ","));
 						CadastroPessoaScreen.this.dcCoxa.setText(utils.emptyOrString(dto.getDcCoxa()).replace(".", ","));
 						CadastroPessoaScreen.this.dcPerna.setText(utils.emptyOrString(dto.getDcPerna()).replace(".", ","));
+						
+						CadastroPessoaScreen.this.calcularIMC();
 					}
 					
 					final String ultimaSelecao = CadastroPessoaScreen.this.dataReferenteMedida.getSelected();
@@ -1440,6 +1438,17 @@ public class CadastroPessoaScreen extends Tela {
 		});
 	}
 
+	private void calcularIMC() {
+		
+		final String peso = this.maPesoCorporal.getText().replace(",", ".");
+		final String altura = this.maAltura.getText().replace(",", ".");
+		
+		if (!peso.isEmpty() && !altura.isEmpty()){
+			
+			this.maImc.setText(String.valueOf(Double.valueOf(peso) / (Double.valueOf(altura) * Double.valueOf(altura))));
+		}
+	}
+
 	private void salvarMedidas() {
 		
 		//cant happen no mater what, but...
@@ -1456,13 +1465,8 @@ public class CadastroPessoaScreen extends Tela {
 		
 		medidaDTO.setMaPesoCorporal(this.maPesoCorporal.getText().replace(",", "."));
 		medidaDTO.setMaAltura(this.maAltura.getText().replace(",", "."));
-		medidaDTO.setMaPesoMagro(this.maPesoMagro.getText().replace(",", "."));
-		medidaDTO.setMaPesoGordura(this.maPesoGordura.getText().replace(",", "."));
-		medidaDTO.setMaPorcentagemPG(this.maPorcentagemPG.getText().replace(",", "."));
-		medidaDTO.setMaImc(this.maImc.getText().replace(",", "."));
 		medidaDTO.setMaCintura(this.maCintura.getText().replace(",", "."));
 		medidaDTO.setMaQuadril(this.maQuadril.getText().replace(",", "."));
-		medidaDTO.setMaPmrc(this.maPmrc.getText().replace(",", "."));
 		
 		medidaDTO.setMcTorax(this.mcTorax.getText().replace(",", "."));
 		medidaDTO.setMcAbdomen(this.mcAbdomen.getText().replace(",", "."));
@@ -1518,7 +1522,102 @@ public class CadastroPessoaScreen extends Tela {
 	}
 	
 	private Tab montarPersoanal() {
+		
+		final Table conteudo = new Table(skin);
+		
+		final Table tableAulas = new Table(skin);
+		tableAulas.add("Aulas:").row();
+		
+		final Table datasAulas = new Table(skin);
+		datasAulas.align(Align.topLeft);
+		final ScrollPane scrollDatasAulas = new ScrollPane(datasAulas, skin);
+		
+		datasAulas.add("01/01/2014").row();
+		datasAulas.add("03/01/2014").row();
+		datasAulas.add("04/01/2014").row();
+		
+		tableAulas.add(scrollDatasAulas).height(200).width(150);
+		
+		final Table inTableAddAula = new Table(skin);
+		
+		final TextField novaAula = new TextField("", skin);
+		novaAula.setTextFieldFilter(utils.dateFilter);
+		inTableAddAula.add(novaAula).row();
+		
+		final TextButton btnAddAula = new TextButton("Adicionar aula", skin);
+		btnAddAula.addListener(new ChangeListener(){
+
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				// TODO Auto-generated method stub
+			}
+		});
+		
+		inTableAddAula.add(btnAddAula).padTop(5);
+		
+		tableAulas.add(inTableAddAula).padLeft(5);
+		
+		conteudo.add(tableAulas).row().padTop(15);
+		
+		final Table tableMedidas = new Table(skin);
+		tableMedidas.add("Medidas:").row();
+		
+		final Table datasMedidas = new Table(skin);
+		datasMedidas.align(Align.topLeft);
+		final ScrollPane scrollDatasMedidas = new ScrollPane(datasMedidas, skin);
+		
+		datasMedidas.add(new CheckBox("01/01/2014", skin)).row();
+		datasMedidas.add(new CheckBox("03/01/2014", skin)).row();
+		datasMedidas.add(new CheckBox("04/01/2014", skin)).row();
+		
+		tableMedidas.add(scrollDatasMedidas).height(200).width(150);
+		
+		final Table inTableCalcMedidas = new Table(skin);
+		
+		final SelectBox<String> dobrasCalc = new SelectBox<String>(skin);
+		
+		final String[] dobras = new String[Dobra.values().length];
+		int index = 0;
+		for (Dobra d : Dobra.values()){
+			dobras[index] = d.getDescricao();
+			index++;
+		}
+		
+		dobrasCalc.setItems(dobras);
+		
+		inTableCalcMedidas.add(dobrasCalc).colspan(2).padLeft(5).padBottom(5).row();
+		
+		final TextButton btnCalcular = new TextButton("Calcular", skin);
+		
+		inTableCalcMedidas.add(btnCalcular);
+		
+		final TextButton btnEnviarEmail = new TextButton("Enviar por email", skin);
+		
+		inTableCalcMedidas.add(btnEnviarEmail).padLeft(5);
+		
+		tableMedidas.add(inTableCalcMedidas).padLeft(5);
+		
+		conteudo.add(tableMedidas).padTop(15);
+		
+		botaoPersonal = new TextButton("Personal", skin, "toggle");
+		//botaoPersonal.setDisabled(true);
+		botaoPersonal.addListener(new ChangeListener(){
+
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				
+				if (botaoPersonal.isChecked()){
+					
+					CadastroPessoaScreen.this.carregarPersonal();
+				}
+			}
+		});
+		
+		return new Tab(botaoPersonal, conteudo, skin, Align.top);
+	}
+
+	private void carregarPersonal() {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 }

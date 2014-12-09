@@ -94,9 +94,6 @@ public class Pessoa {
 	@Column(name="HIPERTROFIA")
 	private Boolean hipertrofia;
 	
-	@Column(name="EMAGRECIMENTO")
-	private Boolean emagrecimento;
-	
 	//historia patologica
 	@Column(name="CIRURGIAS")
 	private String cirurgias;
@@ -302,14 +299,6 @@ public class Pessoa {
 
 	public void setHipertrofia(Boolean hipertrofia) {
 		this.hipertrofia = hipertrofia;
-	}
-
-	public Boolean getEmagrecimento() {
-		return emagrecimento;
-	}
-
-	public void setEmagrecimento(Boolean emagrecimento) {
-		this.emagrecimento = emagrecimento;
 	}
 
 	public String getCirurgias() {
