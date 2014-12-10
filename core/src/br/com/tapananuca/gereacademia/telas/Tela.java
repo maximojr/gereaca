@@ -13,6 +13,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public abstract class Tela implements Screen, InputProcessor {
 
@@ -24,7 +25,7 @@ public abstract class Tela implements Screen, InputProcessor {
 	
 	public Tela(GereAcademia applicationListener){
 		this.applicationListener = applicationListener;
-		this.stage = new Stage();
+		this.stage = new Stage(new ScreenViewport());
 		
 		final InputMultiplexer in = new InputMultiplexer();
 		in.addProcessor(this);
@@ -169,5 +170,8 @@ public abstract class Tela implements Screen, InputProcessor {
 		return false;
 	}
 	
-	
+	public Stage getStage(){
+		
+		return stage;
+	}
 }

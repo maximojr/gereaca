@@ -2,6 +2,7 @@ package br.com.tapananuca.gereacademia;
 
 import java.io.IOException;
 
+import br.com.tapananuca.gereacademia.telas.CadastroPessoaScreen;
 import br.com.tapananuca.gereacademia.telas.LoginScreen;
 import br.com.tapananuca.gereacademia.telas.Tela;
 
@@ -29,7 +30,7 @@ public class GereAcademia extends ApplicationAdapter {
 			e.printStackTrace();
 		}
 		
-		telaAtual = new LoginScreen(this);
+		telaAtual = new CadastroPessoaScreen(this);
 	}
 
 	@Override
@@ -48,5 +49,10 @@ public class GereAcademia extends ApplicationAdapter {
 		this.telaAtual.dispose();
 		this.telaAtual = telaAtual;
 		this.telaAtual.show();
+	}
+	
+	public void resize(int width, int height){
+		
+		telaAtual.getStage().getViewport().update(width, height, true);
 	}
 }

@@ -54,6 +54,13 @@ public class Utils {
 	public static final String URL_PESSOA_MEDIDAS = URL_PESSOA + "/medida";
 	public static final String URL_PESSOA_MEDIDAS_SALVAR = URL_PESSOA_MEDIDAS + "/salvar";
 	
+	public static final String URL_PERSONAL = "/personal";
+	public static final String URL_PERSONAL_DATAS = URL_PERSONAL + "/datas";
+	public static final String URL_PERSONAL_ADD_AULA = URL_PERSONAL + "/addAula";
+	public static final String URL_PERSONAL_GERAR_RELATORIO = URL_PERSONAL + "/calcular";
+	public static final String URL_PERSONAL_ABRIR_RELATORIO = URL_PERSONAL + "/abrir";
+	public static final String URL_PERSONAL_ENVIAR_RELATORIO = URL_PERSONAL + "/enviar";
+	
 	public static final String URL_PAGAMENTOS = "/pagamentos";
 	public static final String URL_A_RECEBER = URL_PAGAMENTOS + "/receber";
 	public static final String URL_PAGAR = URL_PAGAMENTOS + "/pagar";
@@ -86,6 +93,11 @@ public class Utils {
 		}
 		
 		return utils;
+	}
+	
+	public String getPropertie(String key){
+		
+		return properties.get(key);
 	}
 	
 	public String criptografar(String msg){

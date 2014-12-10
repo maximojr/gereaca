@@ -1,6 +1,8 @@
 package br.com.tapananuca.gereacademia.telas;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import br.com.tapananuca.gereacademia.GereAcademia;
 import br.com.tapananuca.gereacademia.Utils;
@@ -14,6 +16,7 @@ import br.com.tapananuca.gereacademia.comunicacao.HistoriaPatologicaDTO;
 import br.com.tapananuca.gereacademia.comunicacao.HistoriaPatologicaDTOResponse;
 import br.com.tapananuca.gereacademia.comunicacao.MedidaDTO;
 import br.com.tapananuca.gereacademia.comunicacao.MedidaDTOResponse;
+import br.com.tapananuca.gereacademia.comunicacao.MedidaPersonalDTOResponse;
 import br.com.tapananuca.gereacademia.comunicacao.ObjetivoDTO;
 import br.com.tapananuca.gereacademia.comunicacao.ObjetivoDTOResponse;
 import br.com.tapananuca.gereacademia.comunicacao.Periodicidade;
@@ -126,7 +129,8 @@ public class CadastroPessoaScreen extends Tela {
 	private final ChangeListener dataRefChangeListener;
 	
 	//campos aba personal
-	
+	private Table datasAulas, datasMedidas;
+	private List<CheckBox> listCheckDatasMedidas;
 	
 	//botões tabbed pannel
 	private TextButton botaoTabObjetivos;
@@ -157,6 +161,8 @@ public class CadastroPessoaScreen extends Tela {
 		
 		final TabbedPanel tabbedPanel = new TabbedPanel(skin, 650f, 700f);
 		table.add(tabbedPanel).row();
+		
+		listCheckDatasMedidas = new ArrayList<CheckBox>();
 		
 		tabbedPanel.addTab(this.montarTabDadosCadastrais());
 		tabbedPanel.addTab(this.montarObjetivos());
@@ -433,14 +439,13 @@ public class CadastroPessoaScreen extends Tela {
 		conteudo.add(botaoSalvar).left().row().padTop(20);
 		
 		final TextButton botao = new TextButton("Dados básicos", skin, "toggle");
-		botao.addListener(new ChangeListener(){
-
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
+//		botao.addListener(new ChangeListener(){
+//
+//			@Override
+//			public void changed(ChangeEvent event, Actor actor) {
+//				
+//			}
+//		});
 		
 		return new Tab(botao, conteudo, skin, Align.topLeft);
 	}
@@ -1329,7 +1334,7 @@ public class CadastroPessoaScreen extends Tela {
 		conteudo.add(botaoSalvarMedidas).left();
 		
 		botaoTabMedidas = new TextButton("Medidas", skin, "toggle");
-		//botaoTabMedidas.setDisabled(true);
+		botaoTabMedidas.setDisabled(true);
 		botaoTabMedidas.addListener(new ChangeListener(){
 
 			@Override
@@ -1528,13 +1533,9 @@ public class CadastroPessoaScreen extends Tela {
 		final Table tableAulas = new Table(skin);
 		tableAulas.add("Aulas:").row();
 		
-		final Table datasAulas = new Table(skin);
+		datasAulas = new Table(skin);
 		datasAulas.align(Align.topLeft);
 		final ScrollPane scrollDatasAulas = new ScrollPane(datasAulas, skin);
-		
-		datasAulas.add("01/01/2014").row();
-		datasAulas.add("03/01/2014").row();
-		datasAulas.add("04/01/2014").row();
 		
 		tableAulas.add(scrollDatasAulas).height(200).width(150);
 		
@@ -1549,7 +1550,48 @@ public class CadastroPessoaScreen extends Tela {
 
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				// TODO Auto-generated method stub
+				
+				if (CadastroPessoaScreen.this.pessoaEdicaoId == null){
+					
+					utils.mostarAlerta("Atenção", "Dados insuficientes, salve ou pesquise um cliente cadastrado.", stage, skin);
+					
+					return;
+				}
+				
+				final MedidaDTO medidaDTO = new MedidaDTO();
+				medidaDTO.setIdPessoa(CadastroPessoaScreen.this.pessoaEdicaoId.toString());
+				medidaDTO.setDataReferente(novaAula.getText());
+				
+				final HttpRequest request = utils.criarRequest(Utils.URL_PERSONAL_ADD_AULA, medidaDTO);
+				
+				utils.enviarRequest(request, stage, skin, new HttpResponseListener() {
+					
+					@Override
+					public void handleHttpResponse(HttpResponse httpResponse) {
+						
+						final GAResponse resp = utils.fromJson(GAResponse.class, httpResponse.getResultAsString());
+						
+						if (resp.isSucesso()){
+							
+							datasAulas.add(medidaDTO.getDataReferente()).row();
+						} else {
+							
+							utils.mostarAlerta("Atenção:", resp.getMsg(), stage, skin);
+						}
+					}
+					
+					@Override
+					public void failed(Throwable t) {
+						
+						utils.mostarAlerta("Erro:", "Erro ao tentar adicionar aula: " + t.getMessage() , stage, skin);
+					}
+					
+					@Override
+					public void cancelled() {
+						
+						utils.mostarAlerta(null, "Solicitação ao servidor cancelada.", stage, skin);
+					}
+				});
 			}
 		});
 		
@@ -1562,13 +1604,9 @@ public class CadastroPessoaScreen extends Tela {
 		final Table tableMedidas = new Table(skin);
 		tableMedidas.add("Medidas:").row();
 		
-		final Table datasMedidas = new Table(skin);
+		datasMedidas = new Table(skin);
 		datasMedidas.align(Align.topLeft);
 		final ScrollPane scrollDatasMedidas = new ScrollPane(datasMedidas, skin);
-		
-		datasMedidas.add(new CheckBox("01/01/2014", skin)).row();
-		datasMedidas.add(new CheckBox("03/01/2014", skin)).row();
-		datasMedidas.add(new CheckBox("04/01/2014", skin)).row();
 		
 		tableMedidas.add(scrollDatasMedidas).height(200).width(150);
 		
@@ -1588,11 +1626,25 @@ public class CadastroPessoaScreen extends Tela {
 		inTableCalcMedidas.add(dobrasCalc).colspan(2).padLeft(5).padBottom(5).row();
 		
 		final TextButton btnCalcular = new TextButton("Calcular", skin);
-		
+		btnCalcular.addListener(new ChangeListener(){
+
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				
+				CadastroPessoaScreen.this.criarRelatorio();
+			}
+		});
 		inTableCalcMedidas.add(btnCalcular);
 		
 		final TextButton btnEnviarEmail = new TextButton("Enviar por email", skin);
-		
+		btnEnviarEmail.addListener(new ChangeListener() {
+			
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				
+				CadastroPessoaScreen.this.enviarRelatorio();
+			}
+		});
 		inTableCalcMedidas.add(btnEnviarEmail).padLeft(5);
 		
 		tableMedidas.add(inTableCalcMedidas).padLeft(5);
@@ -1600,7 +1652,7 @@ public class CadastroPessoaScreen extends Tela {
 		conteudo.add(tableMedidas).padTop(15);
 		
 		botaoPersonal = new TextButton("Personal", skin, "toggle");
-		//botaoPersonal.setDisabled(true);
+		botaoPersonal.setDisabled(true);
 		botaoPersonal.addListener(new ChangeListener(){
 
 			@Override
@@ -1615,9 +1667,137 @@ public class CadastroPessoaScreen extends Tela {
 		
 		return new Tab(botaoPersonal, conteudo, skin, Align.top);
 	}
-
+	
 	private void carregarPersonal() {
-		// TODO Auto-generated method stub
 		
+		if (CadastroPessoaScreen.this.pessoaEdicaoId == null){
+			
+			utils.mostarAlerta("Atenção", "Dados insuficientes, salve ou pesquise um cliente cadastrado.", stage, skin);
+			
+			return;
+		}
+		
+		datasAulas.clearChildren();
+		datasMedidas.clearChildren();
+		listCheckDatasMedidas.clear();
+		
+		final PessoaDTO pessoaDTO = new PessoaDTO(CadastroPessoaScreen.this.pessoaEdicaoId, null);
+		
+		final HttpRequest request = utils.criarRequest(Utils.URL_PERSONAL_DATAS, pessoaDTO);
+		
+		utils.enviarRequest(request, stage, skin, new HttpResponseListener() {
+			
+			@Override
+			public void handleHttpResponse(HttpResponse httpResponse) {
+				
+				final MedidaPersonalDTOResponse dto = utils.fromJson(MedidaPersonalDTOResponse.class, httpResponse.getResultAsString());
+				
+				if (dto.isSucesso()){
+					
+					if (dto.getDatasAulas() != null && dto.getDatasAulas().size > 0){
+						
+						for (String dt : dto.getDatasAulas()){
+							
+							datasAulas.add(dt).row();
+						}
+					}
+					
+					if (dto.getDatasMedidas() != null && dto.getDatasMedidas().size > 0){
+						
+						for (String dt : dto.getDatasMedidas()){
+							
+							final CheckBox checkBox = new CheckBox(dt, skin);
+							listCheckDatasMedidas.add(checkBox);
+							datasMedidas.add(checkBox).row();
+						}
+					}
+				} else {
+					
+					utils.mostarAlerta("Atenção:", dto.getMsg(), stage, skin);
+				}
+			}
+			
+			@Override
+			public void failed(Throwable t) {
+				
+				utils.mostarAlerta("Erro:", "Erro ao tentar adicionar aula: " + t.getMessage() , stage, skin);
+			}
+			
+			@Override
+			public void cancelled() {
+				
+				utils.mostarAlerta(null, "Solicitação ao servidor cancelada.", stage, skin);
+			}
+		});
+	}
+
+	private void enviarRelatorio() {
+		
+		//TODO cade o request?
+		final HttpRequest request = utils.criarRequest(Utils.URL_PERSONAL_ENVIAR_RELATORIO, null);
+		
+		utils.enviarRequest(request, stage, skin, new HttpResponseListener() {
+			
+			@Override
+			public void handleHttpResponse(HttpResponse httpResponse) {
+				
+				final GAResponse ga = utils.fromJson(GAResponse.class, httpResponse.getResultAsString());
+				
+				if (ga.isSucesso()){
+					
+					utils.mostarAlerta(null, "Avaliação enviada com sucesso.", stage, skin);
+				} else {
+					
+					utils.mostarAlerta("Atenção:", ga.getMsg(), stage, skin);
+				}
+			}
+			
+			@Override
+			public void failed(Throwable t) {
+				
+				utils.mostarAlerta("Erro:", "Erro ao tentar enviar avaliação: " + t.getMessage() , stage, skin);
+			}
+			
+			@Override
+			public void cancelled() {
+				
+				utils.mostarAlerta(null, "Solicitação ao servidor cancelada.", stage, skin);
+			}
+		});
+	}
+
+	private void criarRelatorio() {
+		
+		//TODO cade o request?
+		final HttpRequest request = utils.criarRequest(Utils.URL_PERSONAL_GERAR_RELATORIO, null);
+		
+		utils.enviarRequest(request, stage, skin, new HttpResponseListener() {
+			
+			@Override
+			public void handleHttpResponse(HttpResponse httpResponse) {
+				
+				final GAResponse ga = utils.fromJson(GAResponse.class, httpResponse.getResultAsString());
+				
+				if (ga.isSucesso()){
+					
+					Gdx.net.openURI(utils.getPropertie(Utils.WEB_APP_END_POINT) + Utils.URL_PERSONAL_ABRIR_RELATORIO);
+				} else {
+					
+					utils.mostarAlerta("Atenção:", ga.getMsg(), stage, skin);
+				}
+			}
+			
+			@Override
+			public void failed(Throwable t) {
+				
+				utils.mostarAlerta("Erro:", "Erro ao tentar criar relatório de avaliação: " + t.getMessage() , stage, skin);
+			}
+			
+			@Override
+			public void cancelled() {
+				
+				utils.mostarAlerta(null, "Solicitação ao servidor cancelada.", stage, skin);
+			}
+		});
 	}
 }

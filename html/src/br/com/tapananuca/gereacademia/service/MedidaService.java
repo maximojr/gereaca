@@ -1,5 +1,7 @@
 package br.com.tapananuca.gereacademia.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -11,8 +13,11 @@ import br.com.tapananuca.gereacademia.comunicacao.MedidaDTO;
 import br.com.tapananuca.gereacademia.comunicacao.MedidaDTOResponse;
 import br.com.tapananuca.gereacademia.comunicacao.MedidaPersonalDTO;
 import br.com.tapananuca.gereacademia.comunicacao.MedidaPersonalDTOResponse;
+import br.com.tapananuca.gereacademia.comunicacao.PessoaDTO;
+import br.com.tapananuca.gereacademia.model.AulaPersonal;
 import br.com.tapananuca.gereacademia.model.Medida;
 import br.com.tapananuca.gereacademia.model.Pessoa;
+import br.com.tapananuca.gereacademia.model.Usuario;
 
 import com.badlogic.gdx.utils.Array;
 
@@ -164,6 +169,85 @@ public class MedidaService extends Service {
 	private Float floatOrNull(String valor){
 		
 		return valor == null ? null : Float.valueOf(valor);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public MedidaPersonalDTOResponse buscarDatas(PessoaDTO pessoaDTO){
+		
+		final MedidaPersonalDTOResponse res = new MedidaPersonalDTOResponse();
+		
+		if (pessoaDTO == null || pessoaDTO.getId() == null || pessoaDTO.getId().isEmpty()){
+			
+			res.setSucesso(false);
+			res.setMsg("Dados insuficientes");
+			return res;
+		}
+		
+		final Long idPessoa = Long.valueOf(pessoaDTO.getId());
+		
+		final EntityManager em = this.getEm();
+		
+		try {
+			
+			Query query = 
+				em.createQuery(
+					"select concat(day(ap.data), '/', month(ap.data), '/', year(ap.data)) " + 
+					" from AulaPersonal ap join ap.pessoa p where p.id = :id order by ap.data");
+			
+			query.setParameter("id", idPessoa);
+			
+			res.setDatasAulas(this.getArrayFromList(query.getResultList()));
+			
+			query = em.createQuery(
+				"select concat(day(m.dataReferente), '/', month(m.dataReferente), '/', year(m.dataReferente)) " + 
+				" from Medida m join ap.pessoa p where p.id = :id order by m.dataReferente");
+			
+			query.setParameter("id", idPessoa);
+			
+			res.setDatasMedidas(this.getArrayFromList(query.getResultList()));
+			
+		} finally {
+			
+			this.returnEm(em);
+		}
+		
+		return res;
+	}
+	
+	public String adicionarAulaPersonal(MedidaDTO medidaDTO, Long idUsuario) {
+		
+		if (medidaDTO == null || medidaDTO.getIdPessoa() == null || medidaDTO.getIdPessoa().isEmpty() ||
+				medidaDTO.getDataReferente() == null || medidaDTO.getDataReferente().isEmpty()){
+			
+			return "Dados insuficientes para adicionar aula";
+		}
+		
+		final EntityManager em = this.getEm();
+		
+		try {
+			
+			final Usuario usuario = em.find(Usuario.class, idUsuario);
+			final Pessoa pessoa = em.find(Pessoa.class, Long.valueOf(medidaDTO.getIdPessoa()));
+			
+			final AulaPersonal aulaPersonal = new AulaPersonal();
+			aulaPersonal.setUsuario(usuario);
+			aulaPersonal.setPessoa(pessoa);
+			aulaPersonal.setData(new SimpleDateFormat().parse(medidaDTO.getDataReferente()));
+			
+			em.getTransaction().begin();
+			em.persist(aulaPersonal);
+			em.getTransaction().commit();
+			
+		} catch (ParseException e) {
+			
+			return "Data inválida";
+			
+		} finally {
+			
+			this.returnEm(em);
+		}
+		
+		return null;
 	}
 	
 	public MedidaPersonalDTOResponse avaliarComposicaoCorporal(MedidaPersonalDTO medidaPersonalDTO){
