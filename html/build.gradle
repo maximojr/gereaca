@@ -75,24 +75,24 @@ configurations {
     }
 }
 
-	dependencies {
-		jasperreports 'jasperreports:jasperreports:3.5.3'
-	}
+dependencies {
+	jasperreports 'jasperreports:jasperreports:3.5.3'
+}
 	
-	sourceSets {
-		jasper {
-			srcDir = file(relativePath('src/reports'))
-  			classesDir = srcDir
- 		}
-	}
-	
-    task compileJasperJava(overwrite: true) << {
-    	ant {
-  			taskdef(name: 'jrc', classname: 'net.sf.jasperreports.ant.JRAntCompileTask', classpath: configurations.jasperreports.asPath)
-  			sourceSets.jasper.classesDir.mkdirs()
-  			jrc(srcdir: sourceSets.jasper.srcDir, destdir: sourceSets.jasper.classesDir) {
-  				include(name:'**/*.jrxml')
-  			}
- 		}
-	}
+sourceSets {
+	jasper {
+		srcDir = file(relativePath('src/reports'))
+  		classesDir = srcDir
+ 	}
+}
+
+task compileJasperJava(overwrite: true) << {
+	ant {
+		taskdef(name: 'jrc', classname: 'net.sf.jasperreports.ant.JRAntCompileTask', classpath: configurations.jasperreports.asPath)
+		sourceSets.jasper.classesDir.mkdirs()
+  		jrc(srcdir: sourceSets.jasper.srcDir, destdir: sourceSets.jasper.classesDir) {
+  			include(name:'**/*.jrxml')
+  		}
+  	}
+}
 classes.dependsOn compileJasperJava
