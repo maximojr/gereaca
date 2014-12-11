@@ -1,5 +1,7 @@
 package br.com.tapananuca.gereacademia.comunicacao;
 
+import br.com.tapananuca.gereacademia.Utils;
+
 import com.badlogic.gdx.utils.Array;
 
 public class MedidaPersonalDTOResponse extends GAResponse {
@@ -11,8 +13,16 @@ public class MedidaPersonalDTOResponse extends GAResponse {
 	public MedidaPersonalDTOResponse(){}
 
 	public String toJson(){
-		//TODO
-		return null;
+		
+		final Utils utils = Utils.getInstance();
+		
+		final StringBuilder json = new StringBuilder("{");
+		utils.addCollectionToJson(json, "datasAulas", datasAulas);
+		json.append(",");
+		utils.addCollectionToJson(json, "datasMedidas", datasMedidas);
+		json.append("}");
+		
+		return json.toString();
 	}
 	
 	public Array<String> getDatasAulas() {

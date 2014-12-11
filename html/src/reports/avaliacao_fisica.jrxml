@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="avaliacao_fisica" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<parameter name="NOME_PESSOA" class="java.lang.String"/>
+	<parameter name="AVALIADOR" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="TIPO_AVALIACAO" class="java.lang.String"/>
+	<parameter name="IDADE" class="java.lang.Number"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="densidadeCorporal" class="java.lang.Double">
+		<fieldDescription><![CDATA[densidadeCorporal]]></fieldDescription>
+	</field>
+	<field name="massaGorda" class="java.lang.Double">
+		<fieldDescription><![CDATA[massaGorda]]></fieldDescription>
+	</field>
+	<field name="massaMagra" class="java.lang.Double">
+		<fieldDescription><![CDATA[massaMagra]]></fieldDescription>
+	</field>
+	<field name="medidas" class="java.util.List">
+		<fieldDescription><![CDATA[medidas]]></fieldDescription>
+	</field>
+	<field name="objetivoEmagrecimento" class="java.lang.Double">
+		<fieldDescription><![CDATA[objetivoEmagrecimento]]></fieldDescription>
+	</field>
+	<field name="percentualGordura" class="java.lang.Double">
+		<fieldDescription><![CDATA[percentualGordura]]></fieldDescription>
+	</field>
+	<field name="pesoMaximoRecomendavel" class="java.lang.Double">
+		<fieldDescription><![CDATA[pesoMaximoRecomendavel]]></fieldDescription>
+	</field>
+	<field name="percentualGorduraAlvo" class="java.lang.Integer">
+		<fieldDescription><![CDATA[percentualGorduraAlvo]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="50" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="555" height="50"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font size="16"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Avaliação Física (" + $P{TIPO_AVALIACAO} + ")"]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="60" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="75" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Nome:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="75" y="0" width="480" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{NOME_PESSOA} + " (" + $P{IDADE} + " anos)"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="20" width="75" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Avaliado por:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="75" y="20" width="480" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{AVALIADOR}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="40" width="75" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Data:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="75" y="40" width="480" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format(new Date())]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="7" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="80" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="114" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Densidade corporal:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="20" width="114" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Percentual gordura:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="40" width="114" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Massa gorda:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="60" width="114" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Massa magra:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="276" y="0" width="140" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Peso máximo recomendado:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="276" y="20" width="140" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Objetivo de emagrecimento:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="114" y="0" width="139" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{densidadeCorporal}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="114" y="20" width="139" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{percentualGordura}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="114" y="40" width="139" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{massaGorda}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="114" y="60" width="139" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{massaMagra}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="416" y="0" width="139" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{pesoMaximoRecomendavel}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="416" y="20" width="139" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{objetivoEmagrecimento}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="276" y="40" width="140" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Percentual de gordura alvo:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="416" y="40" width="100" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{percentualGorduraAlvo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="645" splitType="Immediate">
+			<subreport>
+				<reportElement positionType="Float" x="0" y="0" width="555" height="215"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{medidas})]]></dataSourceExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "avaliacao_fisica_sub_ma.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement positionType="Float" x="0" y="215" width="555" height="215"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{medidas})]]></dataSourceExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "avaliacao_fisica_sub_mc.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement positionType="Float" x="0" y="430" width="555" height="215"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{medidas})]]></dataSourceExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "avaliacao_fisica_sub_dc.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</summary>
+</jasperReport>

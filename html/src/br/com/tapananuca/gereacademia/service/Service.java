@@ -111,6 +111,8 @@ public abstract class Service {
 			em.getTransaction().commit();
 		}
 		
+		em.clear();
+		
 		emPoll.add(em);
 	}
 }

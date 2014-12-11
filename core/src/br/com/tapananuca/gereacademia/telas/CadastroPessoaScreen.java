@@ -16,6 +16,7 @@ import br.com.tapananuca.gereacademia.comunicacao.HistoriaPatologicaDTO;
 import br.com.tapananuca.gereacademia.comunicacao.HistoriaPatologicaDTOResponse;
 import br.com.tapananuca.gereacademia.comunicacao.MedidaDTO;
 import br.com.tapananuca.gereacademia.comunicacao.MedidaDTOResponse;
+import br.com.tapananuca.gereacademia.comunicacao.MedidaPersonalDTO;
 import br.com.tapananuca.gereacademia.comunicacao.MedidaPersonalDTOResponse;
 import br.com.tapananuca.gereacademia.comunicacao.ObjetivoDTO;
 import br.com.tapananuca.gereacademia.comunicacao.ObjetivoDTOResponse;
@@ -43,6 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class CadastroPessoaScreen extends Tela {
@@ -131,6 +133,7 @@ public class CadastroPessoaScreen extends Tela {
 	//campos aba personal
 	private Table datasAulas, datasMedidas;
 	private List<CheckBox> listCheckDatasMedidas;
+	private SelectBox<String> dobrasCalc;
 	
 	//botões tabbed pannel
 	private TextButton botaoTabObjetivos;
@@ -1334,7 +1337,7 @@ public class CadastroPessoaScreen extends Tela {
 		conteudo.add(botaoSalvarMedidas).left();
 		
 		botaoTabMedidas = new TextButton("Medidas", skin, "toggle");
-		botaoTabMedidas.setDisabled(true);
+		//botaoTabMedidas.setDisabled(true);
 		botaoTabMedidas.addListener(new ChangeListener(){
 
 			@Override
@@ -1612,7 +1615,7 @@ public class CadastroPessoaScreen extends Tela {
 		
 		final Table inTableCalcMedidas = new Table(skin);
 		
-		final SelectBox<String> dobrasCalc = new SelectBox<String>(skin);
+		dobrasCalc = new SelectBox<String>(skin);
 		
 		final String[] dobras = new String[Dobra.values().length];
 		int index = 0;
@@ -1631,7 +1634,7 @@ public class CadastroPessoaScreen extends Tela {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				
-				CadastroPessoaScreen.this.criarRelatorio();
+				CadastroPessoaScreen.this.criarRelatorioAvaliacao();
 			}
 		});
 		inTableCalcMedidas.add(btnCalcular);
@@ -1642,7 +1645,7 @@ public class CadastroPessoaScreen extends Tela {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				
-				CadastroPessoaScreen.this.enviarRelatorio();
+				CadastroPessoaScreen.this.enviarRelatorioAvaliacao();
 			}
 		});
 		inTableCalcMedidas.add(btnEnviarEmail).padLeft(5);
@@ -1731,7 +1734,7 @@ public class CadastroPessoaScreen extends Tela {
 		});
 	}
 
-	private void enviarRelatorio() {
+	private void enviarRelatorioAvaliacao() {
 		
 		//TODO cade o request?
 		final HttpRequest request = utils.criarRequest(Utils.URL_PERSONAL_ENVIAR_RELATORIO, null);
@@ -1766,10 +1769,30 @@ public class CadastroPessoaScreen extends Tela {
 		});
 	}
 
-	private void criarRelatorio() {
+	private void criarRelatorioAvaliacao() {
 		
-		//TODO cade o request?
-		final HttpRequest request = utils.criarRequest(Utils.URL_PERSONAL_GERAR_RELATORIO, null);
+		if (this.pessoaEdicaoId == null){
+			
+			return;
+		}
+		
+		final MedidaPersonalDTO dto = new MedidaPersonalDTO();
+		dto.setIdPessoa(this.pessoaEdicaoId.toString());
+		dto.setDobra(Dobra.getEnumByValue(this.dobrasCalc.getSelected()));
+		
+		final Array<String> datas = new Array<String>();
+		
+		for (CheckBox c : this.listCheckDatasMedidas){
+			
+			if (c.isChecked()){
+				
+				datas.add(c.getText().toString());
+			}
+		}
+		
+		dto.setDatasMedidas(datas);
+		
+		final HttpRequest request = utils.criarRequest(Utils.URL_PERSONAL_GERAR_RELATORIO, dto);
 		
 		utils.enviarRequest(request, stage, skin, new HttpResponseListener() {
 			
@@ -1780,7 +1803,9 @@ public class CadastroPessoaScreen extends Tela {
 				
 				if (ga.isSucesso()){
 					
-					Gdx.net.openURI(utils.getPropertie(Utils.WEB_APP_END_POINT) + Utils.URL_PERSONAL_ABRIR_RELATORIO);
+					Gdx.net.openURI(
+						utils.getPropertie(Utils.WEB_APP_END_POINT) + 
+						Utils.URL_PERSONAL_ABRIR_RELATORIO + "?" + Utils.URL_PERSONAL_KEY_RELATORIO + "=" + ga.getMsg());
 				} else {
 					
 					utils.mostarAlerta("Atenção:", ga.getMsg(), stage, skin);

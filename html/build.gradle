@@ -3,8 +3,8 @@ apply plugin: "jetty"
 
 gwt {
     gwtVersion='2.6.0' // Should match the gwt version used for building the gwt backend
-    maxHeapSize="1G" // Default 256m is not enough for gwt compiler. GWT is HUNGRY
-    minHeapSize="1G"
+    maxHeapSize="2G" // Default 256m is not enough for gwt compiler. GWT is HUNGRY
+    minHeapSize="2G"
 
     src = files(file("src/")) // Needs to be in front of "modules" below.
     modules 'br.com.tapananuca.gereacademia.GdxDefinition'
@@ -68,3 +68,31 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 eclipse.project {
     name = appName + "-html"
 }
+
+configurations {
+	jasperreports {
+    	transitive = true
+    }
+}
+
+	dependencies {
+		jasperreports 'jasperreports:jasperreports:3.5.3'
+	}
+	
+	sourceSets {
+		jasper {
+			srcDir = file(relativePath('src/reports'))
+  			classesDir = srcDir
+ 		}
+	}
+	
+    task compileJasperJava(overwrite: true) << {
+    	ant {
+  			taskdef(name: 'jrc', classname: 'net.sf.jasperreports.ant.JRAntCompileTask', classpath: configurations.jasperreports.asPath)
+  			sourceSets.jasper.classesDir.mkdirs()
+  			jrc(srcdir: sourceSets.jasper.srcDir, destdir: sourceSets.jasper.classesDir) {
+  				include(name:'**/*.jrxml')
+  			}
+ 		}
+	}
+classes.dependsOn compileJasperJava

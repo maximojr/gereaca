@@ -8,6 +8,7 @@ import java.util.Iterator;
 
 import br.com.tapananuca.gereacademia.comunicacao.JsonSerializer;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.Net.HttpRequest;
@@ -60,6 +61,7 @@ public class Utils {
 	public static final String URL_PERSONAL_GERAR_RELATORIO = URL_PERSONAL + "/calcular";
 	public static final String URL_PERSONAL_ABRIR_RELATORIO = URL_PERSONAL + "/abrir";
 	public static final String URL_PERSONAL_ENVIAR_RELATORIO = URL_PERSONAL + "/enviar";
+	public static final String URL_PERSONAL_KEY_RELATORIO = "rel";
 	
 	public static final String URL_PAGAMENTOS = "/pagamentos";
 	public static final String URL_A_RECEBER = URL_PAGAMENTOS + "/receber";
@@ -138,7 +140,9 @@ public class Utils {
 		request.setHeader("Content-Type", "application/json");
         request.setHeader("Accept", "application/json");
         
-        if (sessionId != null){
+        //só seta cookie de sessão se já estiver logado e se não for versão web
+        //se for web não precisa, browser da um jeito
+        if (sessionId != null && Gdx.app.getType() != ApplicationType.WebGL){
         	request.setHeader("Cookie", "JSESSIONID=" + utils.sessionId);
         }
         
@@ -264,7 +268,7 @@ public class Utils {
 		final ScrollPane scroll = new ScrollPane(table, skin);
 		table.add(msg);
 		
-		window.add(scroll).width(300).height(300).row();
+		window.add(scroll).width(500).height(300).row();
 		TextButton ok = new TextButton("Ok", skin);
 		ok.addListener(new ChangeListener(){
 

@@ -1,8 +1,9 @@
 package br.com.tapananuca.gereacademia.servlet;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import br.com.tapananuca.gereacademia.Utils;
 import br.com.tapananuca.gereacademia.comunicacao.GAResponse;
 import br.com.tapananuca.gereacademia.comunicacao.MedidaDTO;
+import br.com.tapananuca.gereacademia.comunicacao.MedidaPersonalDTO;
 import br.com.tapananuca.gereacademia.comunicacao.MedidaPersonalDTOResponse;
 import br.com.tapananuca.gereacademia.comunicacao.PessoaDTO;
 import br.com.tapananuca.gereacademia.service.MedidaService;
@@ -25,7 +27,7 @@ public class PersonalServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 8004202272031420174L;
 	
-	private static final String RELATORIO = "_relatorio";
+	private static final Map<String, byte[]> relatorios = new HashMap<String, byte[]>();
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -70,29 +72,38 @@ public class PersonalServlet extends HttpServlet {
 			
 			ga = new GAResponse();
 			
-			final FileInputStream relatorio = this.gerarRelatorio(dados.toString(), ga);
+			final Long idUsuario = (Long) req.getSession().getAttribute(LoginServlet.PARAM_ID_LOGED_USER);
 			
-			if (relatorio != null){
+			final ReportHelper helper = this.gerarRelatorioAvaliacao(dados.toString(), idUsuario);
+			
+			if (helper.getMsg() != null){
 				
-				req.getSession().setAttribute(RELATORIO, relatorio);
+				ga.setSucesso(false);
+				ga.setMsg(helper.getMsg());
+			} else if (helper.getDados() != null){
+				
+				final String key = String.valueOf(System.currentTimeMillis());
+				relatorios.put(key, helper.getDados());
+				
+				ga.setMsg(key);
 			}
 			
 		} else if (url.endsWith(Utils.URL_PERSONAL_ABRIR_RELATORIO)){
 			
-			final FileInputStream pdfFile = (FileInputStream) req.getSession().getAttribute(RELATORIO);
+			final String key = req.getParameter(Utils.URL_PERSONAL_KEY_RELATORIO);
+			
+			final byte[] dadosRelatorio = relatorios.get(key);
 			
 			resp.setContentType("application/pdf");
 			resp.addHeader("Content-Disposition", "attachment; filename=relatorio.pdf");
-			resp.setContentLength((int) pdfFile.getChannel().size());
+			resp.setContentLength(dadosRelatorio.length);
 			
 			final OutputStream responseOutputStream = resp.getOutputStream();
-			int bytes;
-			while ((bytes = pdfFile.read()) != -1) {
-				responseOutputStream.write(bytes);
-			}
-			pdfFile.close();
+			responseOutputStream.write(dadosRelatorio);
+			responseOutputStream.flush();
+			responseOutputStream.close();
 			
-			req.getSession().removeAttribute(RELATORIO);
+			relatorios.remove(key);
 			
 			return;
 		} else if (url.endsWith(Utils.URL_PERSONAL_ENVIAR_RELATORIO)){
@@ -163,8 +174,23 @@ public class PersonalServlet extends HttpServlet {
 		return ga;
 	}
 
-	private FileInputStream gerarRelatorio(String dados, GAResponse ga) {
-		// TODO Auto-generated method stub
-		return null;
+	private ReportHelper gerarRelatorioAvaliacao(String dados, Long idUsuario) {
+		
+		final MedidaPersonalDTO medidaPersonalDTO = Utils.getInstance().fromJson(MedidaPersonalDTO.class, dados);
+		
+		final MedidaService medidaService = new MedidaService();
+		
+		ReportHelper res = null;
+		
+		try {
+			
+			res = medidaService.avaliarComposicaoCorporal(medidaPersonalDTO, idUsuario);
+		} catch (Exception e) {
+			
+			res = new ReportHelper();
+			res.setMsg(e.getLocalizedMessage());
+		}
+		
+		return res;
 	}
 }

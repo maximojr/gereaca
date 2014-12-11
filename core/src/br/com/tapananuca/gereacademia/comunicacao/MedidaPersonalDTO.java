@@ -1,5 +1,7 @@
 package br.com.tapananuca.gereacademia.comunicacao;
 
+import br.com.tapananuca.gereacademia.Utils;
+
 import com.badlogic.gdx.utils.Array;
 
 public class MedidaPersonalDTO implements GARequest {
@@ -10,6 +12,8 @@ public class MedidaPersonalDTO implements GARequest {
 	
 	private Dobra dobra;
 	
+	private String percentualGorduraAlvo;
+	
 	public MedidaPersonalDTO() {
 		
 		datasMedidas = new Array<String>();
@@ -17,8 +21,25 @@ public class MedidaPersonalDTO implements GARequest {
 	
 	@Override
 	public String toJson() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		final Utils utils = Utils.getInstance();
+		
+		final StringBuilder json = new StringBuilder("{");
+		
+		utils.addStringToJson(json, "idPessoa", idPessoa);
+		json.append(",");
+		utils.addCollectionToJson(json, "datasMedidas", datasMedidas);
+		
+		if (dobra != null){
+			
+			utils.addStringToJson(json, "dobra", dobra.name());
+		}
+		
+		utils.addStringToJson(json, "percentualGorduraAlvo", percentualGorduraAlvo);
+		
+		json.append("}");
+		
+		return json.toString();
 	}
 
 	public String getIdPessoa() {
@@ -43,5 +64,13 @@ public class MedidaPersonalDTO implements GARequest {
 
 	public void setDobra(Dobra dobra) {
 		this.dobra = dobra;
+	}
+
+	public String getPercentualGorduraAlvo() {
+		return percentualGorduraAlvo;
+	}
+
+	public void setPercentualGorduraAlvo(String percentualGorduraAlvo) {
+		this.percentualGorduraAlvo = percentualGorduraAlvo;
 	}
 }
