@@ -34,9 +34,11 @@
 		<band height="216" splitType="Stretch">
 			<lineChart>
 				<chart>
-					<reportElement stretchType="RelativeToTallestObject" x="0" y="20" width="555" height="196"/>
+					<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="555" height="216"/>
 					<chartTitle/>
-					<chartSubtitle/>
+					<chartSubtitle>
+						<subtitleExpression><![CDATA[new String("Medidas Circunferênciais")]]></subtitleExpression>
+					</chartSubtitle>
 					<chartLegend/>
 				</chart>
 				<categoryDataset>
@@ -92,11 +94,6 @@
 					</valueAxisFormat>
 				</linePlot>
 			</lineChart>
-			<staticText>
-				<reportElement x="0" y="0" width="555" height="20"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<text><![CDATA[Medidas Circunferênciais]]></text>
-			</staticText>
 		</band>
 	</summary>
 </jasperReport>

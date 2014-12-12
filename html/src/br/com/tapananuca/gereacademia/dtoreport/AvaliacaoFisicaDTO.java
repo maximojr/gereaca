@@ -20,7 +20,7 @@ public class AvaliacaoFisicaDTO {
 	
 	private Double objetivoEmagrecimento;
 	
-	private Double percentualGorduraAlvo;
+	private Double percentualPesoMaximoRecomendado;
 	
 	private Double pesoAtual;
 
@@ -80,12 +80,12 @@ public class AvaliacaoFisicaDTO {
 		this.objetivoEmagrecimento = objetivoEmagrecimento;
 	}
 
-	public Double getPercentualGorduraAlvo() {
-		return percentualGorduraAlvo;
+	public Double getPercentualPesoMaximoRecomendado() {
+		return percentualPesoMaximoRecomendado;
 	}
 
-	public void setPercentualGorduraAlvo(Double percentualGorduraAlvo) {
-		this.percentualGorduraAlvo = percentualGorduraAlvo;
+	public void setPercentualPesoMaximoRecomendado(Double percentualPesoMaximoRecomendado) {
+		this.percentualPesoMaximoRecomendado = percentualPesoMaximoRecomendado;
 	}
 
 	public Double getPesoAtual() {

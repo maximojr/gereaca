@@ -12,7 +12,7 @@ public class MedidaPersonalDTO implements GARequest {
 	
 	private Dobra dobra;
 	
-	private String percentualGorduraAlvo;
+	private String percentualPesoMaximoRec;
 	
 	public MedidaPersonalDTO() {
 		
@@ -27,7 +27,7 @@ public class MedidaPersonalDTO implements GARequest {
 		final StringBuilder json = new StringBuilder("{");
 		
 		utils.addStringToJson(json, "idPessoa", idPessoa);
-		utils.addStringToJson(json, "percentualGorduraAlvo", percentualGorduraAlvo);
+		utils.addStringToJson(json, "percentualPesoMaximoRec", percentualPesoMaximoRec);
 		json.append(",");
 		utils.addCollectionToJson(json, "datasMedidas", datasMedidas);
 		
@@ -65,11 +65,11 @@ public class MedidaPersonalDTO implements GARequest {
 		this.dobra = dobra;
 	}
 
-	public String getPercentualGorduraAlvo() {
-		return percentualGorduraAlvo;
+	public String getPercentualPesoMaximoRec() {
+		return percentualPesoMaximoRec;
 	}
 
-	public void setPercentualGorduraAlvo(String percentualGorduraAlvo) {
-		this.percentualGorduraAlvo = percentualGorduraAlvo;
+	public void setPercentualPesoMaximoRec(String percentualPesoMaximoRec) {
+		this.percentualPesoMaximoRec = percentualPesoMaximoRec;
 	}
 }

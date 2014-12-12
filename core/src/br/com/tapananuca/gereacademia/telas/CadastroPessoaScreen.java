@@ -136,7 +136,7 @@ public class CadastroPessoaScreen extends Tela {
 	private Table datasAulas, datasMedidas;
 	private List<CheckBox> listCheckDatasMedidas;
 	private SelectBox<String> dobrasCalc;
-	private Slider sliderPercentualGorduraAlvo;
+	private Slider sliderPercentualPesoMaxRec;
 	
 	//botões tabbed pannel
 	private TextButton botaoTabObjetivos;
@@ -1631,36 +1631,36 @@ public class CadastroPessoaScreen extends Tela {
 		
 		inTableCalcMedidas.add(dobrasCalc).colspan(2).padLeft(5).padBottom(5).row();
 		
-		inTableCalcMedidas.add("Percentual gordura alvo: ").colspan(2).row();
+		inTableCalcMedidas.add("Percentual peso máximo: ").colspan(2).row();
 		
-		sliderPercentualGorduraAlvo = new Slider(0, 100, 1, false, skin);
-		final Label percentualGorduraTexto = new Label("", skin);
-		sliderPercentualGorduraAlvo.addListener(new ChangeListener() {
+		sliderPercentualPesoMaxRec = new Slider(0, 100, 1, false, skin);
+		final Label percentualPesoMaxTexto = new Label("", skin);
+		sliderPercentualPesoMaxRec.addListener(new ChangeListener() {
 			
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				percentualGorduraTexto.setText(
-						String.valueOf(sliderPercentualGorduraAlvo.getValue()) + " %");
+				percentualPesoMaxTexto.setText(
+						String.valueOf(sliderPercentualPesoMaxRec.getValue()) + " %");
 			}
 		});
 		
-		sliderPercentualGorduraAlvo.addListener(new InputListener(){
+		sliderPercentualPesoMaxRec.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 			      event.stop();
 			      return false;
 			   }
 		});
-		inTableCalcMedidas.add(sliderPercentualGorduraAlvo);
+		inTableCalcMedidas.add(sliderPercentualPesoMaxRec);
 		
 		if (listSexo.getSelected().equals('M')){
 			
-			sliderPercentualGorduraAlvo.setValue(15f);
+			sliderPercentualPesoMaxRec.setValue(15f);
 		} else {
 			
-			sliderPercentualGorduraAlvo.setValue(23f);
+			sliderPercentualPesoMaxRec.setValue(23f);
 		}
 		
-		inTableCalcMedidas.add(percentualGorduraTexto).padLeft(5).padBottom(5).row();
+		inTableCalcMedidas.add(percentualPesoMaxTexto).padLeft(5).padBottom(5).row();
 		
 		final Table btns = new Table(skin);
 		
@@ -1818,7 +1818,7 @@ public class CadastroPessoaScreen extends Tela {
 		final MedidaPersonalDTO dto = new MedidaPersonalDTO();
 		dto.setIdPessoa(this.pessoaEdicaoId.toString());
 		dto.setDobra(Dobra.getEnumByValue(this.dobrasCalc.getSelected()));
-		dto.setPercentualGorduraAlvo(String.valueOf(this.sliderPercentualGorduraAlvo.getValue()));
+		dto.setPercentualPesoMaximoRec(String.valueOf(this.sliderPercentualPesoMaxRec.getValue()));
 		
 		final Array<String> datas = new Array<String>();
 		

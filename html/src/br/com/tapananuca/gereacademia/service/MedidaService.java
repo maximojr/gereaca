@@ -336,15 +336,15 @@ public class MedidaService extends Service {
 				return res;
 			}
 			
-			if (medidaPersonalDTO.getPercentualGorduraAlvo() == null ||
-					medidaPersonalDTO.getPercentualGorduraAlvo().isEmpty()){
+			if (medidaPersonalDTO.getPercentualPesoMaximoRec() == null ||
+					medidaPersonalDTO.getPercentualPesoMaximoRec().isEmpty()){
 				
 				if (pessoa.getSexo().equals('M')){
 				
-					medidaPersonalDTO.setPercentualGorduraAlvo("15");
+					medidaPersonalDTO.setPercentualPesoMaximoRec("15");
 				} else {
 					
-					medidaPersonalDTO.setPercentualGorduraAlvo("23");
+					medidaPersonalDTO.setPercentualPesoMaximoRec("23");
 				}
 			}
 			
@@ -384,16 +384,20 @@ public class MedidaService extends Service {
 						
 						if (pessoa.getSexo().equals('M')){
 							
-							this.protocolo3DobrasHomensAdultos(
+							res.setDados(this.protocolo3DobrasHomensAdultos(
 									lista, 
 									idade, 
-									Integer.parseInt(medidaPersonalDTO.getPercentualGorduraAlvo()));
+									Double.parseDouble(medidaPersonalDTO.getPercentualPesoMaximoRec()),
+									avaliador,
+									pessoa));
 						} else {
 							
-							this.protocolo3DobrasMulheresAdultas(
+							res.setDados(this.protocolo3DobrasMulheresAdultas(
 									lista, 
 									idade, 
-									Integer.parseInt(medidaPersonalDTO.getPercentualGorduraAlvo()));
+									Double.parseDouble(medidaPersonalDTO.getPercentualPesoMaximoRec()),
+									avaliador,
+									pessoa));
 						}
 					break;
 					
@@ -404,38 +408,44 @@ public class MedidaService extends Service {
 							res.setDados(this.protocolo7DobrasHomensAdultos(
 									lista, 
 									idade, 
-									Double.parseDouble(medidaPersonalDTO.getPercentualGorduraAlvo()),
+									Double.parseDouble(medidaPersonalDTO.getPercentualPesoMaximoRec()),
 									avaliador,
 									pessoa));
 						} else {
 							
-							this.protocolo7DobrasMulheresAdultas(
+							res.setDados(this.protocolo7DobrasMulheresAdultas(
 									lista, 
 									idade, 
-									Integer.parseInt(medidaPersonalDTO.getPercentualGorduraAlvo()));
+									Double.parseDouble(medidaPersonalDTO.getPercentualPesoMaximoRec()),
+									avaliador,
+									pessoa));
 						}
 					break;
 				}
 				
 			} else {
 				
-				switch (medidaPersonalDTO.getDobra()) {
-				case DUAS:
-					
-					if (pessoa.getSexo().equals('M')){
-						
-					} else {
-						
-					}
-					
-				break;
-
-				default:
-					
-					res.setMsg("Para menores de 18 anos escolha 2 dobras");
-					
-					return res;
-				}
+				res.setMsg("Não implementado");
+				
+				return res;
+				
+//				switch (medidaPersonalDTO.getDobra()) {
+//				case DUAS:
+//					
+//					if (pessoa.getSexo().equals('M')){
+//						
+//					} else {
+//						
+//					}
+//					
+//				break;
+//
+//				default:
+//					
+//					res.setMsg("Para menores de 18 anos escolha 2 dobras");
+//					
+//					return res;
+//				}
 			}
 			
 		} catch (Exception e){
@@ -452,18 +462,18 @@ public class MedidaService extends Service {
 	/*Escalha o percentual de gordura alvo para o cálculo do peso máximo recomendável .  
 	 * Heyward recomenda um percentual de 15% acima da Massa Magra. Há uma variação considerada dependendo da corrente de pesquisa.*/
 	
-	private byte[] protocolo7DobrasHomensAdultos(List<Medida> medidas, int idade, double percentualGorduraAlvo,
+	private byte[] protocolo7DobrasHomensAdultos(List<Medida> medidas, int idade, double percentualPesoMaximoRecomendado,
 			String avaliador, Pessoa pessoa) throws JRException{
 		
 		double peso = 0;
 		
 		double subescapular = 0;
 		double triceps = 0;
-		double toraxica = 0; 
-		double subAxilar = 0; 
+		double toraxica = 0;
+		double subAxilar = 0;
 		double supraIliaca = 0; 
 		double abdominal = 0; 
-		double coxa = 0; 
+		double coxa = 0;
 		
 		for (Medida m : medidas){
 			
@@ -496,7 +506,7 @@ public class MedidaService extends Service {
 		
 		double massaGorda = percentualGordura * peso / 100;
 		double massaMagra = peso - massaGorda;
-		double pesoMaximoRecomendavel = massaMagra / percentualGorduraAlvo;
+		double pesoMaximoRecomendavel = massaMagra / percentualPesoMaximoRecomendado;
 		double objetivoEmagrecimento = peso - pesoMaximoRecomendavel;
 		
 		final AvaliacaoFisicaDTO dto = new AvaliacaoFisicaDTO();
@@ -507,105 +517,169 @@ public class MedidaService extends Service {
 		dto.setObjetivoEmagrecimento(objetivoEmagrecimento);
 		dto.setPercentualGordura(percentualGordura);
 		dto.setPesoMaximoRecomendavel(pesoMaximoRecomendavel);
-		dto.setPercentualGorduraAlvo(percentualGorduraAlvo);
+		dto.setPercentualPesoMaximoRecomendado(percentualPesoMaximoRecomendado);
 		dto.setPesoAtual(medidas.get(medidas.size() - 1).getMaPesoCorporal().doubleValue());
 		
 		return this.gerarRelatorioAvaliacaoFisica("7 dobras", avaliador, pessoa.getNome(), idade, dto);
 	}
 	
-	private void protocolo3DobrasHomensAdultos(List<Medida> medidas, int idade, int percentualGorduraAlvo){
-		
-		//Peitoral
-		double d1_1 = 0, d1_2 = 0, d1_3 = 0;
-		
-		//Abdôminal
-		double d2_1 = 0, d2_2 = 0, d2_3 = 0;
-		
-		//Femural médio
-		double d3_1 = 0, d3_2 = 0, d3_3 = 0;
+	private byte[] protocolo3DobrasHomensAdultos(List<Medida> medidas, int idade, double percentualPesoMaximoRecomendado,
+			String avaliador, Pessoa pessoa) throws JRException{
 		
 		double peso = 0;
 		
-		double d1_m = (d1_1 + d1_2 + d1_3) / 3; 
-		double d2_m = (d2_1 + d2_2 + d2_3 ) / 3; 
-		double d3_m = (d3_1 + d3_2 + d3_3) / 3; 
+		double toraxica = 0; 
+		double abdominal = 0; 
+		double coxa = 0; 
 		
-		double sd = d1_m + d2_m + d3_m; 
+		for (Medida m : medidas){
+			
+			peso += m.getMaPesoCorporal();
+			
+			toraxica += m.getDcToraxica();
+			abdominal += m.getDcAbdominal();
+			coxa += m.getDcCoxa();
+		}
 		
-		double densidadeCorporal = 1.1093800 - (0.0008267 * sd) + (0.0000016 * sd * sd) - (0.0002574 * idade);
+		peso = peso / medidas.size();
+		
+		toraxica = toraxica / medidas.size();
+		abdominal = abdominal / medidas.size();
+		coxa = coxa / medidas.size();
+		
+		double somatorioMedias = toraxica + abdominal + coxa;
+		
+		double densidadeCorporal = 1.1093800 - (0.0008267 * somatorioMedias) + (0.0000016 * somatorioMedias * somatorioMedias) - (0.0002574 * idade);
 		
 		double percentualGordura = ((4.95 / densidadeCorporal) - 4.5) * 100;
 		
 		double massaGorda = percentualGordura * peso / 100; 
 		double massaMagra = peso - massaGorda; 
-		double pesoMaximoRecomendavel = massaMagra / percentualGorduraAlvo; 
+		double pesoMaximoRecomendavel = massaMagra / percentualPesoMaximoRecomendado; 
 		double objetivoEmagrecimento = peso - pesoMaximoRecomendavel;
+		
+		final AvaliacaoFisicaDTO dto = new AvaliacaoFisicaDTO();
+		dto.setMedidas(medidas);
+		dto.setDensidadeCorporal(densidadeCorporal);
+		dto.setMassaGorda(massaGorda);
+		dto.setMassaMagra(massaMagra);
+		dto.setObjetivoEmagrecimento(objetivoEmagrecimento);
+		dto.setPercentualGordura(percentualGordura);
+		dto.setPesoMaximoRecomendavel(pesoMaximoRecomendavel);
+		dto.setPercentualPesoMaximoRecomendado(percentualPesoMaximoRecomendado);
+		dto.setPesoAtual(medidas.get(medidas.size() - 1).getMaPesoCorporal().doubleValue());
+		
+		return this.gerarRelatorioAvaliacaoFisica("3 dobras", avaliador, pessoa.getNome(), idade, dto);
 	}
 	
-	private void protocolo7DobrasMulheresAdultas(List<Medida> medidas, int idade, int percentualGorduraAlvo){
-		
-		//Subescapular
-		double d1_1 = 0, d1_2 = 0, d1_3 = 0;
-		
-		//Tríceps
-		double d2_1 = 0, d2_2 = 0, d2_3 = 0;
-		
-		//Peitoral
-		double d3_1 = 0, d3_2 = 0, d3_3 = 0;
-		
-		//Axilar média
-		double d4_1 = 0, d4_2 = 0, d4_3 = 0;
-		
-		//Supra-ilíaca
-		double d5_1 = 0, d5_2 = 0, d5_3 = 0;
-		
-		//Abdôminal
-		double d6_1 = 0, d6_2 = 0, d6_3 = 0;
-		
-		//Femural médio
-		double d7_1 = 0, d7_2 = 0, d7_3 = 0;
+	private byte[] protocolo7DobrasMulheresAdultas(List<Medida> medidas, int idade, double percentualPesoMaximoRecomendado,
+			String avaliador, Pessoa pessoa) throws JRException{
 		
 		double peso = 0;
 		
-		double d1_m = (d1_1 + d1_2 + d1_3) / 3; 
-		double d2_m = (d2_1 + d2_2 + d2_3) / 3; 
-		double d3_m = (d3_1 + d3_2 + d3_3) / 3; 
-		double d4_m = (d4_1 + d4_2 + d4_3) / 3; 
-		double d5_m = (d5_1 + d5_2 + d5_3) / 3; 
-		double d6_m = (d6_1 + d6_2 + d6_3) / 3; 
-		double d7_m = (d7_1 + d7_2 + d7_3) / 3; 
-		double sd = d1_m + d2_m + d3_m + d4_m + d5_m + d6_m + d7_m; 
-		double d = 1.0970 - (0.00046971 * sd) + (0.00000056 * sd * sd) - (0.00012828 * idade );  
-		double g = ((4.95 / d) - 4.5) * 100; 
-		double mg = g * peso / 100; 
-		double mm = peso - mg; 
-		double pi = mm / percentualGorduraAlvo; 
-		double obj = peso - pi;
+		double subescapular = 0;
+		double triceps = 0;
+		double toraxica = 0;
+		double subAxilar = 0;
+		double supraIliaca = 0; 
+		double abdominal = 0; 
+		double coxa = 0;
+		
+		for (Medida m : medidas){
+			
+			peso += m.getMaPesoCorporal();
+			
+			subescapular += m.getDcSubEscapular();
+			triceps += m.getDcTriceps();
+			toraxica += m.getDcToraxica();
+			subAxilar += m.getDcSubAxilar();
+			supraIliaca += m.getDcSupraIliacas();
+			abdominal += m.getDcAbdominal();
+			coxa += m.getDcCoxa();
+		}
+		
+		peso = peso / medidas.size();
+		
+		subescapular = subescapular / medidas.size();
+		triceps = triceps / medidas.size();
+		toraxica = toraxica / medidas.size();
+		subAxilar = subAxilar / medidas.size();
+		supraIliaca = supraIliaca / medidas.size();
+		abdominal = abdominal / medidas.size();
+		coxa = coxa / medidas.size();
+		
+		double somatorioMedias = subescapular + triceps + toraxica + subAxilar + supraIliaca + abdominal + coxa;
+		
+		double densidadeCorporal = 1.0970 - (0.00046971 * somatorioMedias) + (0.00000056 * somatorioMedias * somatorioMedias) - (0.00012828 * idade );
+		
+		double percentualGordura = ((4.95 / densidadeCorporal) - 4.5) * 100;
+		
+		double massaGorda = percentualGordura * peso / 100; 
+		double massaMagra = peso - massaGorda; 
+		double pesoMaximoRecomendavel = massaMagra / percentualPesoMaximoRecomendado; 
+		double objetivoEmagrecimento = peso - pesoMaximoRecomendavel;
+		
+		final AvaliacaoFisicaDTO dto = new AvaliacaoFisicaDTO();
+		dto.setMedidas(medidas);
+		dto.setDensidadeCorporal(densidadeCorporal);
+		dto.setMassaGorda(massaGorda);
+		dto.setMassaMagra(massaMagra);
+		dto.setObjetivoEmagrecimento(objetivoEmagrecimento);
+		dto.setPercentualGordura(percentualGordura);
+		dto.setPesoMaximoRecomendavel(pesoMaximoRecomendavel);
+		dto.setPercentualPesoMaximoRecomendado(percentualPesoMaximoRecomendado);
+		dto.setPesoAtual(medidas.get(medidas.size() - 1).getMaPesoCorporal().doubleValue());
+		
+		return this.gerarRelatorioAvaliacaoFisica("7 dobras", avaliador, pessoa.getNome(), idade, dto);
 	}
 	
-	private void protocolo3DobrasMulheresAdultas(List<Medida> medidas, int idade, int percentualGorduraAlvo){
-		
-		//Tríceps
-		double d1_1 = 0, d1_2 = 0, d1_3 = 0;
-		
-		//Supra-ilíaca
-		double d2_1 = 0, d2_2 = 0, d2_3 = 0;
-		
-		//Femural médio
-		double d3_1 = 0, d3_2 = 0, d3_3 = 0;
+	private byte[] protocolo3DobrasMulheresAdultas(List<Medida> medidas, int idade, double percentualPesoMaximoRecomendado,
+			String avaliador, Pessoa pessoa) throws JRException{
 		
 		double peso = 0;
 		
-		double d1_m = (d1_1 + d1_2 + d1_3) / 3;
-		double d2_m = (d2_1 + d2_2 + d2_3) / 3; 
-		double d3_m = (d3_1 + d3_2 + d3_3) / 3; 
-		double sd = d1_m + d2_m + d3_m; 
-		double d = 1.0994921 - (0.0009929 * sd) + (0.0000023 * sd * sd) - (0.0001392 * idade);  
-		double g = ((4.95 / d) - 4.5) * 100; 
-		double mg = g * peso / 100; 
-		double mm = peso - mg; 
-		double pi = mm / percentualGorduraAlvo; 
-		double obj = peso - pi;
+		double toraxica = 0; 
+		double abdominal = 0; 
+		double coxa = 0; 
+		
+		for (Medida m : medidas){
+			
+			peso += m.getMaPesoCorporal();
+			
+			toraxica += m.getDcToraxica();
+			abdominal += m.getDcAbdominal();
+			coxa += m.getDcCoxa();
+		}
+		
+		peso = peso / medidas.size();
+		
+		toraxica = toraxica / medidas.size();
+		abdominal = abdominal / medidas.size();
+		coxa = coxa / medidas.size();
+		
+		double somatorioMedias = toraxica + abdominal + coxa;
+		
+		double densidadeCorporal = 1.0994921 - (0.0009929 * somatorioMedias) + (0.0000023 * somatorioMedias * somatorioMedias) - (0.0001392 * idade);
+		
+		double percentualGordura = ((4.95 / densidadeCorporal) - 4.5) * 100; 
+		
+		double massaGorda = percentualGordura * peso / 100; 
+		double massaMagra = peso - massaGorda;
+		double pesoMaximoRecomendavel = massaMagra / percentualPesoMaximoRecomendado; 
+		double objetivoEmagrecimento = peso - pesoMaximoRecomendavel;
+		
+		final AvaliacaoFisicaDTO dto = new AvaliacaoFisicaDTO();
+		dto.setMedidas(medidas);
+		dto.setDensidadeCorporal(densidadeCorporal);
+		dto.setMassaGorda(massaGorda);
+		dto.setMassaMagra(massaMagra);
+		dto.setObjetivoEmagrecimento(objetivoEmagrecimento);
+		dto.setPercentualGordura(percentualGordura);
+		dto.setPesoMaximoRecomendavel(pesoMaximoRecomendavel);
+		dto.setPercentualPesoMaximoRecomendado(percentualPesoMaximoRecomendado);
+		dto.setPesoAtual(medidas.get(medidas.size() - 1).getMaPesoCorporal().doubleValue());
+		
+		return this.gerarRelatorioAvaliacaoFisica("7 dobras", avaliador, pessoa.getNome(), idade, dto);
 	}
 	
 	private byte[] gerarRelatorioAvaliacaoFisica(
