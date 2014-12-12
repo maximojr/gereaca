@@ -30,11 +30,13 @@ import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -134,6 +136,7 @@ public class CadastroPessoaScreen extends Tela {
 	private Table datasAulas, datasMedidas;
 	private List<CheckBox> listCheckDatasMedidas;
 	private SelectBox<String> dobrasCalc;
+	private Slider sliderPercentualGorduraAlvo;
 	
 	//botões tabbed pannel
 	private TextButton botaoTabObjetivos;
@@ -1628,6 +1631,39 @@ public class CadastroPessoaScreen extends Tela {
 		
 		inTableCalcMedidas.add(dobrasCalc).colspan(2).padLeft(5).padBottom(5).row();
 		
+		inTableCalcMedidas.add("Percentual gordura alvo: ").colspan(2).row();
+		
+		sliderPercentualGorduraAlvo = new Slider(0, 100, 1, false, skin);
+		final Label percentualGorduraTexto = new Label("", skin);
+		sliderPercentualGorduraAlvo.addListener(new ChangeListener() {
+			
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				percentualGorduraTexto.setText(
+						String.valueOf(sliderPercentualGorduraAlvo.getValue()) + " %");
+			}
+		});
+		
+		sliderPercentualGorduraAlvo.addListener(new InputListener(){
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+			      event.stop();
+			      return false;
+			   }
+		});
+		inTableCalcMedidas.add(sliderPercentualGorduraAlvo);
+		
+		if (listSexo.getSelected().equals('M')){
+			
+			sliderPercentualGorduraAlvo.setValue(15f);
+		} else {
+			
+			sliderPercentualGorduraAlvo.setValue(23f);
+		}
+		
+		inTableCalcMedidas.add(percentualGorduraTexto).padLeft(5).padBottom(5).row();
+		
+		final Table btns = new Table(skin);
+		
 		final TextButton btnCalcular = new TextButton("Calcular", skin);
 		btnCalcular.addListener(new ChangeListener(){
 
@@ -1637,7 +1673,7 @@ public class CadastroPessoaScreen extends Tela {
 				CadastroPessoaScreen.this.criarRelatorioAvaliacao();
 			}
 		});
-		inTableCalcMedidas.add(btnCalcular);
+		btns.add(btnCalcular);
 		
 		final TextButton btnEnviarEmail = new TextButton("Enviar por email", skin);
 		btnEnviarEmail.addListener(new ChangeListener() {
@@ -1648,7 +1684,9 @@ public class CadastroPessoaScreen extends Tela {
 				CadastroPessoaScreen.this.enviarRelatorioAvaliacao();
 			}
 		});
-		inTableCalcMedidas.add(btnEnviarEmail).padLeft(5);
+		btns.add(btnEnviarEmail).padLeft(5);
+		
+		inTableCalcMedidas.add(btns).colspan(2);
 		
 		tableMedidas.add(inTableCalcMedidas).padLeft(5);
 		
@@ -1773,12 +1811,14 @@ public class CadastroPessoaScreen extends Tela {
 		
 		if (this.pessoaEdicaoId == null){
 			
+			utils.mostarAlerta("Atenção", "Dados insuficientes, salve ou pesquise um cliente cadastrado.", stage, skin);
 			return;
 		}
 		
 		final MedidaPersonalDTO dto = new MedidaPersonalDTO();
 		dto.setIdPessoa(this.pessoaEdicaoId.toString());
 		dto.setDobra(Dobra.getEnumByValue(this.dobrasCalc.getSelected()));
+		dto.setPercentualGorduraAlvo(String.valueOf(this.sliderPercentualGorduraAlvo.getValue()));
 		
 		final Array<String> datas = new Array<String>();
 		

@@ -404,7 +404,7 @@ public class MedidaService extends Service {
 							res.setDados(this.protocolo7DobrasHomensAdultos(
 									lista, 
 									idade, 
-									Integer.parseInt(medidaPersonalDTO.getPercentualGorduraAlvo()),
+									Double.parseDouble(medidaPersonalDTO.getPercentualGorduraAlvo()),
 									avaliador,
 									pessoa));
 						} else {
@@ -452,7 +452,7 @@ public class MedidaService extends Service {
 	/*Escalha o percentual de gordura alvo para o cálculo do peso máximo recomendável .  
 	 * Heyward recomenda um percentual de 15% acima da Massa Magra. Há uma variação considerada dependendo da corrente de pesquisa.*/
 	
-	private byte[] protocolo7DobrasHomensAdultos(List<Medida> medidas, int idade, int percentualGorduraAlvo,
+	private byte[] protocolo7DobrasHomensAdultos(List<Medida> medidas, int idade, double percentualGorduraAlvo,
 			String avaliador, Pessoa pessoa) throws JRException{
 		
 		double peso = 0;
@@ -508,6 +508,7 @@ public class MedidaService extends Service {
 		dto.setPercentualGordura(percentualGordura);
 		dto.setPesoMaximoRecomendavel(pesoMaximoRecomendavel);
 		dto.setPercentualGorduraAlvo(percentualGorduraAlvo);
+		dto.setPesoAtual(medidas.get(medidas.size() - 1).getMaPesoCorporal().doubleValue());
 		
 		return this.gerarRelatorioAvaliacaoFisica("7 dobras", avaliador, pessoa.getNome(), idade, dto);
 	}

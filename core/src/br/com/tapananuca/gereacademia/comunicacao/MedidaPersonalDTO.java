@@ -27,6 +27,7 @@ public class MedidaPersonalDTO implements GARequest {
 		final StringBuilder json = new StringBuilder("{");
 		
 		utils.addStringToJson(json, "idPessoa", idPessoa);
+		utils.addStringToJson(json, "percentualGorduraAlvo", percentualGorduraAlvo);
 		json.append(",");
 		utils.addCollectionToJson(json, "datasMedidas", datasMedidas);
 		
@@ -34,8 +35,6 @@ public class MedidaPersonalDTO implements GARequest {
 			
 			utils.addStringToJson(json, "dobra", dobra.name());
 		}
-		
-		utils.addStringToJson(json, "percentualGorduraAlvo", percentualGorduraAlvo);
 		
 		json.append("}");
 		

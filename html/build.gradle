@@ -79,19 +79,15 @@ dependencies {
 	jasperreports 'jasperreports:jasperreports:3.5.3'
 }
 	
-sourceSets {
-	jasper {
-		srcDir = file(relativePath('src/reports'))
-  		classesDir = srcDir
- 	}
-}
+sourceSets.ext.jasperSrcDir = file(relativePath('src/reports'))
+sourceSets.ext.jasperClassesDir = file(relativePath('war/WEB-INF/classes/reports'))
 
 task compileJasperJava(overwrite: true) << {
 	ant {
 		taskdef(name: 'jrc', classname: 'net.sf.jasperreports.ant.JRAntCompileTask', classpath: configurations.jasperreports.asPath)
-		sourceSets.jasper.classesDir.mkdirs()
-  		jrc(srcdir: sourceSets.jasper.srcDir, destdir: sourceSets.jasper.classesDir) {
-  			include(name:'**/*.jrxml')
+		sourceSets.jasperClassesDir.mkdirs()
+  		jrc(srcdir: sourceSets.jasperSrcDir, destdir: sourceSets.jasperClassesDir){
+  			exclude(name:'**/*.jasper')
   		}
   	}
 }

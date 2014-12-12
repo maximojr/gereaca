@@ -20,7 +20,9 @@ public class AvaliacaoFisicaDTO {
 	
 	private Double objetivoEmagrecimento;
 	
-	private Integer percentualGorduraAlvo;
+	private Double percentualGorduraAlvo;
+	
+	private Double pesoAtual;
 
 	public List<Medida> getMedidas() {
 		return medidas;
@@ -78,11 +80,19 @@ public class AvaliacaoFisicaDTO {
 		this.objetivoEmagrecimento = objetivoEmagrecimento;
 	}
 
-	public Integer getPercentualGorduraAlvo() {
+	public Double getPercentualGorduraAlvo() {
 		return percentualGorduraAlvo;
 	}
 
-	public void setPercentualGorduraAlvo(Integer percentualGorduraAlvo) {
+	public void setPercentualGorduraAlvo(Double percentualGorduraAlvo) {
 		this.percentualGorduraAlvo = percentualGorduraAlvo;
+	}
+
+	public Double getPesoAtual() {
+		return pesoAtual;
+	}
+
+	public void setPesoAtual(Double pesoAtual) {
+		this.pesoAtual = pesoAtual;
 	}
 }
