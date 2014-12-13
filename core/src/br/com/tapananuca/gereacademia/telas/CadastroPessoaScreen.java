@@ -20,6 +20,8 @@ public class CadastroPessoaScreen extends Tela {
 	
 	private Long pessoaEdicaoId = null;
 	
+	protected char indSexo = 'M';
+	
 	Label cabecalho;
 	
 	//botões tabbed pannel

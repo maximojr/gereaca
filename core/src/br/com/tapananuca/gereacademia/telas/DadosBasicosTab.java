@@ -104,6 +104,13 @@ public class DadosBasicosTab extends Tab {
 		
 		listSexo = new SelectBox<Character>(skin);
 		listSexo.setItems('M', 'F');
+		listSexo.addListener(new ChangeListener() {
+			
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				DadosBasicosTab.this.cadastroPessoaScreen.indSexo = listSexo.getSelected();
+			}
+		});
 		inTableDataNasc.add(listSexo).padLeft(10).row();
 		
 		conteudo.add(inTableDataNasc).left().row();
@@ -178,7 +185,6 @@ public class DadosBasicosTab extends Tab {
 		
 		this.inicializar();
 	}
-
 
 	private void abrirDialogPesquisaPessoa() {
 		

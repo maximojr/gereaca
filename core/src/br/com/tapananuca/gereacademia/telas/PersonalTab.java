@@ -51,6 +51,13 @@ public class PersonalTab extends Tab {
 			public void changed(ChangeEvent event, Actor actor) {
 				
 				if (button.isChecked()){
+					if (PersonalTab.this.cadastroPessoaScreen.indSexo == 'M'){
+						
+						sliderPercentualPesoMaxRec.setValue(15f);
+					} else {
+						
+						sliderPercentualPesoMaxRec.setValue(23f);
+					}
 					PersonalTab.this.carregarPersonal();
 				}
 			}
@@ -165,7 +172,7 @@ public class PersonalTab extends Tab {
 		
 		inTableCalcMedidas.add("Percentual peso máximo: ").colspan(2).row();
 		
-		sliderPercentualPesoMaxRec = new Slider(0, 100, 1, false, skin);
+		sliderPercentualPesoMaxRec = new Slider(1, 100, 1, false, skin);
 		final Label percentualPesoMaxTexto = new Label("", skin);
 		sliderPercentualPesoMaxRec.addListener(new ChangeListener() {
 			
@@ -183,15 +190,6 @@ public class PersonalTab extends Tab {
 			   }
 		});
 		inTableCalcMedidas.add(sliderPercentualPesoMaxRec);
-		
-		//TODO
-//		if (listSexo.getSelected().equals('M')){
-//			
-//			sliderPercentualPesoMaxRec.setValue(15f);
-//		} else {
-//			
-//			sliderPercentualPesoMaxRec.setValue(23f);
-//		}
 		
 		inTableCalcMedidas.add(percentualPesoMaxTexto).padLeft(5).padBottom(5).row();
 		
