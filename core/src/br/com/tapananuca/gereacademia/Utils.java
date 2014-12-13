@@ -54,6 +54,7 @@ public class Utils {
 	public static final String URL_PESSOA_HABITO_SALVAR = URL_PESSOA_HABITOS + "/salvar";
 	public static final String URL_PESSOA_MEDIDAS = URL_PESSOA + "/medida";
 	public static final String URL_PESSOA_MEDIDAS_SALVAR = URL_PESSOA_MEDIDAS + "/salvar";
+	public static final String URL_PESSOA_MEDIDAS_NOVA_DATA = URL_PESSOA_MEDIDAS + "/novadata";
 	
 	public static final String URL_PERSONAL = "/personal";
 	public static final String URL_PERSONAL_DATAS = URL_PERSONAL + "/datas";
@@ -351,6 +352,23 @@ public class Utils {
 		}
 	}
 	
+	
+	public void addJsonSerializerToJson(StringBuilder json, String nomeCampo, JsonSerializer valor){
+		
+		if (json == null){
+			
+			return;
+		}
+		
+		if (valor != null){
+			
+			json.append(json.length() == 1 ? "" : ",")
+				.append(nomeCampo)
+				.append(":");
+			
+			json.append(valor.toJson());
+		}
+	}
 	public <T extends JsonSerializer> void addGARequestCollectionToJson(StringBuilder json, String nomeCampo, Array<T> collection){
 		
 		json.append(nomeCampo)

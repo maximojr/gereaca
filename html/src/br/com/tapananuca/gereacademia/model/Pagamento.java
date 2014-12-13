@@ -39,6 +39,9 @@ public class Pagamento {
 	@Column(name="VALOR_PAGO")
 	private BigDecimal valorPago;
 	
+	@Column(name="MULTA")
+	private BigDecimal multa;
+	
 	@Column(name="DATA_REFERENTE")
 	@Temporal(TemporalType.DATE)
 	private Date dataReferente;
@@ -90,6 +93,14 @@ public class Pagamento {
 		this.valorPago = valorPago;
 	}
 
+	public BigDecimal getMulta() {
+		return multa;
+	}
+	
+	public void setMulta(BigDecimal multa) {
+		this.multa = multa;
+	}
+	
 	public Date getDataReferente() {
 		return dataReferente;
 	}

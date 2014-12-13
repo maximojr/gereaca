@@ -112,6 +112,9 @@ public class PessoaServlet extends HttpServlet {
 		} else if (url.endsWith(Utils.URL_PESSOA_MEDIDAS_SALVAR)){
 			
 			ga = this.salvarMedidasPessoa(dados.toString());
+		} else if (url.endsWith(Utils.URL_PESSOA_MEDIDAS_NOVA_DATA)){
+			
+			ga = this.adicionarNovaDataMedida(dados.toString());
 		} else {
 			
 			ga = new GAResponse();
@@ -351,10 +354,9 @@ public class PessoaServlet extends HttpServlet {
 		
 		final HabitosDTO habitosDTO = Utils.getInstance().fromJson(HabitosDTO.class, dados);
 		
-		HabitosDTOResponse rs = null;
+		HabitosDTOResponse rs = new HabitosDTOResponse();
 		if (habitosDTO == null || habitosDTO.getIdPessoa() == null || habitosDTO.getIdPessoa().isEmpty()){
 			
-			rs = new HabitosDTOResponse();
 			rs.setSucesso(false);
 			rs.setMsg("Dados insuficientes para buscar hábitos.");
 			
@@ -367,7 +369,6 @@ public class PessoaServlet extends HttpServlet {
 			rs = pessoaService.buscarHabitos(Long.valueOf(habitosDTO.getIdPessoa()));
 		} catch (Exception e) {
 			
-			rs = new HabitosDTOResponse();
 			rs.setSucesso(false);
 			rs.setMsg(e.getLocalizedMessage());
 			e.printStackTrace();
@@ -451,6 +452,32 @@ public class PessoaServlet extends HttpServlet {
 		
 		try {
 			msg = medidaService.salvarMedidas(medidaDTO);
+		} catch (Exception e) {
+			
+			msg = e.getLocalizedMessage();
+			e.printStackTrace();
+		}
+		
+		final GAResponse ga = new GAResponse();
+		if (msg != null){
+			
+			ga.setSucesso(false);
+			ga.setMsg(msg);
+		}
+		
+		return ga;
+	}
+	
+	private GAResponse adicionarNovaDataMedida(String dados) {
+		
+		final MedidaDTO medidaDTO = Utils.getInstance().fromJson(MedidaDTO.class, dados);
+		
+		final MedidaService medidaService = new MedidaService();
+		
+		String msg = null;
+		
+		try {
+			msg = medidaService.adicionarData(medidaDTO);
 		} catch (Exception e) {
 			
 			msg = e.getLocalizedMessage();

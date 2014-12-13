@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -276,7 +277,7 @@ public class MenuPrincipalScreen extends Tela {
 		containerPagamentos.align(Align.top);
 		containerPagamentos.setActor(tablePagamentos);
 		
-		tablePrincipal.add(containerPagamentos).height(350).width(500);
+		tablePrincipal.add(containerPagamentos).height(350).width(520);
 		
 		tablePrincipal.row().padTop(30);
 		
@@ -297,6 +298,7 @@ public class MenuPrincipalScreen extends Tela {
 		public String id;
 		public TextField valor;
 		public CheckBox chec;
+		public Label multa;
 	}
 	
 	class DataRefPagamentoChangeListener extends ChangeListener{
@@ -369,6 +371,7 @@ public class MenuPrincipalScreen extends Tela {
 							if (aReceberPaginaDTO.getaReceber() != null && aReceberPaginaDTO.getaReceber().size != 0){
 								
 								tablePagamentos.add("Nome").center().width(300);
+								tablePagamentos.add("Multa");
 								tablePagamentos.add("Valor");
 								tablePagamentos.add("Pago").row();
 								
@@ -383,10 +386,15 @@ public class MenuPrincipalScreen extends Tela {
 										
 										tablePagamentos.add(dto.getNome()).left().fill();
 										
+										final Label indMulta = new Label(utils.formatCurrency(dto.getMulta()), skin);
+										tablePagamentos.add(indMulta).left();
+										dh.multa = indMulta;
+										
 										final TextField campoValor = MenuPrincipalScreen.this.createCurrencyField(String.valueOf(dto.getValor()), skin);
 										tablePagamentos.add(campoValor).width(130).height(23);
 										
 										dh.valor = campoValor;
+										
 										
 										final CheckBox checkBox = new CheckBox("", skin);
 										tablePagamentos.add(checkBox);
@@ -396,9 +404,15 @@ public class MenuPrincipalScreen extends Tela {
 										
 										Table inTable = new Table(skin);
 										inTable.setBackground(cinza);
-										
 										inTable.add(dto.getNome()).left();
 										tablePagamentos.add(inTable.left()).fill();
+										
+										inTable = new Table();
+										inTable.setBackground(cinza);
+										final Label indMulta = new Label(utils.formatCurrency(dto.getMulta()), skin);
+										inTable.add(indMulta).left();
+										tablePagamentos.add(inTable.left()).fill();
+										dh.multa = indMulta;
 										
 										inTable = new Table();
 										inTable.setBackground(cinza);
@@ -407,6 +421,7 @@ public class MenuPrincipalScreen extends Tela {
 										tablePagamentos.add(inTable).fill();
 										
 										dh.valor = campoValor;
+										
 										
 										inTable = new Table();
 										inTable.setBackground(cinza);
@@ -533,6 +548,7 @@ public class MenuPrincipalScreen extends Tela {
 				baixa = new Baixa();
 				baixa.setId(data.id);
 				baixa.setValor(data.valor.getText().replace(",", "."));
+				baixa.setMulta(data.multa.getText().toString().replace(",", "."));
 				
 				dadosBaixa.getBaixas().add(baixa);
 			}

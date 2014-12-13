@@ -25,6 +25,8 @@ import com.badlogic.gdx.utils.Array;
 
 public class PessoaService extends Service{
 
+	private final BigDecimal CEM = new BigDecimal(100);
+	
 	public Long salvarPessoa(PessoaDTO pessoaDTO){
 		
 		if (pessoaDTO == null){
@@ -83,7 +85,21 @@ public class PessoaService extends Service{
 				
 				final Pagamento pagamento = new Pagamento();
 				pagamento.setPessoa(pessoa);
-				pagamento.setValorDevido(pessoa.getValorMensal());
+				
+				//caso inicio se de depois do dia 20 o primeiro pagamento é proporcional
+				if (Integer.valueOf(strData[0]) >= 20){
+					
+					final int dias = calendar.getActualMaximum(Calendar.DAY_OF_MONTH) - Integer.valueOf(strData[0]);
+					
+					final BigDecimal porcentagem = new BigDecimal(dias * 10 / 3);
+					
+					pagamento.setValorDevido(pessoa.getValorMensal().subtract(pessoa.getValorMensal().multiply(porcentagem).divide(CEM)));
+					
+				} else {
+					
+					pagamento.setValorDevido(pessoa.getValorMensal());
+				}
+				
 				pagamento.setDataReferente(pessoa.getInicio());
 				
 				em.persist(pagamento);

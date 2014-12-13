@@ -9,17 +9,22 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 public class Tab {
 
-	private Button botao;
+	protected Button botao;
 	
-	private Table conteudo;
+	protected Table conteudo;
 	
 	private ScrollPane scrollPane;
 	
 	private TabbedPanel tabbedPanel;
 	
-	public Tab(Button botao, Table conteudo, Skin skin, int alinhamento){
+	protected Skin skin;
+	
+	protected int alinhamento;
+	
+	public Tab(){}
+	
+	protected void inicializar() {
 		
-		this.botao = botao;
 		this.botao.addListener(new ChangeListener() {
 			
 			@Override
@@ -31,7 +36,6 @@ public class Tab {
 			}
 		});
 		
-		this.conteudo = conteudo;
 		
 		this.scrollPane = new ScrollPane(conteudo, skin);
 		this.scrollPane.setPosition(0, 0);

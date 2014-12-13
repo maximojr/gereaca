@@ -63,11 +63,14 @@ public class PagamentoService extends Service {
 		
 		final Calendar calendar = Calendar.getInstance();
 		
+		//só se aplica multa caso o pagamento se dê depois do dia 15
+		//e o dia da data referente do pagamento seja menor que 15
 		StringBuilder hql = new StringBuilder("select new ");
 		hql.append(AReceberDTO.class.getCanonicalName())
 		   .append(" (pag.id, ")
 		   .append(" pes.nome, ")
-		   .append(" pag.valorDevido) ")
+		   .append(" pag.valorDevido, ")
+		   .append(" case when ((day(current_date) > 15) and (day(pag.dataReferente) < 15) and (pag.dataBaixa is null)) then true else false end as multa) ")
 		   .append(" from Pagamento pag ")
 		   .append(" join pag.pessoa pes ")
 		   .append(" where ");
@@ -214,6 +217,11 @@ public class PagamentoService extends Service {
 					
 					pagamento.setDataBaixa(new Date());
 					pagamento.setValorPago(BigDecimal.valueOf(Double.valueOf(baixa.getValor())));
+					
+					if (baixa.getMulta() != null && !baixa.getMulta().isEmpty()){
+						pagamento.setMulta(new BigDecimal(Double.valueOf(baixa.getMulta())));
+					}
+					
 					pagamento.setUsuario(usuarioLogado);
 					em.merge(pagamento);
 				}

@@ -8,6 +8,8 @@ public class Baixa implements JsonSerializer {
 	
 	private String valor;
 	
+	private String multa;
+	
 	@Override
 	public String toJson() {
 		
@@ -17,6 +19,7 @@ public class Baixa implements JsonSerializer {
 		
 		utils.addStringToJson(json, "id", id);
 		utils.addStringToJson(json, "valor", valor);
+		utils.addStringToJson(json, "multa", multa);
 		
 		json.append("}");
 		
@@ -37,6 +40,14 @@ public class Baixa implements JsonSerializer {
 
 	public void setValor(String valor) {
 		this.valor = valor;
+	}
+
+	public String getMulta() {
+		return multa;
+	}
+
+	public void setMulta(String multa) {
+		this.multa = multa;
 	}
 
 }

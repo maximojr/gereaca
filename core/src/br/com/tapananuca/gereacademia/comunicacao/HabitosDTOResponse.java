@@ -12,11 +12,9 @@ public class HabitosDTOResponse extends GAResponse {
 		
 		final StringBuilder json = new StringBuilder("{");
 		
-		if (this.habitosDTO != null){
-			utils.addStringToJson(json, "habitosDTO", this.habitosDTO.toJson());
-		}
+		json.append(super.toJson().replace("{", "").replace("}", ""));
 		
-		json.append(",").append(super.toJson().replace("{", "").replace("}", ""));
+		utils.addJsonSerializerToJson(json, "habitosDTO", this.habitosDTO);
 		
 		json.append("}");
 		
