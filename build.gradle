@@ -84,6 +84,8 @@ project(":html") {
         compile group: "org.quartz-scheduler", name: "quartz", version: "2.2.1"
         
         compile group: "jasperreports", name: "jasperreports", version: "3.5.3"
+        
+        compile 'com.sendgrid:sendgrid-java:2.1.0'
     }
 }
 

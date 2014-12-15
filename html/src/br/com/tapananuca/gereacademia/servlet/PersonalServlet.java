@@ -108,7 +108,9 @@ public class PersonalServlet extends HttpServlet {
 			return;
 		} else if (url.endsWith(Utils.URL_PERSONAL_ENVIAR_RELATORIO)){
 			
-			//TODO
+			final Long idUsuario = (Long) req.getSession().getAttribute(LoginServlet.PARAM_ID_LOGED_USER);
+			
+			ga = this.enviarEmailRelatorioAvaliacao(dados.toString(), idUsuario);
 			
 		} else {
 			
@@ -122,6 +124,7 @@ public class PersonalServlet extends HttpServlet {
 		out.flush();
 		out.close();
 	}
+
 
 	private GAResponse carregarDatas(String dados) {
 		
@@ -192,5 +195,34 @@ public class PersonalServlet extends HttpServlet {
 		}
 		
 		return res;
+	}
+	
+	private GAResponse enviarEmailRelatorioAvaliacao(String dados, Long idUsuario) {
+		
+		final GAResponse ga = new GAResponse();
+		
+		final MedidaPersonalDTO medidaPersonalDTO = Utils.getInstance().fromJson(MedidaPersonalDTO.class, dados);
+		
+		final MedidaService medidaService = new MedidaService();
+		
+		String msg = null;
+		
+		try {
+			
+			msg = medidaService.enviarAvaliacaoEmail(medidaPersonalDTO, idUsuario);
+			
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+			msg = e.getLocalizedMessage();
+		}
+		
+		if (msg != null){
+			
+			ga.setSucesso(false);
+			ga.setMsg(msg);
+		}
+		
+		return ga;
 	}
 }

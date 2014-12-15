@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -27,7 +28,7 @@ public class HabitosTab extends Tab {
 	
 	private SelectBox<String> dieta;
 	
-	private TextField atividadeFisica;
+	private TextArea atividadeFisica;
 	private TextField ultimoExame;
 	
 	private TextField qtdTempoPeriodoExame;
@@ -63,8 +64,9 @@ public class HabitosTab extends Tab {
 		conteudo.add(dieta).left().row();
 		
 		conteudo.add("Pratica atividade física durante quanto tempo?").left().row();
-		atividadeFisica = new TextField("Não pratica", skin);
-		conteudo.add(atividadeFisica).left().row();
+		atividadeFisica = new TextArea("Não pratica", skin);
+		atividadeFisica.setPrefRows(3);
+		conteudo.add(atividadeFisica).left().width(300).row();
 		cadastroPessoaScreen.elementosFocaveis.add(atividadeFisica);
 		
 		conteudo.add("Data último exame médico:").left().row();

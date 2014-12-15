@@ -1,5 +1,8 @@
 package br.com.tapananuca.gereacademia.service;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -33,6 +36,8 @@ import br.com.tapananuca.gereacademia.model.Usuario;
 import br.com.tapananuca.gereacademia.servlet.ReportHelper;
 
 import com.badlogic.gdx.utils.Array;
+import com.sendgrid.SendGrid;
+import com.sendgrid.SendGridException;
 
 public class MedidaService extends Service {
 
@@ -351,6 +356,75 @@ public class MedidaService extends Service {
 		} finally {
 			
 			this.returnEm(em);
+		}
+		
+		return null;
+	}
+	
+	public String enviarAvaliacaoEmail(MedidaPersonalDTO medidaPersonalDTO, Long idUsuario) throws IOException, SendGridException{
+		
+		if (medidaPersonalDTO == null || medidaPersonalDTO.getIdPessoa() == null || medidaPersonalDTO.getIdPessoa().isEmpty()){
+			
+			return "Dados insuficientes para efetuar cálculos";
+		}
+		
+		String enderecoEmail = null;
+		
+		final EntityManager em = this.getEm();
+		
+		try {
+			
+			final Query query = em.createQuery("select p.email from Pessoa p where p.id = :id");
+			query.setParameter("id", Long.valueOf(medidaPersonalDTO.getIdPessoa()));
+			
+			enderecoEmail = (String) query.getSingleResult();
+			
+		} finally {
+			
+			this.returnEm(em);
+		}
+		
+		if (enderecoEmail == null){
+			
+			return "Pessoa não possui email cadastrado";
+		}
+		
+		final ReportHelper rh = this.avaliarComposicaoCorporal(medidaPersonalDTO, idUsuario);
+		
+		if (rh.getMsg() != null){
+			
+			return rh.getMsg();
+		} else if (rh.getDados() == null){
+			
+			return "Relatório não gerado";
+		} 
+		
+		final String user = System.getenv("SENDGRID_USERNAME");
+		final String password = System.getenv("SENDGRID_PASSWORD");
+		
+		final SendGrid sendGrid = new SendGrid(user, password);
+		
+		final SendGrid.Email email = new SendGrid.Email();
+		email.addTo(enderecoEmail);
+		email.setFrom("academia@ortobem.com.br");
+		email.setSubject("Avaliação Física");
+		email.setText("Olá, segue em anexo sua avaliação física. É uma mensagem automática, não responda esse email.");
+		
+		final File arquivo = new File(System.currentTimeMillis() + "_" + medidaPersonalDTO.getIdPessoa());
+		final FileOutputStream fos = new FileOutputStream(arquivo);
+		fos.write(rh.getDados());
+		fos.flush();
+		fos.close();
+		
+		email.addAttachment("avaliacao.pdf", arquivo);
+		
+		SendGrid.Response response = sendGrid.send(email);
+		
+		arquivo.delete();
+		
+		if (!response.getStatus()){
+			
+			return response.getCode() + " - " + response.getMessage();
 		}
 		
 		return null;

@@ -351,8 +351,30 @@ public class PersonalTab extends Tab {
 	
 	private void enviarRelatorioAvaliacao() {
 		
-		//TODO cade o request?
-		final HttpRequest request = utils.criarRequest(Utils.URL_PERSONAL_ENVIAR_RELATORIO, null);
+		if (this.cadastroPessoaScreen.getPessoaEdicaoId() == null){
+			
+			utils.mostarAlerta("Atenção", "Dados insuficientes, salve ou pesquise um cliente cadastrado.", stage, skin);
+			return;
+		}
+		
+		final MedidaPersonalDTO dto = new MedidaPersonalDTO();
+		dto.setIdPessoa(this.cadastroPessoaScreen.getPessoaEdicaoId().toString());
+		dto.setDobra(Dobra.getEnumByValue(this.dobrasCalc.getSelected()));
+		dto.setPercentualPesoMaximoRec(String.valueOf(this.sliderPercentualPesoMaxRec.getValue()));
+		
+		final Array<String> datas = new Array<String>();
+		
+		for (CheckBox c : this.listCheckDatasMedidas){
+			
+			if (c.isChecked()){
+				
+				datas.add(c.getText().toString());
+			}
+		}
+		
+		dto.setDatasMedidas(datas);
+		
+		final HttpRequest request = utils.criarRequest(Utils.URL_PERSONAL_ENVIAR_RELATORIO, dto);
 		
 		utils.enviarRequest(request, stage, skin, new HttpResponseListener() {
 			
