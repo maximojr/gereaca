@@ -483,7 +483,7 @@ public class MedidasTab extends Tab {
 					
 					utils.mostarAlerta(
 							null, 
-							"Medidas da data " + MedidasTab.this.dataReferenteMedida.getSelected() + "salvas com sucesso.", stage, skin);
+							"Medidas da data " + MedidasTab.this.dataReferenteMedida.getSelected() + " salvas com sucesso.", stage, skin);
 					
 				} else {
 					

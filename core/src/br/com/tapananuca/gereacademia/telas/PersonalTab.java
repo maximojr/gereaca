@@ -257,7 +257,7 @@ public class PersonalTab extends Tab {
 						
 						for (String dt : dto.getDatasAulas()){
 							
-							datasAulas.add(dt).row();
+							datasAulas.add(dt).left().row();
 						}
 					}
 					
@@ -267,7 +267,7 @@ public class PersonalTab extends Tab {
 							
 							final CheckBox checkBox = new CheckBox(dt, skin);
 							listCheckDatasMedidas.add(checkBox);
-							datasMedidas.add(checkBox).row();
+							datasMedidas.add(checkBox).left().row();
 						}
 					}
 				} else {

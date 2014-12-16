@@ -12,6 +12,7 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
+import br.com.tapananuca.gereacademia.job.GeraCobrancaJob;
 import br.com.tapananuca.gereacademia.service.PagamentoService;
 import br.com.tapananuca.gereacademia.service.Service;
 

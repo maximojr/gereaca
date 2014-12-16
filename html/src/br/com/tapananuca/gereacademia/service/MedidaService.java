@@ -379,6 +379,8 @@ public class MedidaService extends Service {
 			
 			enderecoEmail = (String) query.getSingleResult();
 			
+		} catch(NoResultException e){
+			
 		} finally {
 			
 			this.returnEm(em);
@@ -608,7 +610,7 @@ public class MedidaService extends Service {
 	private byte[] protocolo7DobrasHomensAdultos(List<Medida> medidas, int idade, double percentualPesoMaximoRecomendado,
 			String avaliador, Pessoa pessoa) throws JRException{
 		
-		double peso = medidas.get(medidas.size() - 1).getMaPesoCorporal();
+		double peso = this.doubleOrZero(medidas.get(medidas.size() - 1).getMaPesoCorporal());
 		
 		double somatorioMedias = this.calcularSomatorioMedidas(medidas, Dobra.SETE);
 		
@@ -632,7 +634,7 @@ public class MedidaService extends Service {
 	private byte[] protocolo3DobrasHomensAdultos(List<Medida> medidas, int idade, double percentualPesoMaximoRecomendado,
 			String avaliador, Pessoa pessoa) throws JRException{
 		
-		double peso = medidas.get(medidas.size() - 1).getMaPesoCorporal();
+		double peso = this.doubleOrZero(medidas.get(medidas.size() - 1).getMaPesoCorporal());
 		
 		double somatorioMedias = this.calcularSomatorioMedidas(medidas, Dobra.TRES);
 		
@@ -656,7 +658,7 @@ public class MedidaService extends Service {
 	private byte[] protocolo7DobrasMulheresAdultas(List<Medida> medidas, int idade, double percentualPesoMaximoRecomendado,
 			String avaliador, Pessoa pessoa) throws JRException{
 		
-		double peso = medidas.get(medidas.size() - 1).getMaPesoCorporal();
+		double peso = this.doubleOrZero(medidas.get(medidas.size() - 1).getMaPesoCorporal());
 		
 		double somatorioMedias = this.calcularSomatorioMedidas(medidas, Dobra.SETE);
 		
@@ -680,7 +682,7 @@ public class MedidaService extends Service {
 	private byte[] protocolo3DobrasMulheresAdultas(List<Medida> medidas, int idade, double percentualPesoMaximoRecomendado,
 			String avaliador, Pessoa pessoa) throws JRException{
 		
-		double peso = medidas.get(medidas.size() - 1).getMaPesoCorporal();
+		double peso = this.doubleOrZero(medidas.get(medidas.size() - 1).getMaPesoCorporal());
 		
 		double somatorioMedias = this.calcularSomatorioMedidas(medidas, Dobra.TRES);
 		
@@ -713,13 +715,13 @@ public class MedidaService extends Service {
 		
 		for (Medida m : medidas){
 			
-			subescapular += m.getDcSubEscapular();
-			triceps += m.getDcTriceps();
-			toraxica += m.getDcToraxica();
-			subAxilar += m.getDcSubAxilar();
-			supraIliaca += m.getDcSupraIliacas();
-			abdominal += m.getDcAbdominal();
-			coxa += m.getDcCoxa();
+			subescapular += this.doubleOrZero(m.getDcSubEscapular());
+			triceps += this.doubleOrZero(m.getDcTriceps());
+			toraxica += this.doubleOrZero(m.getDcToraxica());
+			subAxilar += this.doubleOrZero(m.getDcSubAxilar());
+			supraIliaca += this.doubleOrZero(m.getDcSupraIliacas());
+			abdominal += this.doubleOrZero(m.getDcAbdominal());
+			coxa += this.doubleOrZero(m.getDcCoxa());
 		}
 		
 		subescapular = subescapular / medidas.size();
@@ -741,6 +743,16 @@ public class MedidaService extends Service {
 		}
 		
 		return 0;
+	}
+	
+	private double doubleOrZero(Float valor){
+		
+		if (valor == null){
+			
+			return 0;
+		}
+		
+		return valor;
 	}
 	
 	private AvaliacaoFisicaDTO montarDTO(List<Medida> medidas, Double densidadeCorporal, Double massaGorda, 
@@ -782,7 +794,7 @@ public class MedidaService extends Service {
 		final List<AvaliacaoFisicaDTO> lista = new ArrayList<AvaliacaoFisicaDTO>(1);
 		lista.add(dto);
 		
-		JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(lista);
+		final JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(lista);
 		
 		final JasperPrint print = JasperFillManager.fillReport(path, parameters, beanColDataSource);
 		return JasperExportManager.exportReportToPdf(print);

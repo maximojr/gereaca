@@ -1,4 +1,4 @@
-package br.com.tapananuca.gereacademia.listener;
+package br.com.tapananuca.gereacademia.job;
 
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
