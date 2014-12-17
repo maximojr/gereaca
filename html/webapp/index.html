@@ -7,27 +7,38 @@
               <script src="soundmanager2-setup.js"></script>  
   			  <script src="soundmanager2-jsmin.js"></script>
   			  <script type="text/javascript">
-  			  	
-  			  	function avoidTabLoseFocus(event){
-  			  		if (event.keyCode == 9){
-  			  			event.preventDefault();
-  			  		}
-  			  	}
-  			  	
+  			  
   			  	window.onkeydown = function(e) {
+  			  		
+  			  		//a função no window.scroll mais este if
+  			  		//evitam scroll down quando espaço é pressionado, 
+  			  		//mas não quando o scroll é dado de outras maneira qualquer
   			  		if(e.keyCode == 32) {
   			  			document.getElementById("shazam").focus();
   			  		}
+  			  		
+  			  		//evita perda de foco do canvas quando tab é pressionado
+  			  		if (event.keyCode == 9){
+  			  			event.preventDefault();
+  			  		}
+				};
+				
+				//move o campo de acordo com a altura do scroll da pagina
+				//ja que o scroll pode ser dado pelo mouse e não só pela tecla de espaço
+				window.onscroll = function(e){
+					document.getElementById("shazam").style.top=window.pageYOffset+"px";
 				};
   			  
   			  </script> 
        </head>
        
-       <body onkeydown="avoidTabLoseFocus(event);" style="background: black;">              
+       <body style="background: black;">              
               <!-- superdev refresh button
               <a class="superdev" href="javascript:%7B%20window.__gwt_bookmarklet_params%20%3D%20%7B'server_url'%3A'http%3A%2F%2Flocalhost%3A9876%2F'%7D%3B%20var%20s%20%3D%20document.createElement('script')%3B%20s.src%20%3D%20'http%3A%2F%2Flocalhost%3A9876%2Fdev_mode_on.js'%3B%20void(document.getElementsByTagName('head')%5B0%5D.appendChild(s))%3B%7D">SuperDev Refresh</a>
               -->
-              <input type="text" id="shazam" style="position: absolute; left: 50%; top: 20%; z-index: -1;">
+              
+              <input type="text" id="shazam" 
+              	style="position: absolute; left: 50%; z-index: -1; border-color: transparent; outline: none; color: transparent; background-color: transparent;" />
               <div align="center" id="embed-html"></div>
               <script type="text/javascript" src="html/html.nocache.js"></script>
        </body>
