@@ -23,6 +23,8 @@ public class AvaliacaoFisicaDTO {
 	private Double percentualPesoMaximoRecomendado;
 	
 	private Double pesoAtual;
+	
+	private Double estaturaAtual;
 
 	public List<Medida> getMedidas() {
 		return medidas;
@@ -94,5 +96,13 @@ public class AvaliacaoFisicaDTO {
 
 	public void setPesoAtual(Double pesoAtual) {
 		this.pesoAtual = pesoAtual;
+	}
+
+	public Double getEstaturaAtual() {
+		return estaturaAtual;
+	}
+
+	public void setEstaturaAtual(Double estaturaAtual) {
+		this.estaturaAtual = estaturaAtual;
 	}
 }

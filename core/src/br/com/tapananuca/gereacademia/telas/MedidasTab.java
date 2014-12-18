@@ -150,8 +150,8 @@ public class MedidasTab extends Tab {
 		conteudo.add("Medidas Antropométricas:").left().padTop(15).row();
 		
 		inTable = new Table(skin);
-		inTable.add("Peso corporal:").left();
-		inTable.add("Altura:").padLeft(10).left();
+		inTable.add("Peso corporal (kg):").left();
+		inTable.add("Altura (m):").padLeft(10).left();
 		inTable.add("I.M.C.:").padLeft(10).left().row();
 		
 		maPesoCorporal = new TextField("", skin);
@@ -189,8 +189,8 @@ public class MedidasTab extends Tab {
 		maImc.setDisabled(true);
 		inTable.add(maImc).padLeft(10).left().row();
 		
-		inTable.add("Cintura:").left();
-		inTable.add("Quadril:").padLeft(10).left().row();
+		inTable.add("Cintura (cm):").left();
+		inTable.add("Quadril (cm):").padLeft(10).left().row();
 		
 		maCintura = new TextField("", skin);
 		maCintura.setTextFieldFilter(utils.currencyFilter);
@@ -204,7 +204,7 @@ public class MedidasTab extends Tab {
 		
 		conteudo.add(inTable).left().row();
 		
-		conteudo.add("Medidas Circunferênciais:").padTop(15).left().row();
+		conteudo.add("Medidas Circunferênciais (cm):").padTop(15).left().row();
 		
 		inTable = new Table(skin);
 		inTable.add("Tórax:").left();
@@ -253,7 +253,7 @@ public class MedidasTab extends Tab {
 		
 		conteudo.add(inTable).left().row();
 		
-		conteudo.add("Dobras Cutâneas").padTop(15).left().row();
+		conteudo.add("Dobras Cutâneas (cm)").padTop(15).left().row();
 		
 		inTable = new Table(skin);
 		inTable.add("Bíceps:").left();
@@ -515,7 +515,7 @@ public class MedidasTab extends Tab {
 			
 			this.maImc.setText(
 				String.valueOf(
-					Double.valueOf(peso) / (Double.valueOf(altura) * Double.valueOf(altura)
+					Double.valueOf(peso) / ((Double.valueOf(altura) * Double.valueOf(altura))
 				)).replace(".", ","));
 		}
 	}

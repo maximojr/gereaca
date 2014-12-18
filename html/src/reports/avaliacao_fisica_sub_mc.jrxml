@@ -37,7 +37,7 @@
 					<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="555" height="216"/>
 					<chartTitle/>
 					<chartSubtitle>
-						<subtitleExpression><![CDATA[new String("Medidas Circunferênciais")]]></subtitleExpression>
+						<subtitleExpression><![CDATA[new String("Medidas Circunferênciais (cm)")]]></subtitleExpression>
 					</chartSubtitle>
 					<chartLegend/>
 				</chart>

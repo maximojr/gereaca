@@ -160,14 +160,14 @@ public class DadosBasicosTab extends Tab {
 		
 		conteudo.add(inTableTelefone).left().row();
 		
-		conteudo.add("Valor Mensal:").left().row();
+		conteudo.add("Valor mensal:").left().row();
 		
 		valorMensal = new TextField("", skin);
 		valorMensal.setTextFieldFilter(utils.currencyFilter);
 		conteudo.add(valorMensal).left().row();
 		cadastroPessoaScreen.elementosFocaveis.add(valorMensal);
 		
-		ativo = new CheckBox("ativo", skin);
+		ativo = new CheckBox("Ativo", skin);
 		ativo.setChecked(true);
 		conteudo.add(ativo).left().row().padTop(30);
 		

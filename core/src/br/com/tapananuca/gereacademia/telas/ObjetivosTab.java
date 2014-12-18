@@ -57,7 +57,7 @@ public class ObjetivosTab extends Tab {
 		checkEstetica = new CheckBox("Estética", skin);
 		conteudo.add(checkEstetica).left().padRight(50);
 		
-		checkTerapeutico = new CheckBox("Terapeutico", skin);
+		checkTerapeutico = new CheckBox("Terapêutico", skin);
 		conteudo.add(checkTerapeutico).left().padRight(130);
 		
 		checkAutoRend = new CheckBox("Alto Rendimento", skin);

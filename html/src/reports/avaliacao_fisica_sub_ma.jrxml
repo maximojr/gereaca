@@ -27,7 +27,7 @@
 				<chart>
 					<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="555" height="216"/>
 					<chartTitle>
-						<titleExpression><![CDATA[new String("Medidas Antropométricas")]]></titleExpression>
+						<titleExpression><![CDATA[new String("Medidas Antropométricas (cm)")]]></titleExpression>
 					</chartTitle>
 					<chartSubtitle/>
 					<chartLegend/>
@@ -39,7 +39,7 @@
 						<valueExpression><![CDATA[$F{maPesoCorporal}]]></valueExpression>
 					</categorySeries>
 					<categorySeries>
-						<seriesExpression><![CDATA["Altura"]]></seriesExpression>
+						<seriesExpression><![CDATA["Estatura"]]></seriesExpression>
 						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataReferente})]]></categoryExpression>
 						<valueExpression><![CDATA[$F{maAltura}]]></valueExpression>
 					</categorySeries>

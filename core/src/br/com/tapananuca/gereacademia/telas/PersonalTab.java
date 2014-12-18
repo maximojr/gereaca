@@ -9,6 +9,7 @@ import br.com.tapananuca.gereacademia.comunicacao.GAResponse;
 import br.com.tapananuca.gereacademia.comunicacao.MedidaDTO;
 import br.com.tapananuca.gereacademia.comunicacao.MedidaPersonalDTO;
 import br.com.tapananuca.gereacademia.comunicacao.MedidaPersonalDTOResponse;
+import br.com.tapananuca.gereacademia.comunicacao.NivelMaturacao;
 import br.com.tapananuca.gereacademia.comunicacao.PessoaDTO;
 
 import com.badlogic.gdx.Gdx;
@@ -41,6 +42,7 @@ public class PersonalTab extends Tab {
 	private Table datasAulas, datasMedidas;
 	private List<CheckBox> listCheckDatasMedidas;
 	private SelectBox<String> dobrasCalc;
+	private SelectBox<String> nivelMaturacao;
 	private Slider sliderPercentualPesoMaxRec;
 	
 	public PersonalTab(final Button button, CadastroPessoaScreen cadastroPessoaScreen, int alinhamento){
@@ -159,16 +161,38 @@ public class PersonalTab extends Tab {
 		
 		dobrasCalc = new SelectBox<String>(skin);
 		
-		final String[] dobras = new String[Dobra.values().length];
+		String[] valores = new String[Dobra.values().length];
 		int index = 0;
 		for (Dobra d : Dobra.values()){
-			dobras[index] = d.getDescricao();
+			valores[index] = d.getDescricao();
 			index++;
 		}
 		
-		dobrasCalc.setItems(dobras);
+		dobrasCalc.setItems(valores);
 		
-		inTableCalcMedidas.add(dobrasCalc).colspan(2).padLeft(5).padBottom(5).row();
+		dobrasCalc.addListener(new ChangeListener() {
+			
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				
+				nivelMaturacao.setVisible(Dobra.getEnumByValue(dobrasCalc.getSelected()) == Dobra.DUAS);
+			}
+		});
+		
+		inTableCalcMedidas.add(dobrasCalc);
+		
+		nivelMaturacao = new SelectBox<String>(skin);
+		
+		valores = new String[NivelMaturacao.values().length];
+		index = 0;
+		for (NivelMaturacao d : NivelMaturacao.values()){
+			valores[index] = d.getDescricao();
+			index++;
+		}
+		
+		nivelMaturacao.setItems(valores);
+		
+		inTableCalcMedidas.add(nivelMaturacao).colspan(2).padLeft(5).padBottom(5).row();
 		
 		inTableCalcMedidas.add("Percentual peso máximo: ").colspan(2).row();
 		
@@ -206,7 +230,7 @@ public class PersonalTab extends Tab {
 		});
 		btns.add(btnCalcular);
 		
-		final TextButton btnEnviarEmail = new TextButton("Enviar por email", skin);
+		final TextButton btnEnviarEmail = new TextButton("Enviar por e-mail", skin);
 		btnEnviarEmail.addListener(new ChangeListener() {
 			
 			@Override
@@ -298,22 +322,7 @@ public class PersonalTab extends Tab {
 			return;
 		}
 		
-		final MedidaPersonalDTO dto = new MedidaPersonalDTO();
-		dto.setIdPessoa(this.cadastroPessoaScreen.getPessoaEdicaoId().toString());
-		dto.setDobra(Dobra.getEnumByValue(this.dobrasCalc.getSelected()));
-		dto.setPercentualPesoMaximoRec(String.valueOf(this.sliderPercentualPesoMaxRec.getValue()));
-		
-		final Array<String> datas = new Array<String>();
-		
-		for (CheckBox c : this.listCheckDatasMedidas){
-			
-			if (c.isChecked()){
-				
-				datas.add(c.getText().toString());
-			}
-		}
-		
-		dto.setDatasMedidas(datas);
+		final MedidaPersonalDTO dto = this.montarDTO();
 		
 		final HttpRequest request = utils.criarRequest(Utils.URL_PERSONAL_GERAR_RELATORIO, dto);
 		
@@ -357,22 +366,7 @@ public class PersonalTab extends Tab {
 			return;
 		}
 		
-		final MedidaPersonalDTO dto = new MedidaPersonalDTO();
-		dto.setIdPessoa(this.cadastroPessoaScreen.getPessoaEdicaoId().toString());
-		dto.setDobra(Dobra.getEnumByValue(this.dobrasCalc.getSelected()));
-		dto.setPercentualPesoMaximoRec(String.valueOf(this.sliderPercentualPesoMaxRec.getValue()));
-		
-		final Array<String> datas = new Array<String>();
-		
-		for (CheckBox c : this.listCheckDatasMedidas){
-			
-			if (c.isChecked()){
-				
-				datas.add(c.getText().toString());
-			}
-		}
-		
-		dto.setDatasMedidas(datas);
+		final MedidaPersonalDTO dto = this.montarDTO();
 		
 		final HttpRequest request = utils.criarRequest(Utils.URL_PERSONAL_ENVIAR_RELATORIO, dto);
 		
@@ -404,5 +398,32 @@ public class PersonalTab extends Tab {
 				utils.mostarAlerta(null, "Solicitação ao servidor cancelada.", stage, skin);
 			}
 		});
+	}
+	
+	private MedidaPersonalDTO montarDTO() {
+		
+		final MedidaPersonalDTO dto = new MedidaPersonalDTO();
+		dto.setIdPessoa(this.cadastroPessoaScreen.getPessoaEdicaoId().toString());
+		dto.setDobra(Dobra.getEnumByValue(this.dobrasCalc.getSelected()));
+		
+		if (nivelMaturacao.isVisible()){
+			dto.setNivelMaturacao(NivelMaturacao.getEnumByValue(nivelMaturacao.getSelected()));
+		}
+		
+		dto.setPercentualPesoMaximoRec(String.valueOf(this.sliderPercentualPesoMaxRec.getValue()));
+		
+		final Array<String> datas = new Array<String>();
+		
+		for (CheckBox c : this.listCheckDatasMedidas){
+			
+			if (c.isChecked()){
+				
+				datas.add(c.getText().toString());
+			}
+		}
+		
+		dto.setDatasMedidas(datas);
+		
+		return dto;
 	}
 }

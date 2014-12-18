@@ -102,7 +102,7 @@ public class MenuPrincipalScreen extends Tela {
 		
 		final Table tableBotoes = new Table(skin);
 		//tableBotoes.debugAll();
-		final TextButton cadastrarPessoaButton = new TextButton("Cadastrar Pessoa", skin);
+		final TextButton cadastrarPessoaButton = new TextButton("Cadastro Pessoa", skin);
 		cadastrarPessoaButton.addListener(new ChangeListener(){
 
 			@Override
@@ -600,7 +600,7 @@ public class MenuPrincipalScreen extends Tela {
 		
 		Table inTable = new Table(skin);
 		
-		inTable.add("Aniversariantes: ");
+		inTable.add("Aniversariantes no mês de: ");
 		inTable.add(datasRefAniversario);
 		
 		tableAniversarios.add(inTable).colspan(3).row();

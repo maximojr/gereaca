@@ -214,25 +214,16 @@ public class PessoaServlet extends HttpServlet {
 		
 		final PessoaService pessoaService = new PessoaService();
 		
-		Long idPessoa = null;
-		String msg = null;
+		GAResponse ga = null;
+		
 		try {
-			idPessoa = pessoaService.salvarPessoa(pessoaDTO);
+			ga = pessoaService.salvarPessoa(pessoaDTO);
 		} catch (Exception e) {
-			msg = e.getLocalizedMessage();
 			e.printStackTrace();
-		}
-		
-		final GAResponse ga = new GAResponse();
-		
-		if (idPessoa != null){
-
-			ga.setMsg("Pessoa cadastrada com sucesso.");
-			ga.setSessionId(idPessoa.toString());
-		} else {
 			
+			ga = new GAResponse();
 			ga.setSucesso(false);
-			ga.setMsg(msg);
+			ga.setMsg(e.getLocalizedMessage());
 		}
 		
 		return ga;

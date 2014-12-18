@@ -10,6 +10,7 @@ import javax.persistence.Query;
 
 import br.com.tapananuca.gereacademia.comunicacao.AReceberDTO;
 import br.com.tapananuca.gereacademia.comunicacao.AReceberPaginaDTO;
+import br.com.tapananuca.gereacademia.comunicacao.GAResponse;
 import br.com.tapananuca.gereacademia.comunicacao.HabitosDTO;
 import br.com.tapananuca.gereacademia.comunicacao.HabitosDTOResponse;
 import br.com.tapananuca.gereacademia.comunicacao.HistoriaPatologicaDTO;
@@ -27,11 +28,19 @@ public class PessoaService extends Service{
 
 	private final BigDecimal CEM = new BigDecimal(100);
 	
-	public Long salvarPessoa(PessoaDTO pessoaDTO){
+	public GAResponse salvarPessoa(PessoaDTO pessoaDTO){
 		
-		if (pessoaDTO == null){
+		final GAResponse res = new GAResponse();
+		
+		if (pessoaDTO == null || pessoaDTO.getNome() == null || pessoaDTO.getNome().isEmpty() ||
+				pessoaDTO.getDataNascimento() == null || pessoaDTO.getDataNascimento().isEmpty() ||
+				pessoaDTO.getDataInicio() == null || pessoaDTO.getDataInicio().isEmpty() ||
+				pessoaDTO.getValorMensal() == null || pessoaDTO.getValorMensal().isEmpty()){
 			
-			return null;
+			res.setSucesso(false);
+			res.setMsg("Dados obrigatórios não preenchidos");
+			
+			return res;
 		}
 		
 		final EntityManager em = this.getEm();
@@ -111,7 +120,9 @@ public class PessoaService extends Service{
 			
 			em.getTransaction().commit();
 			
-			return pessoa.getId();
+			res.setSessionId(pessoa.getId().toString());
+			
+			return res;
 			
 		} finally {
 			this.returnEm(em);

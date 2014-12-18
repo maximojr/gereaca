@@ -14,6 +14,8 @@ public class MedidaPersonalDTO implements GARequest {
 	
 	private String percentualPesoMaximoRec;
 	
+	private NivelMaturacao nivelMaturacao;
+	
 	public MedidaPersonalDTO() {
 		
 		datasMedidas = new Array<String>();
@@ -34,6 +36,11 @@ public class MedidaPersonalDTO implements GARequest {
 		if (dobra != null){
 			
 			utils.addStringToJson(json, "dobra", dobra.name());
+		}
+		
+		if (nivelMaturacao != null){
+			
+			utils.addStringToJson(json, "nivelMaturacao", nivelMaturacao.name());
 		}
 		
 		json.append("}");
@@ -71,5 +78,13 @@ public class MedidaPersonalDTO implements GARequest {
 
 	public void setPercentualPesoMaximoRec(String percentualPesoMaximoRec) {
 		this.percentualPesoMaximoRec = percentualPesoMaximoRec;
+	}
+
+	public NivelMaturacao getNivelMaturacao() {
+		return nivelMaturacao;
+	}
+
+	public void setNivelMaturacao(NivelMaturacao nivelMaturacao) {
+		this.nivelMaturacao = nivelMaturacao;
 	}
 }
