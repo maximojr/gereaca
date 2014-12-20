@@ -27,29 +27,29 @@
 				<chart>
 					<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="555" height="216"/>
 					<chartTitle>
-						<titleExpression><![CDATA[new String("Medidas Antropométricas (cm)")]]></titleExpression>
+						<titleExpression><![CDATA[new String("Medidas Antropométricas")]]></titleExpression>
 					</chartTitle>
 					<chartSubtitle/>
 					<chartLegend/>
 				</chart>
 				<categoryDataset>
 					<categorySeries>
-						<seriesExpression><![CDATA["Peso corporal"]]></seriesExpression>
+						<seriesExpression><![CDATA["Peso corporal (kg)"]]></seriesExpression>
 						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataReferente})]]></categoryExpression>
 						<valueExpression><![CDATA[$F{maPesoCorporal}]]></valueExpression>
 					</categorySeries>
 					<categorySeries>
-						<seriesExpression><![CDATA["Estatura"]]></seriesExpression>
+						<seriesExpression><![CDATA["Estatura (m)"]]></seriesExpression>
 						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataReferente})]]></categoryExpression>
 						<valueExpression><![CDATA[$F{maAltura}]]></valueExpression>
 					</categorySeries>
 					<categorySeries>
-						<seriesExpression><![CDATA["Cintura"]]></seriesExpression>
+						<seriesExpression><![CDATA["Cintura (cm)"]]></seriesExpression>
 						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataReferente})]]></categoryExpression>
 						<valueExpression><![CDATA[$F{maCintura}]]></valueExpression>
 					</categorySeries>
 					<categorySeries>
-						<seriesExpression><![CDATA["Quadril"]]></seriesExpression>
+						<seriesExpression><![CDATA["Quadril (cm)"]]></seriesExpression>
 						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataReferente})]]></categoryExpression>
 						<valueExpression><![CDATA[$F{maQuadril}]]></valueExpression>
 					</categorySeries>

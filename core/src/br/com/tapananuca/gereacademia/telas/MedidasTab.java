@@ -253,7 +253,7 @@ public class MedidasTab extends Tab {
 		
 		conteudo.add(inTable).left().row();
 		
-		conteudo.add("Dobras Cutâneas (cm)").padTop(15).left().row();
+		conteudo.add("Dobras Cutâneas (mm)").padTop(15).left().row();
 		
 		inTable = new Table(skin);
 		inTable.add("Bíceps:").left();

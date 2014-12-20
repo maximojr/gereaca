@@ -483,10 +483,10 @@ public class MedidaService extends Service {
 				
 				if (pessoa.getSexo().equals('M')){
 				
-					medidaPersonalDTO.setPercentualPesoMaximoRec("15");
+					medidaPersonalDTO.setPercentualPesoMaximoRec(String.valueOf((100 - 15) / 100));
 				} else {
 					
-					medidaPersonalDTO.setPercentualPesoMaximoRec("23");
+					medidaPersonalDTO.setPercentualPesoMaximoRec(String.valueOf((100 - 23) / 100));
 				}
 			}
 			
@@ -818,7 +818,6 @@ public class MedidaService extends Service {
 		return this.gerarRelatorioAvaliacaoFisica(Dobra.DUAS.getDescricao(), avaliador, pessoa.getNome(), idade, dto);
 	}
 	
-	//cadastro em centimentos, calculo em milimetros
 	private double calcularSomatorioMedidas(List<Medida> medidas, Dobra dobra){
 		
 		double subescapular = 0;
@@ -829,24 +828,26 @@ public class MedidaService extends Service {
 		double abdominal = 0; 
 		double coxa = 0;
 		
-		for (Medida m : medidas){
+		final int startIndex = medidas.size() > 3 ? medidas.size() - 3 : 0;
+		
+		for (Medida m : medidas.subList(startIndex, medidas.size())){
 			
-			subescapular += (this.doubleOrZero(m.getDcSubEscapular()) * 10);
-			triceps += (this.doubleOrZero(m.getDcTriceps()) * 10);
-			toraxica += (this.doubleOrZero(m.getDcToraxica()) * 10);
-			subAxilar += (this.doubleOrZero(m.getDcSubAxilar()) * 10);
-			supraIliaca += (this.doubleOrZero(m.getDcSupraIliacas()) * 10);
-			abdominal += (this.doubleOrZero(m.getDcAbdominal()) * 10);
-			coxa += (this.doubleOrZero(m.getDcCoxa()) * 10);
+			subescapular += this.doubleOrZero(m.getDcSubEscapular());
+			triceps += this.doubleOrZero(m.getDcTriceps());
+			toraxica += this.doubleOrZero(m.getDcToraxica());
+			subAxilar += this.doubleOrZero(m.getDcSubAxilar());
+			supraIliaca += this.doubleOrZero(m.getDcSupraIliacas());
+			abdominal += this.doubleOrZero(m.getDcAbdominal());
+			coxa += this.doubleOrZero(m.getDcCoxa());
 		}
 		
-		subescapular = subescapular / medidas.size();
-		triceps = triceps / medidas.size();
-		toraxica = toraxica / medidas.size();
-		subAxilar = subAxilar / medidas.size();
-		supraIliaca = supraIliaca / medidas.size();
-		abdominal = abdominal / medidas.size();
-		coxa = coxa / medidas.size();
+		subescapular = subescapular / 3;
+		triceps = triceps / 3;
+		toraxica = toraxica / 3;
+		subAxilar = subAxilar / 3;
+		supraIliaca = supraIliaca / 3;
+		abdominal = abdominal / 3;
+		coxa = coxa / 3;
 		
 		switch (dobra) {
 			case DUAS:
@@ -882,7 +883,7 @@ public class MedidaService extends Service {
 		dto.setObjetivoEmagrecimento(objetivoEmagrecimento);
 		dto.setPercentualGordura(percentualGordura);
 		dto.setPesoMaximoRecomendavel(pesoMaximoRecomendavel);
-		dto.setPercentualPesoMaximoRecomendado(percentualPesoMaximoRecomendado);
+		dto.setPercentualPesoMaximoRecomendado(100 - (percentualPesoMaximoRecomendado * 100));
 		dto.setPesoAtual(peso);
 		dto.setEstaturaAtual(estatura);
 		

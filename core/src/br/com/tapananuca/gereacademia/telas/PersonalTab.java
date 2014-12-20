@@ -410,7 +410,9 @@ public class PersonalTab extends Tab {
 			dto.setNivelMaturacao(NivelMaturacao.getEnumByValue(nivelMaturacao.getSelected()));
 		}
 		
-		dto.setPercentualPesoMaximoRec(String.valueOf(this.sliderPercentualPesoMaxRec.getValue()));
+		dto.setPercentualPesoMaximoRec(
+				String.valueOf(
+						(100 - this.sliderPercentualPesoMaxRec.getValue()) / 100));
 		
 		final Array<String> datas = new Array<String>();
 		
