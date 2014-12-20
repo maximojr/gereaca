@@ -354,11 +354,11 @@ public class DadosBasicosTab extends Tab {
 						DadosBasicosTab.this.nome.setText(pessoaDTO.getNome());
 						DadosBasicosTab.this.dataNasc.setText(pessoaDTO.getDataNascimento());
 						DadosBasicosTab.this.listSexo.setSelected(pessoaDTO.getSexo());
-						DadosBasicosTab.this.endereco.setText(pessoaDTO.getEndereco());
-						DadosBasicosTab.this.numero.setText(pessoaDTO.getNumero() == null ? "" : pessoaDTO.getNumero().toString());
-						DadosBasicosTab.this.bairro.setText(pessoaDTO.getBairro());
-						DadosBasicosTab.this.telefone.setText(pessoaDTO.getTelefone());
-						DadosBasicosTab.this.email.setText(pessoaDTO.getEmail());
+						DadosBasicosTab.this.endereco.setText(utils.emptyOrString(pessoaDTO.getEndereco()));
+						DadosBasicosTab.this.numero.setText(utils.emptyOrString(pessoaDTO.getNumero()));
+						DadosBasicosTab.this.bairro.setText(utils.emptyOrString(pessoaDTO.getBairro()));
+						DadosBasicosTab.this.telefone.setText(utils.emptyOrString(pessoaDTO.getTelefone()));
+						DadosBasicosTab.this.email.setText(utils.emptyOrString(pessoaDTO.getEmail()));
 						DadosBasicosTab.this.valorMensal.setText(utils.formatCurrency(pessoaDTO.getValorMensal()));
 						DadosBasicosTab.this.dataInicio.setText(pessoaDTO.getDataInicio());
 						DadosBasicosTab.this.listEstadoCivil.setSelected(pessoaDTO.getEstadoCivil().getDescricao());

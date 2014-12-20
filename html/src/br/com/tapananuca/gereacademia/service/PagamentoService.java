@@ -8,8 +8,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import com.badlogic.gdx.utils.Array;
-
 import br.com.tapananuca.gereacademia.comunicacao.AReceberDTO;
 import br.com.tapananuca.gereacademia.comunicacao.AReceberPaginaDTO;
 import br.com.tapananuca.gereacademia.comunicacao.Baixa;
@@ -18,6 +16,8 @@ import br.com.tapananuca.gereacademia.model.Pagamento;
 import br.com.tapananuca.gereacademia.model.Pessoa;
 import br.com.tapananuca.gereacademia.model.Usuario;
 
+import com.badlogic.gdx.utils.Array;
+
 public class PagamentoService extends Service {
 
 	@SuppressWarnings("unchecked")
@@ -25,35 +25,40 @@ public class PagamentoService extends Service {
 		
 		final EntityManager em = this.getEm();
 		
-		final Query query = em.createQuery("select pes from Pessoa pes "
-				+ " where pes.ativo = :ativo "
-				+ " and pes.id not in ("
-				+ "   select p.id "
-				+ "		from Pagamento pag "
-				+ "		join pag.pessoa p "
-				+ "  where month(pag.dataReferente) = month(current_date()) and year(pag.dataReferente) = year(current_date())) "
-				+ ")");
-		
-		query.setParameter("ativo", true);
-		
-		final List<Pessoa> pessoasACobrar = query.getResultList();
-		
-		Pagamento pagamento = null;
-		final Date dataRef = new Date();
-		
-		em.getTransaction().begin();
-		for (Pessoa p : pessoasACobrar){
+		try {
 			
-			pagamento = new Pagamento();
-			pagamento.setPessoa(p);
-			pagamento.setValorDevido(p.getValorMensal());
-			pagamento.setDataReferente(dataRef);
+			final Query query = em.createQuery("select pes from Pessoa pes "
+					+ " where pes.ativo = :ativo "
+					+ " and pes.inicio <= current_date() "
+					+ " and pes.id not in ("
+					+ "   select distinct p.id "
+					+ "		from Pagamento pag "
+					+ "		join pag.pessoa p "
+					+ "  where month(pag.dataReferente) = month(current_date()) and year(pag.dataReferente) = year(current_date()) ) "
+					+ ")");
 			
-			em.persist(pagamento);
+			query.setParameter("ativo", true);
+			
+			final List<Pessoa> pessoasACobrar = query.getResultList();
+			
+			Pagamento pagamento = null;
+			final Date dataRef = new Date();
+			
+			em.getTransaction().begin();
+			for (Pessoa p : pessoasACobrar){
+				
+				pagamento = new Pagamento();
+				pagamento.setPessoa(p);
+				pagamento.setValorDevido(p.getValorMensal());
+				pagamento.setDataReferente(dataRef);
+				
+				em.persist(pagamento);
+			}
+			em.getTransaction().commit();
+		} finally {
+		
+			this.returnEm(em);
 		}
-		em.getTransaction().commit();
-		
-		this.returnEm(em);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -93,7 +98,7 @@ public class PagamentoService extends Service {
 			hql.append(" and pes.id = :idPessoa ");
 		}
 		
-		hql.append(" order by pag.dataReferente, pes.nome ");
+		hql.append(" order by pes.nome, pag.dataReferente ");
 		
 		Query query = em.createQuery(hql.toString());
 		

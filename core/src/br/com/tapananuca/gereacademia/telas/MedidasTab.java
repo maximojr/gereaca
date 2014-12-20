@@ -394,6 +394,31 @@ public class MedidasTab extends Tab {
 						MedidasTab.this.dcPerna.setText(utils.emptyOrString(dto.getDcPerna()).replace(".", ","));
 						
 						MedidasTab.this.calcularIMC();
+					} else {
+						
+						MedidasTab.this.maPesoCorporal.setText("");
+						MedidasTab.this.maAltura.setText("");
+						MedidasTab.this.maCintura.setText("");
+						MedidasTab.this.maQuadril.setText("");
+						MedidasTab.this.maImc.setText("");
+						
+						MedidasTab.this.mcTorax.setText("");
+						MedidasTab.this.mcAbdomen.setText("");
+						MedidasTab.this.mcCintura.setText("");
+						MedidasTab.this.mcBiceps.setText("");
+						MedidasTab.this.mcTriceps.setText("");
+						MedidasTab.this.mcCoxa.setText("");
+						MedidasTab.this.mcAntebraco.setText("");
+						
+						MedidasTab.this.dcBiceps.setText("");
+						MedidasTab.this.dcTriceps.setText("");
+						MedidasTab.this.dcSubAxilar.setText("");
+						MedidasTab.this.dcSupraIliacas.setText("");
+						MedidasTab.this.dcSubEscapular.setText("");
+						MedidasTab.this.dcToraxica.setText("");
+						MedidasTab.this.dcAbdominal.setText("");
+						MedidasTab.this.dcCoxa.setText("");
+						MedidasTab.this.dcPerna.setText("");
 					}
 					
 					final String ultimaSelecao = MedidasTab.this.dataReferenteMedida.getSelected();

@@ -117,7 +117,7 @@ public class HabitosTab extends Tab {
 		this.inicializar();
 	}
 
-	protected void carregarHabitos() {
+	private void carregarHabitos() {
 		//can't happen
 		if (this.cadastroPessoaScreen.getPessoaEdicaoId() == null){
 			

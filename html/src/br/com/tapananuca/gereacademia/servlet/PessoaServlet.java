@@ -399,6 +399,7 @@ public class PessoaServlet extends HttpServlet {
 		final MedidaDTO medidaDTO = Utils.getInstance().fromJson(MedidaDTO.class, dados);
 		
 		MedidaDTOResponse rs = null;
+		
 		if (medidaDTO == null || medidaDTO.getIdPessoa() == null || medidaDTO.getIdPessoa().isEmpty() ||
 				medidaDTO.getDataReferente() == null || medidaDTO.getDataReferente().isEmpty()){
 			

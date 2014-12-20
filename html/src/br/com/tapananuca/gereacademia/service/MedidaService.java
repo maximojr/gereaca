@@ -446,13 +446,6 @@ public class MedidaService extends Service {
 			return res;
 		}
 		
-		if (medidaPersonalDTO.getDatasMedidas().size != 3){
-			
-			res.setMsg("Selecione 3 datas");
-			
-			return res;
-		}
-		
 		final List<Date> datas = new ArrayList<Date>();
 		final SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		for (String strData : medidaPersonalDTO.getDatasMedidas()){

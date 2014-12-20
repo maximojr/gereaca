@@ -92,26 +92,44 @@ public class PessoaService extends Service{
 				
 				em.persist(pessoa);
 				
-				final Pagamento pagamento = new Pagamento();
-				pagamento.setPessoa(pessoa);
+				calendar.setTimeInMillis(System.currentTimeMillis());
+				calendar.set(Calendar.AM_PM, Calendar.AM);
+				calendar.set(Calendar.HOUR, 0);
+				calendar.set(Calendar.MINUTE, 0);
+				calendar.set(Calendar.SECOND, 0);
+				calendar.set(Calendar.MILLISECOND, 0);
 				
-				//caso inicio se de depois do dia 20 o primeiro pagamento é proporcional
-				if (Integer.valueOf(strData[0]) >= 20){
+				final Calendar dtInicio = Calendar.getInstance();
+				dtInicio.setTime(pessoa.getInicio());
+				dtInicio.set(Calendar.AM_PM, Calendar.AM);
+				dtInicio.set(Calendar.HOUR, 0);
+				dtInicio.set(Calendar.MINUTE, 0);
+				dtInicio.set(Calendar.SECOND, 0);
+				dtInicio.set(Calendar.MILLISECOND, 0);
+				
+				if (pessoa.getInicio().before(calendar.getTime()) || dtInicio.getTime().equals(calendar.getTime())){
+				
+					final Pagamento pagamento = new Pagamento();
+					pagamento.setPessoa(pessoa);
 					
-					final int dias = calendar.getActualMaximum(Calendar.DAY_OF_MONTH) - Integer.valueOf(strData[0]);
+					//caso inicio se de depois do dia 20 o primeiro pagamento é proporcional
+					if (Integer.valueOf(strData[0]) >= 20){
+						
+						final int dias = calendar.getActualMaximum(Calendar.DAY_OF_MONTH) - Integer.valueOf(strData[0]);
+						
+						final BigDecimal porcentagem = new BigDecimal(dias * 10 / 3);
+						
+						pagamento.setValorDevido(pessoa.getValorMensal().subtract(pessoa.getValorMensal().multiply(porcentagem).divide(CEM)));
+						
+					} else {
+						
+						pagamento.setValorDevido(pessoa.getValorMensal());
+					}
 					
-					final BigDecimal porcentagem = new BigDecimal(dias * 10 / 3);
+					pagamento.setDataReferente(pessoa.getInicio());
 					
-					pagamento.setValorDevido(pessoa.getValorMensal().subtract(pessoa.getValorMensal().multiply(porcentagem).divide(CEM)));
-					
-				} else {
-					
-					pagamento.setValorDevido(pessoa.getValorMensal());
+					em.persist(pagamento);
 				}
-				
-				pagamento.setDataReferente(pessoa.getInicio());
-				
-				em.persist(pagamento);
 				
 			} else {
 				
