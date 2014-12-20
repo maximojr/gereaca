@@ -110,21 +110,12 @@ public class PessoaService extends Service{
 				em.persist(pessoa);
 				
 				calendar.setTimeInMillis(System.currentTimeMillis());
-				calendar.set(Calendar.AM_PM, Calendar.AM);
+				calendar.set(Calendar.AM_PM, Calendar.PM);
 				calendar.set(Calendar.HOUR, 0);
-				calendar.set(Calendar.MINUTE, 0);
-				calendar.set(Calendar.SECOND, 0);
-				calendar.set(Calendar.MILLISECOND, 0);
+				calendar.set(Calendar.MINUTE, 59);
+				calendar.set(Calendar.SECOND, 59);
 				
-				final Calendar dtInicio = Calendar.getInstance();
-				dtInicio.setTime(pessoa.getInicio());
-				dtInicio.set(Calendar.AM_PM, Calendar.AM);
-				dtInicio.set(Calendar.HOUR, 0);
-				dtInicio.set(Calendar.MINUTE, 0);
-				dtInicio.set(Calendar.SECOND, 0);
-				dtInicio.set(Calendar.MILLISECOND, 0);
-				
-				if (pessoa.getInicio().before(calendar.getTime()) || dtInicio.getTime().equals(calendar.getTime())){
+				if (pessoa.getInicio().before(calendar.getTime())){
 				
 					final Pagamento pagamento = new Pagamento();
 					pagamento.setPessoa(pessoa);
