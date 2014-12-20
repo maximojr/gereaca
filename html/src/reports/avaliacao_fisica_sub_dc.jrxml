@@ -42,7 +42,7 @@
 				<chart>
 					<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="555" height="216"/>
 					<chartTitle>
-						<titleExpression><![CDATA[new String("Dobras Cutâneas")]]></titleExpression>
+						<titleExpression><![CDATA[new String("Dobras Cutâneas (mm)")]]></titleExpression>
 					</chartTitle>
 					<chartSubtitle/>
 					<chartLegend/>
