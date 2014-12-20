@@ -47,7 +47,9 @@ public class PessoaDTO implements GARequest {
 			int diaDtInic, int mesDtInic, int anoDtInic, BigDecimal valorMensal, Boolean ativo) {
 		
 		this.nome = nome;
-		this.dataNascimento = diaDtNasc + "/" + mesDtNasc + "/" + anoDtNasc;
+		this.dataNascimento = (diaDtNasc < 10 ? "0" + diaDtNasc : diaDtNasc) + "/" + 
+				(mesDtNasc < 10 ? "0" + mesDtNasc : mesDtNasc) + "/" + 
+				anoDtNasc;
 		this.estadoCivil = estadoCivil;
 		this.sexo = sexo;
 		this.endereco = endereco;
@@ -55,7 +57,9 @@ public class PessoaDTO implements GARequest {
 		this.bairro = bairro;
 		this.telefone = telefone;
 		this.email = email;
-		this.dataInicio = diaDtInic + "/" + mesDtInic + "/" + anoDtInic;
+		this.dataInicio = (diaDtInic < 10 ? "0" + diaDtInic : diaDtInic) + "/" + 
+				(mesDtInic < 10 ? "0" + mesDtInic : mesDtInic) + "/" + 
+				anoDtInic;
 		this.valorMensal = String.valueOf(valorMensal.floatValue());
 		this.ativo = ativo == null ? false : ativo;
 	}

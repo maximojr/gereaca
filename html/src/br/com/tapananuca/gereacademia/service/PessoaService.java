@@ -2,7 +2,10 @@ package br.com.tapananuca.gereacademia.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -43,6 +46,26 @@ public class PessoaService extends Service{
 			return res;
 		}
 		
+		final SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		
+		Date nasc = null;
+		try {
+			nasc = df.parse(pessoaDTO.getDataNascimento());
+		} catch (ParseException e1) {
+			
+			res.setSucesso(false);
+			res.setMsg("Data de nascimento inválida");
+		}
+		
+		Date inic = null;
+		try {
+			inic = df.parse(pessoaDTO.getDataInicio());
+		} catch (ParseException e1) {
+			
+			res.setSucesso(false);
+			res.setMsg("Data de início inválida");
+		}
+		
 		final EntityManager em = this.getEm();
 		
 		try {
@@ -65,16 +88,10 @@ public class PessoaService extends Service{
 				}
 			}
 			
-			String[] strData = pessoaDTO.getDataNascimento().split("/");
-			
 			final Calendar calendar = Calendar.getInstance();
-			calendar.set(Integer.valueOf(strData[2]), Integer.valueOf(strData[1]) - 1, Integer.valueOf(strData[0]));
-			pessoa.setDataNascimento(calendar.getTime());
 			
-			strData = pessoaDTO.getDataInicio().split("/");
-			calendar.set(Integer.valueOf(strData[2]), Integer.valueOf(strData[1]) - 1, Integer.valueOf(strData[0]));
-			pessoa.setInicio(calendar.getTime());
-			
+			pessoa.setDataNascimento(nasc);
+			pessoa.setInicio(inic);
 			pessoa.setBairro(pessoaDTO.getBairro());
 			pessoa.setEmail(pessoaDTO.getEmail());
 			pessoa.setEndereco(pessoaDTO.getEndereco());
@@ -112,10 +129,13 @@ public class PessoaService extends Service{
 					final Pagamento pagamento = new Pagamento();
 					pagamento.setPessoa(pessoa);
 					
+					final Calendar calInic = Calendar.getInstance();
+					calInic.setTime(inic);
+					
 					//caso inicio se de depois do dia 20 o primeiro pagamento é proporcional
-					if (Integer.valueOf(strData[0]) >= 20){
+					if (calInic.get(Calendar.DATE) >= 20){
 						
-						final int dias = calendar.getActualMaximum(Calendar.DAY_OF_MONTH) - Integer.valueOf(strData[0]);
+						final int dias = calendar.getActualMaximum(Calendar.DAY_OF_MONTH) - calInic.get(Calendar.DATE);
 						
 						final BigDecimal porcentagem = new BigDecimal(dias * 10 / 3);
 						
@@ -461,18 +481,21 @@ public class PessoaService extends Service{
 			
 			if (pessoa == null){
 				
-				return "Dados básicos da pessoa não encontrados.";
+				return "Dados básicos da pessoa não encontrados";
 			}
 			
 			pessoa.setDieta(habitosDTO.getDieta());
 			pessoa.setPraticaAtivFisica(habitosDTO.getPraticaAtivFisica());
 			
-			final String[] strData = habitosDTO.getDataUltimoExameMedico().split("/");
-			final Calendar calendar = Calendar.getInstance();
-			calendar.set(Integer.valueOf(strData[2]), Integer.valueOf(strData[1]) - 1, Integer.valueOf(strData[0]));
-			pessoa.setDataNascimento(calendar.getTime());
+			Date dtUltimoExame = null;
+			try {
+				dtUltimoExame = new SimpleDateFormat("dd/MM/yyyy").parse(habitosDTO.getDataUltimoExameMedico());
+			} catch (ParseException e) {
+				
+				return "Data do último exame inválida";
+			}
 			
-			pessoa.setDataUltimoExameMedico(calendar.getTime());
+			pessoa.setDataUltimoExameMedico(dtUltimoExame);
 			
 			if (habitosDTO.getPeriodExameMedico() != null && !habitosDTO.getPeriodExameMedico().isEmpty()){
 				

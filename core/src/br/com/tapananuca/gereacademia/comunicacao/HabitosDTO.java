@@ -25,7 +25,9 @@ public class HabitosDTO implements GARequest {
 		
 		if (diaUltimoExame != null){
 			
-			this.dataUltimoExameMedico = diaUltimoExame + "/" + mesUltimoExame + "/" + anoUltimoExame;
+			this.dataUltimoExameMedico = (diaUltimoExame < 10 ? "0" + diaUltimoExame : diaUltimoExame) + "/" + 
+					(mesUltimoExame < 10 ? "0" + mesUltimoExame : mesUltimoExame) + "/" + 
+					anoUltimoExame;
 		}
 		
 		this.periodExameMedico = periodExameMedico == null ? null : periodExameMedico.toString();

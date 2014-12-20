@@ -542,6 +542,9 @@ public class MedidasTab extends Tab {
 				String.valueOf(
 					Double.valueOf(peso) / ((Double.valueOf(altura) * Double.valueOf(altura))
 				)).replace(".", ","));
+		} else {
+			
+			this.maImc.setText("");
 		}
 	}
 

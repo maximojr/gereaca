@@ -118,9 +118,13 @@ public class MedidaService extends Service {
 		
 		final Long idPessoa = Long.valueOf(medidaDTO.getIdPessoa());
 		
-		final String[] strData = medidaDTO.getDataReferente().split("/");
-		final Calendar calendar = Calendar.getInstance();
-		calendar.set(Integer.valueOf(strData[2]), Integer.valueOf(strData[1]) - 1, Integer.valueOf(strData[0]));
+		Date dataRef;
+		try {
+			dataRef = new SimpleDateFormat("dd/MM/yyyy").parse(medidaDTO.getDataReferente());
+		} catch (ParseException e1) {
+			
+			return "Data inválida";
+		}
 		
 		final EntityManager em = this.getEm();
 		
@@ -137,7 +141,7 @@ public class MedidaService extends Service {
 					"select med from Medida med join med.pessoa pes where pes.id = :idPessoa and med.dataReferente = :dataRef");
 			
 			query.setParameter("idPessoa", idPessoa);
-			query.setParameter("dataRef", calendar.getTime());
+			query.setParameter("dataRef", dataRef);
 			
 			Medida medida = null;
 			
@@ -151,7 +155,7 @@ public class MedidaService extends Service {
 				
 				medida = new Medida();
 				medida.setPessoa(pessoa);
-				medida.setDataReferente(calendar.getTime());
+				medida.setDataReferente(dataRef);
 			}
 			
 			medida.setDcAbdominal(this.floatOrNull(medidaDTO.getDcAbdominal()));
