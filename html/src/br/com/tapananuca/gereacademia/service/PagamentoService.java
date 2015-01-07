@@ -75,7 +75,7 @@ public class PagamentoService extends Service {
 		   .append(" (pag.id, ")
 		   .append(" pes.nome, ")
 		   .append(" pag.valorDevido, ")
-		   .append(" case when ((day(current_date) > 15) and (day(pag.dataReferente) < 15) and (pag.dataBaixa is null)) then true else false end as multa) ")
+		   .append(" case when ((current_date - pag.dataReferente > 15) and (pag.dataBaixa is null)) then true else false end as multa) ")
 		   .append(" from Pagamento pag ")
 		   .append(" join pag.pessoa pes ")
 		   .append(" where ");
