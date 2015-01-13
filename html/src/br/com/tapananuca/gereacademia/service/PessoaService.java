@@ -57,6 +57,12 @@ public class PessoaService extends Service{
 			res.setMsg("Data de nascimento inválida");
 		}
 		
+		if (nasc == null){
+			
+			res.setSucesso(false);
+			res.setMsg("Data de nascimento inválida");
+		}
+		
 		Date inic = null;
 		try {
 			inic = df.parse(pessoaDTO.getDataInicio());
@@ -64,6 +70,17 @@ public class PessoaService extends Service{
 			
 			res.setSucesso(false);
 			res.setMsg("Data de início inválida");
+		}
+		
+		if (inic == null){
+			
+			res.setSucesso(false);
+			res.setMsg("Data de início inválida");
+		}
+		
+		if (!res.isSucesso()){
+			
+			return res;
 		}
 		
 		final EntityManager em = this.getEm();
@@ -137,7 +154,7 @@ public class PessoaService extends Service{
 						pagamento.setValorDevido(pessoa.getValorMensal());
 					}
 					
-					pagamento.setDataReferente(pessoa.getInicio());
+					pagamento.setDataReferente(calendar.getTime());
 					
 					em.persist(pagamento);
 				}

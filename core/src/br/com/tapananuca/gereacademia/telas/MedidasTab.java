@@ -3,18 +3,24 @@ package br.com.tapananuca.gereacademia.telas;
 import java.util.Date;
 
 import br.com.tapananuca.gereacademia.Utils;
+import br.com.tapananuca.gereacademia.comunicacao.Dobra;
 import br.com.tapananuca.gereacademia.comunicacao.GAResponse;
 import br.com.tapananuca.gereacademia.comunicacao.MedidaDTO;
 import br.com.tapananuca.gereacademia.comunicacao.MedidaDTOResponse;
+import br.com.tapananuca.gereacademia.comunicacao.NivelMaturacao;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -73,6 +79,10 @@ public class MedidasTab extends Tab {
 	private TextField dcPerna2;
 	private TextField dcPerna3;
 	
+	private SelectBox<String> dobrasCalc;
+	private SelectBox<String> nivelMaturacao;
+	private Slider sliderPercentualPesoMaxRec;
+	
 	private Window janelaNovaDataMedida;
 	
 	private final ChangeListener dataRefChangeListener;
@@ -86,6 +96,15 @@ public class MedidasTab extends Tab {
 			public void changed(ChangeEvent event, Actor actor) {
 				
 				if (button.isChecked()){
+					
+					if (MedidasTab.this.cadastroPessoaScreen.indSexo == 'M'){
+						
+						sliderPercentualPesoMaxRec.setValue(15f);
+					} else {
+						
+						sliderPercentualPesoMaxRec.setValue(23f);
+					}
+					
 					MedidasTab.this.carregarMedidas();
 				}
 			}
@@ -271,70 +290,242 @@ public class MedidasTab extends Tab {
 		
 		conteudo.add(inTable).left().row();
 		
-		conteudo.add("Dobras Cutâneas (mm)").padTop(15).left().row();
+		conteudo.add("Dobras Cutâneas (mm):").padTop(15).left().row();
 		
 		inTable = new Table(skin);
 		inTable.add("Bíceps:").left();
-		inTable.add("Tríceps:").padLeft(10).left();
-		inTable.add("Sub-axilar:").padLeft(10).left().row();
-		
 		dcBiceps1 = new TextField("", skin);
 		dcBiceps1.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(dcBiceps1).left();
+		inTable.add(dcBiceps1).width(80).padRight(2).padBottom(2).left();
 		cadastroPessoaScreen.elementosFocaveis.add(dcBiceps1);
 		
+		dcBiceps2 = new TextField("", skin);
+		dcBiceps2.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(dcBiceps2).width(80).padRight(2).left();
+		cadastroPessoaScreen.elementosFocaveis.add(dcBiceps2);
+		
+		dcBiceps3 = new TextField("", skin);
+		dcBiceps3.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(dcBiceps3).width(80).left().row();
+		cadastroPessoaScreen.elementosFocaveis.add(dcBiceps3);
+		
+		inTable.add("Tríceps:").left();
 		dcTriceps1 = new TextField("", skin);
 		dcTriceps1.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(dcTriceps1).padLeft(10).left();
+		inTable.add(dcTriceps1).width(80).padBottom(2).left();
 		cadastroPessoaScreen.elementosFocaveis.add(dcTriceps1);
 		
+		dcTriceps2 = new TextField("", skin);
+		dcTriceps2.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(dcTriceps2).width(80).padRight(2).left();
+		cadastroPessoaScreen.elementosFocaveis.add(dcTriceps2);
+		
+		dcTriceps3 = new TextField("", skin);
+		dcTriceps3.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(dcTriceps3).width(80).padRight(2).left().row();
+		cadastroPessoaScreen.elementosFocaveis.add(dcTriceps3);
+		
+		inTable.add("Sub-axilar:").left();
 		dcSubAxilar1 = new TextField("", skin);
 		dcSubAxilar1.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(dcSubAxilar1).padLeft(10).left().row();
+		inTable.add(dcSubAxilar1).width(80).padBottom(2).left();
 		cadastroPessoaScreen.elementosFocaveis.add(dcSubAxilar1);
 		
-		inTable.add("Supra-ilíacas:").left();
-		inTable.add("Subescapular:").padLeft(10).left();
-		inTable.add("Toráxica:").padLeft(10).left().row();
+		dcSubAxilar2 = new TextField("", skin);
+		dcSubAxilar2.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(dcSubAxilar2).width(80).padRight(2).left();
+		cadastroPessoaScreen.elementosFocaveis.add(dcSubAxilar2);
 		
+		dcSubAxilar3 = new TextField("", skin);
+		dcSubAxilar3.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(dcSubAxilar3).width(80).padRight(2).left().row();
+		cadastroPessoaScreen.elementosFocaveis.add(dcSubAxilar3);
+		
+		inTable.add("Supra-ilíacas:").left();
 		dcSupraIliacas1 = new TextField("", skin);
 		dcSupraIliacas1.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(dcSupraIliacas1).left();
+		inTable.add(dcSupraIliacas1).width(80).padBottom(2).left();
 		cadastroPessoaScreen.elementosFocaveis.add(dcSupraIliacas1);
 		
+		dcSupraIliacas2 = new TextField("", skin);
+		dcSupraIliacas2.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(dcSupraIliacas2).width(80).padRight(2).left();
+		cadastroPessoaScreen.elementosFocaveis.add(dcSupraIliacas2);
+		
+		dcSupraIliacas3 = new TextField("", skin);
+		dcSupraIliacas3.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(dcSupraIliacas3).width(80).padRight(2).left().row();
+		cadastroPessoaScreen.elementosFocaveis.add(dcSupraIliacas3);
+		
+		inTable.add("Subescapular:").left().padRight(5);
 		dcSubEscapular1 = new TextField("", skin);
 		dcSubEscapular1.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(dcSubEscapular1).padLeft(10).left();
+		inTable.add(dcSubEscapular1).width(80).padBottom(2).left();
 		cadastroPessoaScreen.elementosFocaveis.add(dcSubEscapular1);
 		
+		dcSubEscapular2 = new TextField("", skin);
+		dcSubEscapular2.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(dcSubEscapular2).width(80).padRight(2).left();
+		cadastroPessoaScreen.elementosFocaveis.add(dcSubEscapular2);
+		
+		dcSubEscapular3 = new TextField("", skin);
+		dcSubEscapular3.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(dcSubEscapular3).width(80).padRight(2).left().row();
+		cadastroPessoaScreen.elementosFocaveis.add(dcSubEscapular3);
+		
+		inTable.add("Toráxica:").left();
 		dcToraxica1 = new TextField("", skin);
 		dcToraxica1.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(dcToraxica1).padLeft(10).left().row();
+		inTable.add(dcToraxica1).width(80).padBottom(2).left();
 		cadastroPessoaScreen.elementosFocaveis.add(dcToraxica1);
 		
-		inTable.add("Abdominal:").left();
-		inTable.add("Coxa:").padLeft(10).left();
-		inTable.add("Perna:").padLeft(10).left().row();
+		dcToraxica2 = new TextField("", skin);
+		dcToraxica2.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(dcToraxica2).width(80).padRight(2).left();
+		cadastroPessoaScreen.elementosFocaveis.add(dcToraxica2);
 		
+		dcToraxica3 = new TextField("", skin);
+		dcToraxica3.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(dcToraxica3).width(80).padRight(2).left().row();
+		cadastroPessoaScreen.elementosFocaveis.add(dcToraxica3);
+		
+		inTable.add("Abdominal:").left();
 		dcAbdominal1 = new TextField("", skin);
 		dcAbdominal1.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(dcAbdominal1).left();
+		inTable.add(dcAbdominal1).width(80).padBottom(2).left();
 		cadastroPessoaScreen.elementosFocaveis.add(dcAbdominal1);
 		
+		dcAbdominal2 = new TextField("", skin);
+		dcAbdominal2.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(dcAbdominal2).width(80).padRight(2).left();
+		cadastroPessoaScreen.elementosFocaveis.add(dcAbdominal2);
+		
+		dcAbdominal3 = new TextField("", skin);
+		dcAbdominal3.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(dcAbdominal3).width(80).padRight(2).left().row();
+		cadastroPessoaScreen.elementosFocaveis.add(dcAbdominal3);
+		
+		inTable.add("Coxa:").left();
 		dcCoxa1 = new TextField("", skin);
 		dcCoxa1.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(dcCoxa1).padLeft(10).left();
+		inTable.add(dcCoxa1).width(80).padBottom(2).left();
 		cadastroPessoaScreen.elementosFocaveis.add(dcCoxa1);
 		
+		dcCoxa2 = new TextField("", skin);
+		dcCoxa2.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(dcCoxa2).width(80).padRight(2).left();
+		cadastroPessoaScreen.elementosFocaveis.add(dcCoxa2);
+		
+		dcCoxa3 = new TextField("", skin);
+		dcCoxa3.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(dcCoxa3).width(80).padRight(2).left().row();
+		cadastroPessoaScreen.elementosFocaveis.add(dcCoxa3);
+		
+		inTable.add("Perna:").left();
 		dcPerna1 = new TextField("", skin);
 		dcPerna1.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(dcPerna1).padLeft(10).left().row();
+		inTable.add(dcPerna1).width(80).padBottom(2).left();
 		cadastroPessoaScreen.elementosFocaveis.add(dcPerna1);
 		
-		conteudo.add(inTable).left().row();
+		dcPerna2 = new TextField("", skin);
+		dcPerna2.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(dcPerna2).width(80).padRight(2).left();
+		cadastroPessoaScreen.elementosFocaveis.add(dcPerna2);
 		
-		final TextButton botaoSalvarMedidas = new TextButton("Salvar", skin);
-		botaoSalvarMedidas.addListener(new ChangeListener() {
+		dcPerna3 = new TextField("", skin);
+		dcPerna3.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(dcPerna3).width(80).padRight(2).left().row();
+		cadastroPessoaScreen.elementosFocaveis.add(dcPerna3);
+		
+		final Table dobrasCutCalculo = new Table(skin);
+		dobrasCutCalculo.add(inTable);
+		
+		inTable = new Table(skin);
+		
+		dobrasCalc = new SelectBox<String>(skin);
+		
+		String[] valores = new String[Dobra.values().length];
+		int index = 0;
+		for (Dobra dobra : Dobra.values()){
+			valores[index] = dobra.getDescricao();
+			index++;
+		}
+		
+		dobrasCalc.setItems(valores);
+		
+		dobrasCalc.addListener(new ChangeListener() {
+			
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				
+				nivelMaturacao.setVisible(Dobra.getEnumByValue(dobrasCalc.getSelected()) == Dobra.DUAS);
+			}
+		});
+		
+		inTable.add(dobrasCalc);
+		
+		nivelMaturacao = new SelectBox<String>(skin);
+		
+		valores = new String[NivelMaturacao.values().length];
+		index = 0;
+		for (NivelMaturacao nivel : NivelMaturacao.values()){
+			valores[index] = nivel.getDescricao();
+			index++;
+		}
+		
+		nivelMaturacao.setItems(valores);
+		
+		inTable.add(nivelMaturacao).colspan(2).padLeft(5).padBottom(5).row();
+		
+		inTable.add("Percentual peso máximo: ").colspan(2).row();
+		
+		sliderPercentualPesoMaxRec = new Slider(1, 100, 1, false, skin);
+		final Label percentualPesoMaxTexto = new Label("", skin);
+		sliderPercentualPesoMaxRec.addListener(new ChangeListener() {
+			
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				percentualPesoMaxTexto.setText(
+						String.valueOf(sliderPercentualPesoMaxRec.getValue()) + " %");
+			}
+		});
+		
+		sliderPercentualPesoMaxRec.addListener(new InputListener(){
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+			      event.stop();
+			      return false;
+			   }
+		});
+		inTable.add(sliderPercentualPesoMaxRec);
+		
+		inTable.add(percentualPesoMaxTexto).padLeft(5).padBottom(5).row();
+		
+		final Table btns = new Table(skin);
+		
+		final TextButton btnCalcular = new TextButton("Calcular", skin);
+		btnCalcular.addListener(new ChangeListener(){
+
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				
+				MedidasTab.this.criarRelatorioAvaliacao();
+			}
+		});
+		btns.add(btnCalcular).row();
+		
+		final TextButton btnEnviarEmail = new TextButton("Enviar por e-mail", skin);
+		btnEnviarEmail.addListener(new ChangeListener() {
+			
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				
+				MedidasTab.this.enviarRelatorioAvaliacao();
+			}
+		});
+		btns.add(btnEnviarEmail).row();
+		
+		final TextButton btnSalvar = new TextButton("Salvar", skin);
+		btnSalvar.addListener(new ChangeListener() {
 			
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
@@ -342,13 +533,101 @@ public class MedidasTab extends Tab {
 				MedidasTab.this.salvarMedidas();
 			}
 		});
+		btns.add(btnSalvar);
 		
-		conteudo.add(botaoSalvarMedidas).left();
+		inTable.add(btns).colspan(2);
 		
+		dobrasCutCalculo.add(inTable).padLeft(10);
+		
+		conteudo.add(dobrasCutCalculo).left().row();
 		
 		this.inicializar();
 	}
 	
+	private void criarRelatorioAvaliacao() {
+		
+		final MedidaDTO medidaDTO = this.montarDTO();
+		
+		if (medidaDTO == null){
+			
+			return;
+		}
+		
+		final HttpRequest httpRequest = utils.criarRequest(Utils.URL_PESSOA_MEDIDAS_GERAR_RELATORIO, medidaDTO);
+		
+		utils.enviarRequest(httpRequest, stage, skin, new HttpResponseListener() {
+			
+			@Override
+			public void handleHttpResponse(HttpResponse httpResponse) {
+				
+				final GAResponse resp = utils.fromJson(GAResponse.class, httpResponse.getResultAsString());
+				
+				if (resp.isSucesso()){
+					
+					Gdx.net.openURI(
+						utils.getPropertie(Utils.WEB_APP_END_POINT) + 
+						Utils.URL_PERSONAL_ABRIR_RELATORIO + "?" + Utils.URL_PERSONAL_KEY_RELATORIO + "=" + resp.getMsg());
+				} else {
+					
+					utils.mostarAlerta("Atenção:", resp.getMsg(), stage, skin);
+				}
+			}
+			
+			@Override
+			public void failed(Throwable t) {
+				
+				utils.mostarAlerta("Erro:", "Erro ao tentar criar relatório de avaliação: " + t.getMessage() , stage, skin);
+			}
+			
+			@Override
+			public void cancelled() {
+				
+				utils.mostarAlerta(null, "Solicitação ao servidor cancelada.", stage, skin);
+			}
+		});
+	}
+	
+	private void enviarRelatorioAvaliacao() {
+		
+		final MedidaDTO dto = this.montarDTO();
+		
+		if (dto == null){
+			
+			return;
+		}
+		
+		final HttpRequest request = utils.criarRequest(Utils.URL_PESSOA_MEDIDAS_ENVIAR_RELATORIO, dto);
+		
+		utils.enviarRequest(request, stage, skin, new HttpResponseListener() {
+			
+			@Override
+			public void handleHttpResponse(HttpResponse httpResponse) {
+				
+				final GAResponse ga = utils.fromJson(GAResponse.class, httpResponse.getResultAsString());
+				
+				if (ga.isSucesso()){
+					
+					utils.mostarAlerta(null, "Avaliação enviada com sucesso.", stage, skin);
+				} else {
+					
+					utils.mostarAlerta("Atenção:", ga.getMsg(), stage, skin);
+				}
+			}
+			
+			@Override
+			public void failed(Throwable t) {
+				
+				utils.mostarAlerta("Erro:", "Erro ao tentar enviar avaliação: " + t.getMessage() , stage, skin);
+			}
+			
+			@Override
+			public void cancelled() {
+				
+				utils.mostarAlerta(null, "Solicitação ao servidor cancelada.", stage, skin);
+			}
+		});
+	}
+
 	class DataReferenteChangeListener extends ChangeListener{
 
 		@Override
@@ -513,14 +792,14 @@ public class MedidasTab extends Tab {
 		});
 	}
 	
-	private void salvarMedidas() {
+	private MedidaDTO montarDTO(){
 		
 		//cant happen no mater what, but...
 		if (this.cadastroPessoaScreen.getPessoaEdicaoId() == null){
 			
 			utils.mostarAlerta("Atenção", "Dados insuficientes, salve ou pesquise um cliente cadastrado.", stage, skin);
 			
-			return;
+			return null;
 		}
 		
 		final MedidaDTO medidaDTO = new MedidaDTO();
@@ -569,6 +848,29 @@ public class MedidasTab extends Tab {
 		medidaDTO.setDcAbdominal3(this.dcAbdominal3.getText().replace(",", "."));
 		medidaDTO.setDcCoxa3(this.dcCoxa3.getText().replace(",", "."));
 		medidaDTO.setDcPerna3(this.dcPerna3.getText().replace(",", "."));
+		
+		
+		medidaDTO.setDobra(Dobra.getEnumByValue(this.dobrasCalc.getSelected()));
+		
+		if (nivelMaturacao.isVisible()){
+			medidaDTO.setNivelMaturacao(NivelMaturacao.getEnumByValue(nivelMaturacao.getSelected()));
+		}
+		
+		medidaDTO.setPercentualPesoMaximoRec(
+				String.valueOf(
+						(100 - this.sliderPercentualPesoMaxRec.getValue()) / 100));
+		
+		return medidaDTO;
+	}
+	
+	private void salvarMedidas() {
+		
+		final MedidaDTO medidaDTO = this.montarDTO();
+		
+		if (medidaDTO == null){
+			
+			return;
+		}
 		
 		final HttpRequest httpRequest = utils.criarRequest(Utils.URL_PESSOA_MEDIDAS_SALVAR, medidaDTO);
 		
@@ -649,27 +951,23 @@ public class MedidasTab extends Tab {
 				
 				if (resp.isSucesso()){
 					
+					MedidasTab.this.dataReferenteMedida.removeListener(dataRefChangeListener);
 					
-							
-							MedidasTab.this.dataReferenteMedida.removeListener(dataRefChangeListener);
-							
-							final String[] es = new String[MedidasTab.this.dataReferenteMedida.getItems().size + 1];
-							
-							int index = 0;
-							for (String e : MedidasTab.this.dataReferenteMedida.getItems()){
-								es[index] = e;
-								index++;
-							}
-							es[index] = textData;
-							
-							MedidasTab.this.dataReferenteMedida.clearItems();
-							MedidasTab.this.dataReferenteMedida.setItems(es);
-							MedidasTab.this.dataReferenteMedida.setSelected(textData);
-							MedidasTab.this.dataReferenteMedida.addListener(dataRefChangeListener);
-							
-							janelaNovaDataMedida.remove();
-						
+					final String[] es = new String[MedidasTab.this.dataReferenteMedida.getItems().size + 1];
 					
+					int index = 0;
+					for (String e : MedidasTab.this.dataReferenteMedida.getItems()){
+						es[index] = e;
+						index++;
+					}
+					es[index] = textData;
+					
+					MedidasTab.this.dataReferenteMedida.clearItems();
+					MedidasTab.this.dataReferenteMedida.setItems(es);
+					MedidasTab.this.dataReferenteMedida.setSelected(textData);
+					MedidasTab.this.dataReferenteMedida.addListener(dataRefChangeListener);
+					
+					janelaNovaDataMedida.remove();
 				} else {
 					
 					utils.mostarAlerta("Atenção:", resp.getMsg(), stage, skin);

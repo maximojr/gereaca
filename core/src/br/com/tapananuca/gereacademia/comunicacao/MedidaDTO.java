@@ -50,6 +50,12 @@ public class MedidaDTO implements GARequest {
 	private String dcPerna2;
 	private String dcPerna3;
 	
+	private Dobra dobra;
+	
+	private String percentualPesoMaximoRec;
+	
+	private NivelMaturacao nivelMaturacao;
+	
 	public MedidaDTO() {}
 	
 	public MedidaDTO(Float maPesoCorporal, Float maAltura,
@@ -165,6 +171,18 @@ public class MedidaDTO implements GARequest {
 		utils.addStringToJson(json, "dcAbdominal3", dcAbdominal3);
 		utils.addStringToJson(json, "dcCoxa3", dcCoxa3);
 		utils.addStringToJson(json, "dcPerna3", dcPerna3);
+		
+		if (dobra != null){
+			
+			utils.addStringToJson(json, "dobra", dobra.name());
+		}
+		
+		if (nivelMaturacao != null){
+			
+			utils.addStringToJson(json, "nivelMaturacao", nivelMaturacao.name());
+		}
+		
+		utils.addStringToJson(json, "percentualPesoMaximoRec", percentualPesoMaximoRec);
 		
 		json.append("}");
 		
@@ -489,5 +507,29 @@ public class MedidaDTO implements GARequest {
 
 	public void setDcPerna3(String dcPerna3) {
 		this.dcPerna3 = dcPerna3;
+	}
+
+	public Dobra getDobra() {
+		return dobra;
+	}
+
+	public void setDobra(Dobra dobra) {
+		this.dobra = dobra;
+	}
+
+	public String getPercentualPesoMaximoRec() {
+		return percentualPesoMaximoRec;
+	}
+
+	public void setPercentualPesoMaximoRec(String percentualPesoMaximoRec) {
+		this.percentualPesoMaximoRec = percentualPesoMaximoRec;
+	}
+
+	public NivelMaturacao getNivelMaturacao() {
+		return nivelMaturacao;
+	}
+
+	public void setNivelMaturacao(NivelMaturacao nivelMaturacao) {
+		this.nivelMaturacao = nivelMaturacao;
 	}
 }

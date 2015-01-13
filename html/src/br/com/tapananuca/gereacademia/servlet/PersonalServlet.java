@@ -27,7 +27,7 @@ public class PersonalServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 8004202272031420174L;
 	
-	private static final Map<String, byte[]> relatorios = new HashMap<String, byte[]>();
+	public static final Map<String, byte[]> relatorios = new HashMap<String, byte[]>();
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)

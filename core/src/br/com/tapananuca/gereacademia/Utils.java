@@ -55,6 +55,8 @@ public class Utils {
 	public static final String URL_PESSOA_MEDIDAS = URL_PESSOA + "/medida";
 	public static final String URL_PESSOA_MEDIDAS_SALVAR = URL_PESSOA_MEDIDAS + "/salvar";
 	public static final String URL_PESSOA_MEDIDAS_NOVA_DATA = URL_PESSOA_MEDIDAS + "/novadata";
+	public static final String URL_PESSOA_MEDIDAS_GERAR_RELATORIO = URL_PESSOA_MEDIDAS + "/calcular";
+	public static final String URL_PESSOA_MEDIDAS_ENVIAR_RELATORIO = URL_PESSOA_MEDIDAS + "/enviar";
 	
 	public static final String URL_PERSONAL = "/personal";
 	public static final String URL_PERSONAL_DATAS = URL_PERSONAL + "/datas";

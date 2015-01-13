@@ -11,9 +11,9 @@
   			  	window.onkeydown = function(e) {
   			  		
   			  		//a função no window.scroll mais este if
-  			  		//evitam scroll down quando espaço é pressionado, 
+  			  		//evitam scroll down quando espaço (32), home(36) ou end(35) é pressionado, 
   			  		//mas não quando o scroll é dado de outras maneira qualquer
-  			  		if(e.keyCode == 32) {
+  			  		if(e.keyCode == 32 || e.keyCode == 36 || e.keyCode == 35) {
   			  			document.getElementById("shazam").focus();
   			  		}
   			  		
@@ -38,7 +38,8 @@
               -->
               
               <input type="text" id="shazam" 
-              	style="position: absolute; left: 50%; z-index: -1; border-color: transparent; outline: none; color: transparent; background-color: transparent;" />
+              	style="position: absolute; left: 50%; z-index: -1; border-color: transparent; outline: none; color: transparent; background-color: transparent;" 
+              	onchange="javascript:function(){this.value='';}"/>
               <div align="center" id="embed-html"></div>
               <script type="text/javascript" src="html/html.nocache.js"></script>
        </body>

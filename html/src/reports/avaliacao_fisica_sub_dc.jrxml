@@ -1,36 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="avaliacao_fisica_sub_dc" pageWidth="555" pageHeight="216" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="avaliacao_fisica_sub_dc" pageWidth="555" pageHeight="216" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="2e82aeab-2205-4b4b-ad2c-b4bfe127d740">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
 	<field name="dataReferente" class="java.util.Date">
 		<fieldDescription><![CDATA[dataReferente]]></fieldDescription>
 	</field>
-	<field name="dcAbdominal" class="java.lang.Float">
+	<field name="dcAbdominal1" class="java.lang.Float">
 		<fieldDescription><![CDATA[dcAbdominal]]></fieldDescription>
 	</field>
-	<field name="dcBiceps" class="java.lang.Float">
+	<field name="dcBiceps1" class="java.lang.Float">
 		<fieldDescription><![CDATA[dcBiceps]]></fieldDescription>
 	</field>
-	<field name="dcCoxa" class="java.lang.Float">
+	<field name="dcCoxa1" class="java.lang.Float">
 		<fieldDescription><![CDATA[dcCoxa]]></fieldDescription>
 	</field>
-	<field name="dcPerna" class="java.lang.Float">
+	<field name="dcPerna1" class="java.lang.Float">
 		<fieldDescription><![CDATA[dcPerna]]></fieldDescription>
 	</field>
-	<field name="dcSubAxilar" class="java.lang.Float">
+	<field name="dcSubAxilar1" class="java.lang.Float">
 		<fieldDescription><![CDATA[dcSubAxilar]]></fieldDescription>
 	</field>
-	<field name="dcSubEscapular" class="java.lang.Float">
+	<field name="dcSubEscapular1" class="java.lang.Float">
 		<fieldDescription><![CDATA[dcSubEscapular]]></fieldDescription>
 	</field>
-	<field name="dcSupraIliacas" class="java.lang.Float">
+	<field name="dcSupraIliacas1" class="java.lang.Float">
 		<fieldDescription><![CDATA[dcSupraIliacas]]></fieldDescription>
 	</field>
-	<field name="dcToraxica" class="java.lang.Float">
+	<field name="dcToraxica1" class="java.lang.Float">
 		<fieldDescription><![CDATA[dcToraxica]]></fieldDescription>
 	</field>
-	<field name="dcTriceps" class="java.lang.Float">
+	<field name="dcTriceps1" class="java.lang.Float">
+		<fieldDescription><![CDATA[dcTriceps]]></fieldDescription>
+	</field>
+	<field name="dcAbdominal2" class="java.lang.Float">
+		<fieldDescription><![CDATA[dcAbdominal]]></fieldDescription>
+	</field>
+	<field name="dcBiceps2" class="java.lang.Float">
+		<fieldDescription><![CDATA[dcBiceps]]></fieldDescription>
+	</field>
+	<field name="dcCoxa2" class="java.lang.Float">
+		<fieldDescription><![CDATA[dcCoxa]]></fieldDescription>
+	</field>
+	<field name="dcPerna2" class="java.lang.Float">
+		<fieldDescription><![CDATA[dcPerna]]></fieldDescription>
+	</field>
+	<field name="dcSubAxilar2" class="java.lang.Float">
+		<fieldDescription><![CDATA[dcSubAxilar]]></fieldDescription>
+	</field>
+	<field name="dcSubEscapular2" class="java.lang.Float">
+		<fieldDescription><![CDATA[dcSubEscapular]]></fieldDescription>
+	</field>
+	<field name="dcSupraIliacas2" class="java.lang.Float">
+		<fieldDescription><![CDATA[dcSupraIliacas]]></fieldDescription>
+	</field>
+	<field name="dcToraxica2" class="java.lang.Float">
+		<fieldDescription><![CDATA[dcToraxica]]></fieldDescription>
+	</field>
+	<field name="dcTriceps2" class="java.lang.Float">
+		<fieldDescription><![CDATA[dcTriceps]]></fieldDescription>
+	</field>
+	<field name="dcAbdominal3" class="java.lang.Float">
+		<fieldDescription><![CDATA[dcAbdominal]]></fieldDescription>
+	</field>
+	<field name="dcBiceps3" class="java.lang.Float">
+		<fieldDescription><![CDATA[dcBiceps]]></fieldDescription>
+	</field>
+	<field name="dcCoxa3" class="java.lang.Float">
+		<fieldDescription><![CDATA[dcCoxa]]></fieldDescription>
+	</field>
+	<field name="dcPerna3" class="java.lang.Float">
+		<fieldDescription><![CDATA[dcPerna]]></fieldDescription>
+	</field>
+	<field name="dcSubAxilar3" class="java.lang.Float">
+		<fieldDescription><![CDATA[dcSubAxilar]]></fieldDescription>
+	</field>
+	<field name="dcSubEscapular3" class="java.lang.Float">
+		<fieldDescription><![CDATA[dcSubEscapular]]></fieldDescription>
+	</field>
+	<field name="dcSupraIliacas3" class="java.lang.Float">
+		<fieldDescription><![CDATA[dcSupraIliacas]]></fieldDescription>
+	</field>
+	<field name="dcToraxica3" class="java.lang.Float">
+		<fieldDescription><![CDATA[dcToraxica]]></fieldDescription>
+	</field>
+	<field name="dcTriceps3" class="java.lang.Float">
 		<fieldDescription><![CDATA[dcTriceps]]></fieldDescription>
 	</field>
 	<background>
@@ -40,7 +97,7 @@
 		<band height="216">
 			<lineChart>
 				<chart>
-					<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="555" height="216"/>
+					<reportElement uuid="4f1a5172-2518-436b-8ee7-cc6768b3daf7" stretchType="RelativeToTallestObject" x="0" y="0" width="555" height="216"/>
 					<chartTitle>
 						<titleExpression><![CDATA[new String("Dobras Cutâneas (mm)")]]></titleExpression>
 					</chartTitle>
@@ -51,63 +108,51 @@
 					<categorySeries>
 						<seriesExpression><![CDATA["Bíceps"]]></seriesExpression>
 						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataReferente})]]></categoryExpression>
-						<valueExpression><![CDATA[$F{dcBiceps}]]></valueExpression>
+						<valueExpression><![CDATA[($F{dcBiceps1} + $F{dcBiceps2} + $F{dcBiceps3})/3]]></valueExpression>
 					</categorySeries>
 					<categorySeries>
 						<seriesExpression><![CDATA["Tríceps"]]></seriesExpression>
 						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataReferente})]]></categoryExpression>
-						<valueExpression><![CDATA[$F{dcTriceps}]]></valueExpression>
+						<valueExpression><![CDATA[($F{dcTriceps1} + $F{dcTriceps2} + $F{dcTriceps3}) / 3]]></valueExpression>
 					</categorySeries>
 					<categorySeries>
 						<seriesExpression><![CDATA["Sub-axilar"]]></seriesExpression>
 						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataReferente})]]></categoryExpression>
-						<valueExpression><![CDATA[$F{dcSubAxilar}]]></valueExpression>
+						<valueExpression><![CDATA[($F{dcSubAxilar1} + $F{dcSubAxilar2} + $F{dcSubAxilar3}) / 3]]></valueExpression>
 					</categorySeries>
 					<categorySeries>
 						<seriesExpression><![CDATA["Supra-ilíaca"]]></seriesExpression>
 						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataReferente})]]></categoryExpression>
-						<valueExpression><![CDATA[$F{dcSupraIliacas}]]></valueExpression>
+						<valueExpression><![CDATA[($F{dcSupraIliacas1} + $F{dcSupraIliacas2} + $F{dcSupraIliacas3}) / 3]]></valueExpression>
 					</categorySeries>
 					<categorySeries>
 						<seriesExpression><![CDATA["Subescapular"]]></seriesExpression>
 						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataReferente})]]></categoryExpression>
-						<valueExpression><![CDATA[$F{dcSubEscapular}]]></valueExpression>
+						<valueExpression><![CDATA[($F{dcSubEscapular1} + $F{dcSubEscapular2} + $F{dcSubEscapular3}) / 3]]></valueExpression>
 					</categorySeries>
 					<categorySeries>
 						<seriesExpression><![CDATA["Toraxica"]]></seriesExpression>
 						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataReferente})]]></categoryExpression>
-						<valueExpression><![CDATA[$F{dcToraxica}]]></valueExpression>
+						<valueExpression><![CDATA[($F{dcToraxica1} + $F{dcToraxica2} + $F{dcToraxica3}) /3]]></valueExpression>
 					</categorySeries>
 					<categorySeries>
 						<seriesExpression><![CDATA["Abdominal"]]></seriesExpression>
 						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataReferente})]]></categoryExpression>
-						<valueExpression><![CDATA[$F{dcAbdominal}]]></valueExpression>
+						<valueExpression><![CDATA[($F{dcAbdominal1} + $F{dcAbdominal2} + $F{dcAbdominal3}) / 3]]></valueExpression>
 					</categorySeries>
 					<categorySeries>
 						<seriesExpression><![CDATA["Coxa"]]></seriesExpression>
 						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataReferente})]]></categoryExpression>
-						<valueExpression><![CDATA[$F{dcCoxa}]]></valueExpression>
+						<valueExpression><![CDATA[($F{dcCoxa1} + $F{dcCoxa2} + $F{dcCoxa3}) / 3]]></valueExpression>
 					</categorySeries>
 					<categorySeries>
 						<seriesExpression><![CDATA["Perna"]]></seriesExpression>
 						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataReferente})]]></categoryExpression>
-						<valueExpression><![CDATA[$F{dcCoxa}]]></valueExpression>
+						<valueExpression><![CDATA[($F{dcCoxa1} + $F{dcCoxa2} + $F{dcCoxa3}) / 3]]></valueExpression>
 					</categorySeries>
 				</categoryDataset>
 				<linePlot>
 					<plot/>
-					<categoryAxisFormat>
-						<axisFormat>
-							<labelFont/>
-							<tickLabelFont/>
-						</axisFormat>
-					</categoryAxisFormat>
-					<valueAxisFormat>
-						<axisFormat>
-							<labelFont/>
-							<tickLabelFont/>
-						</axisFormat>
-					</valueAxisFormat>
 				</linePlot>
 			</lineChart>
 		</band>

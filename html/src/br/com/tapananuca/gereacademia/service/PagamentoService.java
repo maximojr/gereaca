@@ -98,7 +98,7 @@ public class PagamentoService extends Service {
 			hql.append(" and pes.id = :idPessoa ");
 		}
 		
-		hql.append(" order by pes.nome, pag.dataReferente ");
+		hql.append(" order by pes.nome ");
 		
 		Query query = em.createQuery(hql.toString());
 		

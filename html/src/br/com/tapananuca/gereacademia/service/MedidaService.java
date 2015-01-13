@@ -193,6 +193,7 @@ public class MedidaService extends Service {
 			medida.setMaAltura(this.floatOrNull(medidaDTO.getMaAltura()));
 			medida.setMaCintura(this.floatOrNull(medidaDTO.getMaCintura()));
 			medida.setMaPesoCorporal(this.floatOrNull(medidaDTO.getMaPesoCorporal()));
+			medida.setMaQuadril(this.floatOrNull(medidaDTO.getMaQuadril()));
 			medida.setMcAbdomen(this.floatOrNull(medidaDTO.getMcAbdomen()));
 			medida.setMcAntebraco(this.floatOrNull(medidaDTO.getMcAntebraco()));
 			medida.setMcBiceps(this.floatOrNull(medidaDTO.getMcBiceps()));

@@ -7,11 +7,13 @@ import br.com.tapananuca.gereacademia.comunicacao.PessoaDTO;
 import br.com.tapananuca.gereacademia.comunicacao.PessoaDTOResponse;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
@@ -63,6 +65,20 @@ public class DadosBasicosTab extends Tab {
 		nome = new TextField("", skin);
 		inTableNome.add(nome).colspan(2).width(450).left();
 		cadastroPessoaScreen.elementosFocaveis.add(nome);
+		
+		nome.addListener(new InputListener(){
+			
+			@Override
+			public boolean keyUp(InputEvent event, int keycode) {
+				
+				if (keycode == Keys.ENTER){
+					
+					DadosBasicosTab.this.abrirDialogPesquisaPessoa();
+				}
+				
+				return super.keyUp(event, keycode);
+			}
+		});
 		
 		final TextButton pesquisar = new TextButton("Pesquisar", skin);
 		pesquisar.addListener(new ChangeListener(){

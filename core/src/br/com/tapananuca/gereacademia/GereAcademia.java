@@ -2,7 +2,9 @@ package br.com.tapananuca.gereacademia;
 
 import java.io.IOException;
 
+import br.com.tapananuca.gereacademia.telas.CadastroPessoaScreen;
 import br.com.tapananuca.gereacademia.telas.LoginScreen;
+import br.com.tapananuca.gereacademia.telas.MenuPrincipalScreen;
 import br.com.tapananuca.gereacademia.telas.Tela;
 
 import com.badlogic.gdx.ApplicationAdapter;
