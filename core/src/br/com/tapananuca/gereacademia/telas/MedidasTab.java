@@ -45,15 +45,33 @@ public class MedidasTab extends Tab {
 	private TextField mcCoxa;
 	private TextField mcAntebraco;
 	
-	private TextField dcBiceps;
-	private TextField dcTriceps;
-	private TextField dcSubAxilar;
-	private TextField dcSupraIliacas;
-	private TextField dcSubEscapular;
-	private TextField dcToraxica;
-	private TextField dcAbdominal;
-	private TextField dcCoxa;
-	private TextField dcPerna;
+	private TextField dcBiceps1;
+	private TextField dcBiceps2;
+	private TextField dcBiceps3;
+	private TextField dcTriceps1;
+	private TextField dcTriceps2;
+	private TextField dcTriceps3;
+	private TextField dcSubAxilar1;
+	private TextField dcSubAxilar2;
+	private TextField dcSubAxilar3;
+	private TextField dcSupraIliacas1;
+	private TextField dcSupraIliacas2;
+	private TextField dcSupraIliacas3;
+	private TextField dcSubEscapular1;
+	private TextField dcSubEscapular2;
+	private TextField dcSubEscapular3;
+	private TextField dcToraxica1;
+	private TextField dcToraxica2;
+	private TextField dcToraxica3;
+	private TextField dcAbdominal1;
+	private TextField dcAbdominal2;
+	private TextField dcAbdominal3;
+	private TextField dcCoxa1;
+	private TextField dcCoxa2;
+	private TextField dcCoxa3;
+	private TextField dcPerna1;
+	private TextField dcPerna2;
+	private TextField dcPerna3;
 	
 	private Window janelaNovaDataMedida;
 	
@@ -260,58 +278,58 @@ public class MedidasTab extends Tab {
 		inTable.add("Tríceps:").padLeft(10).left();
 		inTable.add("Sub-axilar:").padLeft(10).left().row();
 		
-		dcBiceps = new TextField("", skin);
-		dcBiceps.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(dcBiceps).left();
-		cadastroPessoaScreen.elementosFocaveis.add(dcBiceps);
+		dcBiceps1 = new TextField("", skin);
+		dcBiceps1.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(dcBiceps1).left();
+		cadastroPessoaScreen.elementosFocaveis.add(dcBiceps1);
 		
-		dcTriceps = new TextField("", skin);
-		dcTriceps.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(dcTriceps).padLeft(10).left();
-		cadastroPessoaScreen.elementosFocaveis.add(dcTriceps);
+		dcTriceps1 = new TextField("", skin);
+		dcTriceps1.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(dcTriceps1).padLeft(10).left();
+		cadastroPessoaScreen.elementosFocaveis.add(dcTriceps1);
 		
-		dcSubAxilar = new TextField("", skin);
-		dcSubAxilar.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(dcSubAxilar).padLeft(10).left().row();
-		cadastroPessoaScreen.elementosFocaveis.add(dcSubAxilar);
+		dcSubAxilar1 = new TextField("", skin);
+		dcSubAxilar1.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(dcSubAxilar1).padLeft(10).left().row();
+		cadastroPessoaScreen.elementosFocaveis.add(dcSubAxilar1);
 		
 		inTable.add("Supra-ilíacas:").left();
 		inTable.add("Subescapular:").padLeft(10).left();
 		inTable.add("Toráxica:").padLeft(10).left().row();
 		
-		dcSupraIliacas = new TextField("", skin);
-		dcSupraIliacas.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(dcSupraIliacas).left();
-		cadastroPessoaScreen.elementosFocaveis.add(dcSupraIliacas);
+		dcSupraIliacas1 = new TextField("", skin);
+		dcSupraIliacas1.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(dcSupraIliacas1).left();
+		cadastroPessoaScreen.elementosFocaveis.add(dcSupraIliacas1);
 		
-		dcSubEscapular = new TextField("", skin);
-		dcSubEscapular.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(dcSubEscapular).padLeft(10).left();
-		cadastroPessoaScreen.elementosFocaveis.add(dcSubEscapular);
+		dcSubEscapular1 = new TextField("", skin);
+		dcSubEscapular1.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(dcSubEscapular1).padLeft(10).left();
+		cadastroPessoaScreen.elementosFocaveis.add(dcSubEscapular1);
 		
-		dcToraxica = new TextField("", skin);
-		dcToraxica.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(dcToraxica).padLeft(10).left().row();
-		cadastroPessoaScreen.elementosFocaveis.add(dcToraxica);
+		dcToraxica1 = new TextField("", skin);
+		dcToraxica1.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(dcToraxica1).padLeft(10).left().row();
+		cadastroPessoaScreen.elementosFocaveis.add(dcToraxica1);
 		
 		inTable.add("Abdominal:").left();
 		inTable.add("Coxa:").padLeft(10).left();
 		inTable.add("Perna:").padLeft(10).left().row();
 		
-		dcAbdominal = new TextField("", skin);
-		dcAbdominal.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(dcAbdominal).left();
-		cadastroPessoaScreen.elementosFocaveis.add(dcAbdominal);
+		dcAbdominal1 = new TextField("", skin);
+		dcAbdominal1.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(dcAbdominal1).left();
+		cadastroPessoaScreen.elementosFocaveis.add(dcAbdominal1);
 		
-		dcCoxa = new TextField("", skin);
-		dcCoxa.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(dcCoxa).padLeft(10).left();
-		cadastroPessoaScreen.elementosFocaveis.add(dcCoxa);
+		dcCoxa1 = new TextField("", skin);
+		dcCoxa1.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(dcCoxa1).padLeft(10).left();
+		cadastroPessoaScreen.elementosFocaveis.add(dcCoxa1);
 		
-		dcPerna = new TextField("", skin);
-		dcPerna.setTextFieldFilter(utils.currencyFilter);
-		inTable.add(dcPerna).padLeft(10).left().row();
-		cadastroPessoaScreen.elementosFocaveis.add(dcPerna);
+		dcPerna1 = new TextField("", skin);
+		dcPerna1.setTextFieldFilter(utils.currencyFilter);
+		inTable.add(dcPerna1).padLeft(10).left().row();
+		cadastroPessoaScreen.elementosFocaveis.add(dcPerna1);
 		
 		conteudo.add(inTable).left().row();
 		
@@ -335,6 +353,48 @@ public class MedidasTab extends Tab {
 
 		@Override
 		public void changed(ChangeEvent event, Actor actor) {
+			
+			MedidasTab.this.maPesoCorporal.setText("");
+			MedidasTab.this.maAltura.setText("");
+			MedidasTab.this.maCintura.setText("");
+			MedidasTab.this.maQuadril.setText("");
+			MedidasTab.this.maImc.setText("");
+			
+			MedidasTab.this.mcTorax.setText("");
+			MedidasTab.this.mcAbdomen.setText("");
+			MedidasTab.this.mcCintura.setText("");
+			MedidasTab.this.mcBiceps.setText("");
+			MedidasTab.this.mcTriceps.setText("");
+			MedidasTab.this.mcCoxa.setText("");
+			MedidasTab.this.mcAntebraco.setText("");
+			
+			MedidasTab.this.dcBiceps1.setText("");
+			MedidasTab.this.dcBiceps2.setText("");
+			MedidasTab.this.dcBiceps3.setText("");
+			MedidasTab.this.dcTriceps1.setText("");
+			MedidasTab.this.dcTriceps2.setText("");
+			MedidasTab.this.dcTriceps3.setText("");
+			MedidasTab.this.dcSubAxilar1.setText("");
+			MedidasTab.this.dcSubAxilar2.setText("");
+			MedidasTab.this.dcSubAxilar3.setText("");
+			MedidasTab.this.dcSupraIliacas1.setText("");
+			MedidasTab.this.dcSupraIliacas2.setText("");
+			MedidasTab.this.dcSupraIliacas3.setText("");
+			MedidasTab.this.dcSubEscapular1.setText("");
+			MedidasTab.this.dcSubEscapular2.setText("");
+			MedidasTab.this.dcSubEscapular3.setText("");
+			MedidasTab.this.dcToraxica1.setText("");
+			MedidasTab.this.dcToraxica2.setText("");
+			MedidasTab.this.dcToraxica3.setText("");
+			MedidasTab.this.dcAbdominal1.setText("");
+			MedidasTab.this.dcAbdominal2.setText("");
+			MedidasTab.this.dcAbdominal3.setText("");
+			MedidasTab.this.dcCoxa1.setText("");
+			MedidasTab.this.dcCoxa2.setText("");
+			MedidasTab.this.dcCoxa3.setText("");
+			MedidasTab.this.dcPerna1.setText("");
+			MedidasTab.this.dcPerna2.setText("");
+			MedidasTab.this.dcPerna3.setText("");
 			
 			MedidasTab.this.carregarMedidas();
 		}
@@ -383,42 +443,37 @@ public class MedidasTab extends Tab {
 						MedidasTab.this.mcCoxa.setText(utils.emptyOrString(dto.getMcCoxa()).replace(".", ","));
 						MedidasTab.this.mcAntebraco.setText(utils.emptyOrString(dto.getMcAntebraco()).replace(".", ","));
 						
-						MedidasTab.this.dcBiceps.setText(utils.emptyOrString(dto.getDcBiceps()).replace(".", ","));
-						MedidasTab.this.dcTriceps.setText(utils.emptyOrString(dto.getDcTriceps()).replace(".", ","));
-						MedidasTab.this.dcSubAxilar.setText(utils.emptyOrString(dto.getDcSubAxilar()).replace(".", ","));
-						MedidasTab.this.dcSupraIliacas.setText(utils.emptyOrString(dto.getDcSupraIliacas()).replace(".", ","));
-						MedidasTab.this.dcSubEscapular.setText(utils.emptyOrString(dto.getDcSubEscapular()).replace(".", ","));
-						MedidasTab.this.dcToraxica.setText(utils.emptyOrString(dto.getDcToraxica()).replace(".", ","));
-						MedidasTab.this.dcAbdominal.setText(utils.emptyOrString(dto.getDcAbdominal()).replace(".", ","));
-						MedidasTab.this.dcCoxa.setText(utils.emptyOrString(dto.getDcCoxa()).replace(".", ","));
-						MedidasTab.this.dcPerna.setText(utils.emptyOrString(dto.getDcPerna()).replace(".", ","));
+						MedidasTab.this.dcBiceps1.setText(utils.emptyOrString(dto.getDcBiceps1()).replace(".", ","));
+						MedidasTab.this.dcTriceps1.setText(utils.emptyOrString(dto.getDcTriceps1()).replace(".", ","));
+						MedidasTab.this.dcSubAxilar1.setText(utils.emptyOrString(dto.getDcSubAxilar1()).replace(".", ","));
+						MedidasTab.this.dcSupraIliacas1.setText(utils.emptyOrString(dto.getDcSupraIliacas1()).replace(".", ","));
+						MedidasTab.this.dcSubEscapular1.setText(utils.emptyOrString(dto.getDcSubEscapular1()).replace(".", ","));
+						MedidasTab.this.dcToraxica1.setText(utils.emptyOrString(dto.getDcToraxica1()).replace(".", ","));
+						MedidasTab.this.dcAbdominal1.setText(utils.emptyOrString(dto.getDcAbdominal1()).replace(".", ","));
+						MedidasTab.this.dcCoxa1.setText(utils.emptyOrString(dto.getDcCoxa1()).replace(".", ","));
+						MedidasTab.this.dcPerna1.setText(utils.emptyOrString(dto.getDcPerna1()).replace(".", ","));
+						
+						MedidasTab.this.dcBiceps2.setText(utils.emptyOrString(dto.getDcBiceps2()).replace(".", ","));
+						MedidasTab.this.dcTriceps2.setText(utils.emptyOrString(dto.getDcTriceps2()).replace(".", ","));
+						MedidasTab.this.dcSubAxilar2.setText(utils.emptyOrString(dto.getDcSubAxilar2()).replace(".", ","));
+						MedidasTab.this.dcSupraIliacas2.setText(utils.emptyOrString(dto.getDcSupraIliacas2()).replace(".", ","));
+						MedidasTab.this.dcSubEscapular2.setText(utils.emptyOrString(dto.getDcSubEscapular2()).replace(".", ","));
+						MedidasTab.this.dcToraxica2.setText(utils.emptyOrString(dto.getDcToraxica2()).replace(".", ","));
+						MedidasTab.this.dcAbdominal2.setText(utils.emptyOrString(dto.getDcAbdominal2()).replace(".", ","));
+						MedidasTab.this.dcCoxa2.setText(utils.emptyOrString(dto.getDcCoxa2()).replace(".", ","));
+						MedidasTab.this.dcPerna2.setText(utils.emptyOrString(dto.getDcPerna2()).replace(".", ","));
+						
+						MedidasTab.this.dcBiceps3.setText(utils.emptyOrString(dto.getDcBiceps3()).replace(".", ","));
+						MedidasTab.this.dcTriceps3.setText(utils.emptyOrString(dto.getDcTriceps3()).replace(".", ","));
+						MedidasTab.this.dcSubAxilar3.setText(utils.emptyOrString(dto.getDcSubAxilar3()).replace(".", ","));
+						MedidasTab.this.dcSupraIliacas3.setText(utils.emptyOrString(dto.getDcSupraIliacas3()).replace(".", ","));
+						MedidasTab.this.dcSubEscapular3.setText(utils.emptyOrString(dto.getDcSubEscapular3()).replace(".", ","));
+						MedidasTab.this.dcToraxica3.setText(utils.emptyOrString(dto.getDcToraxica3()).replace(".", ","));
+						MedidasTab.this.dcAbdominal3.setText(utils.emptyOrString(dto.getDcAbdominal3()).replace(".", ","));
+						MedidasTab.this.dcCoxa3.setText(utils.emptyOrString(dto.getDcCoxa3()).replace(".", ","));
+						MedidasTab.this.dcPerna3.setText(utils.emptyOrString(dto.getDcPerna3()).replace(".", ","));
 						
 						MedidasTab.this.calcularIMC();
-					} else {
-						
-						MedidasTab.this.maPesoCorporal.setText("");
-						MedidasTab.this.maAltura.setText("");
-						MedidasTab.this.maCintura.setText("");
-						MedidasTab.this.maQuadril.setText("");
-						MedidasTab.this.maImc.setText("");
-						
-						MedidasTab.this.mcTorax.setText("");
-						MedidasTab.this.mcAbdomen.setText("");
-						MedidasTab.this.mcCintura.setText("");
-						MedidasTab.this.mcBiceps.setText("");
-						MedidasTab.this.mcTriceps.setText("");
-						MedidasTab.this.mcCoxa.setText("");
-						MedidasTab.this.mcAntebraco.setText("");
-						
-						MedidasTab.this.dcBiceps.setText("");
-						MedidasTab.this.dcTriceps.setText("");
-						MedidasTab.this.dcSubAxilar.setText("");
-						MedidasTab.this.dcSupraIliacas.setText("");
-						MedidasTab.this.dcSubEscapular.setText("");
-						MedidasTab.this.dcToraxica.setText("");
-						MedidasTab.this.dcAbdominal.setText("");
-						MedidasTab.this.dcCoxa.setText("");
-						MedidasTab.this.dcPerna.setText("");
 					}
 					
 					final String ultimaSelecao = MedidasTab.this.dataReferenteMedida.getSelected();
@@ -485,15 +540,35 @@ public class MedidasTab extends Tab {
 		medidaDTO.setMcCoxa(this.mcCoxa.getText().replace(",", "."));
 		medidaDTO.setMcAntebraco(this.mcAntebraco.getText().replace(",", "."));
 		
-		medidaDTO.setDcBiceps(this.dcBiceps.getText().replace(",", "."));
-		medidaDTO.setDcTriceps(this.dcTriceps.getText().replace(",", "."));
-		medidaDTO.setDcSubAxilar(this.dcSubAxilar.getText().replace(",", "."));
-		medidaDTO.setDcSupraIliacas(this.dcSupraIliacas.getText().replace(",", "."));
-		medidaDTO.setDcSubEscapular(this.dcSubEscapular.getText().replace(",", "."));
-		medidaDTO.setDcToraxica(this.dcToraxica.getText().replace(",", "."));
-		medidaDTO.setDcAbdominal(this.dcAbdominal.getText().replace(",", "."));
-		medidaDTO.setDcCoxa(this.dcCoxa.getText().replace(",", "."));
-		medidaDTO.setDcPerna(this.dcPerna.getText().replace(",", "."));
+		medidaDTO.setDcBiceps1(this.dcBiceps1.getText().replace(",", "."));
+		medidaDTO.setDcTriceps1(this.dcTriceps1.getText().replace(",", "."));
+		medidaDTO.setDcSubAxilar1(this.dcSubAxilar1.getText().replace(",", "."));
+		medidaDTO.setDcSupraIliacas1(this.dcSupraIliacas1.getText().replace(",", "."));
+		medidaDTO.setDcSubEscapular1(this.dcSubEscapular1.getText().replace(",", "."));
+		medidaDTO.setDcToraxica1(this.dcToraxica1.getText().replace(",", "."));
+		medidaDTO.setDcAbdominal1(this.dcAbdominal1.getText().replace(",", "."));
+		medidaDTO.setDcCoxa1(this.dcCoxa1.getText().replace(",", "."));
+		medidaDTO.setDcPerna1(this.dcPerna1.getText().replace(",", "."));
+		
+		medidaDTO.setDcBiceps2(this.dcBiceps2.getText().replace(",", "."));
+		medidaDTO.setDcTriceps2(this.dcTriceps2.getText().replace(",", "."));
+		medidaDTO.setDcSubAxilar2(this.dcSubAxilar2.getText().replace(",", "."));
+		medidaDTO.setDcSupraIliacas2(this.dcSupraIliacas2.getText().replace(",", "."));
+		medidaDTO.setDcSubEscapular2(this.dcSubEscapular2.getText().replace(",", "."));
+		medidaDTO.setDcToraxica2(this.dcToraxica2.getText().replace(",", "."));
+		medidaDTO.setDcAbdominal2(this.dcAbdominal2.getText().replace(",", "."));
+		medidaDTO.setDcCoxa2(this.dcCoxa2.getText().replace(",", "."));
+		medidaDTO.setDcPerna2(this.dcPerna2.getText().replace(",", "."));
+		
+		medidaDTO.setDcBiceps3(this.dcBiceps3.getText().replace(",", "."));
+		medidaDTO.setDcTriceps3(this.dcTriceps3.getText().replace(",", "."));
+		medidaDTO.setDcSubAxilar3(this.dcSubAxilar3.getText().replace(",", "."));
+		medidaDTO.setDcSupraIliacas3(this.dcSupraIliacas3.getText().replace(",", "."));
+		medidaDTO.setDcSubEscapular3(this.dcSubEscapular3.getText().replace(",", "."));
+		medidaDTO.setDcToraxica3(this.dcToraxica3.getText().replace(",", "."));
+		medidaDTO.setDcAbdominal3(this.dcAbdominal3.getText().replace(",", "."));
+		medidaDTO.setDcCoxa3(this.dcCoxa3.getText().replace(",", "."));
+		medidaDTO.setDcPerna3(this.dcPerna3.getText().replace(",", "."));
 		
 		final HttpRequest httpRequest = utils.criarRequest(Utils.URL_PESSOA_MEDIDAS_SALVAR, medidaDTO);
 		

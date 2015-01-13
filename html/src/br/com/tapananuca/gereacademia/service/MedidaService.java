@@ -59,8 +59,10 @@ public class MedidaService extends Service {
 					MedidaDTO.class.getCanonicalName() +
 					"(m.maPesoCorporal, m.maAltura, " +
 					" m.maCintura, m.maQuadril, m.mcTorax, m.mcAbdomen, m.mcCintura, " +
-					" m.mcBiceps, m.mcTriceps, m.mcCoxa, m.mcAntebraco, m.dcBiceps, m.dcTriceps, " +
-					" m.dcSubAxilar, m.dcSupraIliacas, m.dcSubEscapular, m.dcToraxica, m.dcAbdominal, m.dcCoxa, m.dcPerna) " +
+					" m.mcBiceps, m.mcTriceps, m.mcCoxa, m.mcAntebraco, " +
+					" m.dcBiceps1, m.dcTriceps1, m.dcSubAxilar1, m.dcSupraIliacas1, m.dcSubEscapular1, m.dcToraxica1, m.dcAbdominal1, m.dcCoxa1, m.dcPerna1, " +
+					" m.dcBiceps2, m.dcTriceps2, m.dcSubAxilar2, m.dcSupraIliacas2, m.dcSubEscapular2, m.dcToraxica2, m.dcAbdominal2, m.dcCoxa2, m.dcPerna2, " +
+					" m.dcBiceps3, m.dcTriceps3, m.dcSubAxilar3, m.dcSupraIliacas3, m.dcSubEscapular3, m.dcToraxica3, m.dcAbdominal3, m.dcCoxa3, m.dcPerna3) " +
 					" from Medida m join m.pessoa p where p.id = :id and m.dataReferente = :dataRef ");
 			
 			query.setParameter("id", idPessoa);
@@ -158,15 +160,36 @@ public class MedidaService extends Service {
 				medida.setDataReferente(dataRef);
 			}
 			
-			medida.setDcAbdominal(this.floatOrNull(medidaDTO.getDcAbdominal()));
-			medida.setDcBiceps(this.floatOrNull(medidaDTO.getDcBiceps()));
-			medida.setDcCoxa(this.floatOrNull(medidaDTO.getDcCoxa()));
-			medida.setDcPerna(this.floatOrNull(medidaDTO.getDcPerna()));
-			medida.setDcSubAxilar(this.floatOrNull(medidaDTO.getDcSubAxilar()));
-			medida.setDcSubEscapular(this.floatOrNull(medidaDTO.getDcSubEscapular()));
-			medida.setDcSupraIliacas(this.floatOrNull(medidaDTO.getDcSupraIliacas()));
-			medida.setDcToraxica(this.floatOrNull(medidaDTO.getDcToraxica()));
-			medida.setDcTriceps(this.floatOrNull(medidaDTO.getDcTriceps()));
+			medida.setDcAbdominal1(this.floatOrNull(medidaDTO.getDcAbdominal1()));
+			medida.setDcBiceps1(this.floatOrNull(medidaDTO.getDcBiceps1()));
+			medida.setDcCoxa1(this.floatOrNull(medidaDTO.getDcCoxa1()));
+			medida.setDcPerna1(this.floatOrNull(medidaDTO.getDcPerna1()));
+			medida.setDcSubAxilar1(this.floatOrNull(medidaDTO.getDcSubAxilar1()));
+			medida.setDcSubEscapular1(this.floatOrNull(medidaDTO.getDcSubEscapular1()));
+			medida.setDcSupraIliacas1(this.floatOrNull(medidaDTO.getDcSupraIliacas1()));
+			medida.setDcToraxica1(this.floatOrNull(medidaDTO.getDcToraxica1()));
+			medida.setDcTriceps1(this.floatOrNull(medidaDTO.getDcTriceps1()));
+			
+			medida.setDcAbdominal2(this.floatOrNull(medidaDTO.getDcAbdominal2()));
+			medida.setDcBiceps2(this.floatOrNull(medidaDTO.getDcBiceps2()));
+			medida.setDcCoxa2(this.floatOrNull(medidaDTO.getDcCoxa2()));
+			medida.setDcPerna2(this.floatOrNull(medidaDTO.getDcPerna2()));
+			medida.setDcSubAxilar2(this.floatOrNull(medidaDTO.getDcSubAxilar2()));
+			medida.setDcSubEscapular2(this.floatOrNull(medidaDTO.getDcSubEscapular2()));
+			medida.setDcSupraIliacas2(this.floatOrNull(medidaDTO.getDcSupraIliacas2()));
+			medida.setDcToraxica2(this.floatOrNull(medidaDTO.getDcToraxica2()));
+			medida.setDcTriceps2(this.floatOrNull(medidaDTO.getDcTriceps2()));
+			
+			medida.setDcAbdominal3(this.floatOrNull(medidaDTO.getDcAbdominal3()));
+			medida.setDcBiceps3(this.floatOrNull(medidaDTO.getDcBiceps3()));
+			medida.setDcCoxa3(this.floatOrNull(medidaDTO.getDcCoxa3()));
+			medida.setDcPerna3(this.floatOrNull(medidaDTO.getDcPerna3()));
+			medida.setDcSubAxilar3(this.floatOrNull(medidaDTO.getDcSubAxilar3()));
+			medida.setDcSubEscapular3(this.floatOrNull(medidaDTO.getDcSubEscapular3()));
+			medida.setDcSupraIliacas3(this.floatOrNull(medidaDTO.getDcSupraIliacas3()));
+			medida.setDcToraxica3(this.floatOrNull(medidaDTO.getDcToraxica3()));
+			medida.setDcTriceps3(this.floatOrNull(medidaDTO.getDcTriceps3()));
+			
 			medida.setMaAltura(this.floatOrNull(medidaDTO.getMaAltura()));
 			medida.setMaCintura(this.floatOrNull(medidaDTO.getMaCintura()));
 			medida.setMaPesoCorporal(this.floatOrNull(medidaDTO.getMaPesoCorporal()));
@@ -828,26 +851,15 @@ public class MedidaService extends Service {
 		double abdominal = 0; 
 		double coxa = 0;
 		
-		final int startIndex = medidas.size() > 3 ? medidas.size() - 3 : 0;
-		
-		for (Medida m : medidas.subList(startIndex, medidas.size())){
+		Medida m = medidas.get(medidas.size() - 1);
 			
-			subescapular += this.doubleOrZero(m.getDcSubEscapular());
-			triceps += this.doubleOrZero(m.getDcTriceps());
-			toraxica += this.doubleOrZero(m.getDcToraxica());
-			subAxilar += this.doubleOrZero(m.getDcSubAxilar());
-			supraIliaca += this.doubleOrZero(m.getDcSupraIliacas());
-			abdominal += this.doubleOrZero(m.getDcAbdominal());
-			coxa += this.doubleOrZero(m.getDcCoxa());
-		}
-		
-		subescapular = subescapular / 3;
-		triceps = triceps / 3;
-		toraxica = toraxica / 3;
-		subAxilar = subAxilar / 3;
-		supraIliaca = supraIliaca / 3;
-		abdominal = abdominal / 3;
-		coxa = coxa / 3;
+		subescapular = (this.doubleOrZero(m.getDcSubEscapular1()) + this.doubleOrZero(m.getDcSubEscapular2()) + this.doubleOrZero(m.getDcSubEscapular3())) / 3;
+		triceps = (this.doubleOrZero(m.getDcTriceps1()) + this.doubleOrZero(m.getDcTriceps2()) + this.doubleOrZero(m.getDcTriceps3())) / 3;
+		toraxica = (this.doubleOrZero(m.getDcToraxica1()) + this.doubleOrZero(m.getDcToraxica2()) + this.doubleOrZero(m.getDcToraxica3())) / 3;
+		subAxilar = (this.doubleOrZero(m.getDcSubAxilar1()) + this.doubleOrZero(m.getDcSubAxilar2()) + this.doubleOrZero(m.getDcSubAxilar3())) / 3;
+		supraIliaca = (this.doubleOrZero(m.getDcSupraIliacas1()) + this.doubleOrZero(m.getDcSupraIliacas2()) + this.doubleOrZero(m.getDcSupraIliacas3())) / 3;
+		abdominal = (this.doubleOrZero(m.getDcAbdominal1()) + this.doubleOrZero(m.getDcAbdominal2()) + this.doubleOrZero(m.getDcAbdominal3())) / 3;
+		coxa = (this.doubleOrZero(m.getDcCoxa1()) + this.doubleOrZero(m.getDcCoxa2()) + this.doubleOrZero(m.getDcCoxa3())) / 3;
 		
 		switch (dobra) {
 			case DUAS:
