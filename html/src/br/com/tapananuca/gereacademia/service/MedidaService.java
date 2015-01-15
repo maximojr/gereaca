@@ -652,6 +652,7 @@ public class MedidaService extends Service {
 		} catch (Exception e){
 			
 			res.setMsg(e.getLocalizedMessage());
+			e.printStackTrace();
 		} finally {
 			
 			this.returnEm(em);

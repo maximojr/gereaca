@@ -163,7 +163,15 @@ public class PagamentoService extends Service {
 			query.setParameter("idPessoa", idPessoa);
 		}
 		
-		dto.setQtdPaginas(String.valueOf(((Long)query.getSingleResult() / qtdRegistros) + 1));
+		final Long qtd = (Long)query.getSingleResult();
+		
+		if (qtd <= qtdRegistros){
+			
+			dto.setQtdPaginas("1");
+		} else {
+			
+			dto.setQtdPaginas(String.valueOf((qtd / qtdRegistros) + 1));
+		}
 		
 		query = em.createQuery("select distinct "
 				+ " pag.dataReferente "

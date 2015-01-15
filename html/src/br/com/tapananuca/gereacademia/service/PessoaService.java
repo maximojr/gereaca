@@ -208,7 +208,16 @@ public class PessoaService extends Service{
 			
 			query.setParameter("mes", mes);
 			
-			dto.setQtdPaginas(String.valueOf(((Long)query.getSingleResult() / qtdRegistros) + 1));
+			final Long qtd = (Long)query.getSingleResult();
+			
+			if (qtd <= qtdRegistros){
+				
+				dto.setQtdPaginas("1");
+			} else {
+				
+				dto.setQtdPaginas(String.valueOf((qtd / qtdRegistros) + 1));
+			}
+			
 		} finally {
 			
 			this.returnEm(em);

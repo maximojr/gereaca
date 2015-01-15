@@ -197,7 +197,42 @@ public class DadosBasicosTab extends Tab {
 			}
 		});
 		
-		conteudo.add(botaoSalvar).left().row().padTop(20);
+		final Table tbBtn = new Table(skin);
+		
+		tbBtn.add(botaoSalvar).left();
+		
+		final TextButton botaoNovo = new TextButton("Novo", skin);
+		botaoNovo.addListener(new ChangeListener() {
+			
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				
+				DadosBasicosTab.this.cadastroPessoaScreen.setPessoaEdicaoId(null);
+				DadosBasicosTab.this.nome.setText("");
+				DadosBasicosTab.this.dataNasc.setText("");
+				DadosBasicosTab.this.listEstadoCivil.setSelectedIndex(0);
+				DadosBasicosTab.this.listSexo.setSelectedIndex(0);
+				DadosBasicosTab.this.endereco.setText("");
+				DadosBasicosTab.this.numero.setText("");
+				DadosBasicosTab.this.bairro.setText("");
+				DadosBasicosTab.this.telefone.setText("");
+				DadosBasicosTab.this.email.setText("");
+				DadosBasicosTab.this.dataInicio.setText("");
+				DadosBasicosTab.this.valorMensal.setText("");
+				DadosBasicosTab.this.ativo.setChecked(true);
+				DadosBasicosTab.this.cadastroPessoaScreen.cabecalho.setText("Novo cliente");
+				
+				DadosBasicosTab.this.cadastroPessoaScreen.botaoTabObjetivos.setDisabled(true);
+				DadosBasicosTab.this.cadastroPessoaScreen.botaoTabHistPat.setDisabled(true);
+				DadosBasicosTab.this.cadastroPessoaScreen.botaoTabHabitos.setDisabled(true);
+				DadosBasicosTab.this.cadastroPessoaScreen.botaoTabMedidas.setDisabled(true);
+				DadosBasicosTab.this.cadastroPessoaScreen.botaoPersonal.setDisabled(true);
+			}
+		});
+		
+		tbBtn.add(botaoNovo).row().padTop(20);
+		
+		conteudo.add(tbBtn).left();
 		
 		this.inicializar();
 	}
@@ -289,7 +324,7 @@ public class DadosBasicosTab extends Tab {
 
 	private void salvarDadosCadastrais() {
 		
-		final Long pessoaId = DadosBasicosTab.this.cadastroPessoaScreen.getPessoaEdicaoId();
+		final Long pessoaId = this.cadastroPessoaScreen.getPessoaEdicaoId();
 		
 		final PessoaDTO pessoaDTO = new PessoaDTO();
 		pessoaDTO.setId(pessoaId == null ? null : pessoaId.toString());
