@@ -6,7 +6,6 @@ import java.util.Calendar;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -31,7 +30,7 @@ import br.com.tapananuca.gereacademia.service.PessoaService;
 import com.badlogic.gdx.utils.Array;
 
 @WebServlet(name="pessoa", urlPatterns=Utils.URL_PESSOA + "/*")
-public class PessoaServlet extends HttpServlet {
+public class PessoaServlet extends BaseServlet {
 
 	/**
 	 * 

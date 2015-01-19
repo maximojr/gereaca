@@ -5,7 +5,6 @@ import java.io.OutputStream;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -17,7 +16,7 @@ import br.com.tapananuca.gereacademia.model.Usuario;
 import br.com.tapananuca.gereacademia.service.UsuarioService;
 
 @WebServlet(name="login", urlPatterns=Utils.URL_LOGIN + "/*")
-public class LoginServlet extends HttpServlet{
+public class LoginServlet extends BaseServlet{
 
 	/**
 	 * 
