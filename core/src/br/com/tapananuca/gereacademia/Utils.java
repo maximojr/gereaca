@@ -57,6 +57,7 @@ public class Utils {
 	public static final String URL_PESSOA_MEDIDAS_NOVA_DATA = URL_PESSOA_MEDIDAS + "/novadata";
 	public static final String URL_PESSOA_MEDIDAS_GERAR_RELATORIO = URL_PESSOA_MEDIDAS + "/calcular";
 	public static final String URL_PESSOA_MEDIDAS_ENVIAR_RELATORIO = URL_PESSOA_MEDIDAS + "/enviar";
+	public static final String URL_CADASTRADOS = URL_PESSOA + "/cadastrados";
 	
 	public static final String URL_PERSONAL = "/personal";
 	public static final String URL_PERSONAL_DATAS = URL_PERSONAL + "/datas";
@@ -69,6 +70,7 @@ public class Utils {
 	public static final String URL_PAGAMENTOS = "/pagamentos";
 	public static final String URL_A_RECEBER = URL_PAGAMENTOS + "/receber";
 	public static final String URL_PAGAR = URL_PAGAMENTOS + "/pagar";
+	
 	
 	private final Json json;
 	

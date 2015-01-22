@@ -5,13 +5,13 @@ import java.util.Date;
 import br.com.tapananuca.gereacademia.GereAcademia;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class CadastroPessoaScreen extends Tela {
@@ -60,10 +60,10 @@ public class CadastroPessoaScreen extends Tela {
 		//tabbedPanel.debugAll();
 		
 		final TextButton botaoVoltar = new TextButton("Voltar", skin);
-		botaoVoltar.addListener(new ClickListener(){
+		botaoVoltar.addListener(new ChangeListener(){
 			
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
+			public void changed(ChangeEvent event, Actor actor) {
 				
 				CadastroPessoaScreen.this.pessoaEdicaoId = null;
 				final GereAcademia gereAcademia = CadastroPessoaScreen.this.applicationListener;

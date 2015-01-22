@@ -129,6 +129,9 @@ public class PessoaServlet extends BaseServlet {
 			final Long idUsuario = (Long) req.getSession().getAttribute(LoginServlet.PARAM_ID_LOGED_USER);
 			
 			ga = this.enviarRelatorio(dados.toString(), idUsuario);
+		} else if (url.endsWith(Utils.URL_CADASTRADOS)){
+			
+			ga = this.buscarPessoas(dados.toString());
 		} else {
 			
 			ga = new GAResponse();
@@ -142,6 +145,25 @@ public class PessoaServlet extends BaseServlet {
 		out.close();
 	}
 	
+	private GAResponse buscarPessoas(String dados) {
+		
+		final AReceberDTO dto = Utils.getInstance().fromJson(AReceberDTO.class, dados);
+		
+		final PessoaService pessoaService = new PessoaService();
+		
+		try {
+			
+			return pessoaService.buscarPessoas(30, Integer.valueOf(dto.getPaginaAtual()));
+		} catch (Exception e){
+			
+			final GAResponse ga = new GAResponse();
+			ga.setSucesso(false);
+			ga.setMsg(e.getLocalizedMessage());
+			
+			return ga;
+		}
+	}
+
 	private GAResponse gerarRelatorio(String dados, Long idUsuario) {
 		
 		final MedidaDTO medidaDTO = Utils.getInstance().fromJson(MedidaDTO.class, dados.toString());

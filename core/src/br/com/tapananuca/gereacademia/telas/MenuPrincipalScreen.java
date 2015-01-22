@@ -216,6 +216,20 @@ public class MenuPrincipalScreen extends Tela {
 		
 		tableBotoes.add(trocarSenha);
 		
+		final TextButton listaGeral = new TextButton("Lista Geral Pessoas", skin);
+		listaGeral.addListener(new ChangeListener() {
+			
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				
+				final GereAcademia gereAcademia = MenuPrincipalScreen.this.applicationListener;
+				final ListaGeralScreen listaGeralScreen = new ListaGeralScreen(gereAcademia);
+				gereAcademia.setTelaAtual(listaGeralScreen);
+			}
+		});
+		
+		tableBotoes.add(listaGeral);
+		
 		final TextButton logOut = new TextButton("Sair", skin);
 		logOut.addListener(new ChangeListener(){
 

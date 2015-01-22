@@ -529,4 +529,44 @@ public class PessoaService extends Service{
 			this.returnEm(em);
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	public AReceberPaginaDTO buscarPessoas(int qtdRegistros, int pagina){
+		
+		final AReceberPaginaDTO res = new AReceberPaginaDTO();
+		
+		final EntityManager em = this.getEm();
+		
+		try {
+			
+			Query query = em.createQuery("select count(id) from Pessoa");
+			
+			final Long qtd = (Long)query.getSingleResult();
+			
+			if (qtd <= qtdRegistros){
+				
+				res.setQtdPaginas("1");
+			} else {
+				
+				res.setQtdPaginas(String.valueOf((qtd / qtdRegistros) + 1));
+			}
+			
+			query = em.createQuery("select new "
+					+ AReceberDTO.class.getCanonicalName()
+					+ "(p.nome, '') "
+					+ " from Pessoa p "
+					+ " order by p.nome ");
+			
+			query.setMaxResults(qtdRegistros);
+			query.setFirstResult((pagina - 1) * qtdRegistros);
+			
+			res.setaReceber(this.getArrayFromList(query.getResultList()));
+			
+		} finally {
+			
+			this.returnEm(em);
+		}
+		
+		return res;
+	}
 }
