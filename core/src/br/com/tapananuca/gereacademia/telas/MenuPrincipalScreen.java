@@ -348,6 +348,8 @@ public class MenuPrincipalScreen extends Tela {
 		this.carregarPagamentosAReceber(pagina, dataRef);
 		
 		this.datasRefAniversario.setSelected(MesUtil.getEnumByCodigo(Integer.valueOf(dataRef.split("/")[0])).getNome());
+		
+		this.carregarAniversariantes(pagina, MesUtil.getEnumByCodigo(Integer.valueOf(dataRef.split("/")[0])));
 	}
 	
 	private void carregarPagamentosAReceber(final int pagina, final String dataRef){
