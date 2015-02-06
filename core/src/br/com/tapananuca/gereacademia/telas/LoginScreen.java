@@ -83,6 +83,8 @@ public class LoginScreen extends Tela {
 		});
 		
 		table.add(b).colspan(2).padBottom(40).row();
+		
+		this.stage.setKeyboardFocus(campoUsuario);
 	}
 
 	private void efetuarLogin() {

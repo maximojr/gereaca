@@ -46,7 +46,18 @@ public class DadosBasicosTab extends Tab {
 	private TextField valorMensal;
 	private CheckBox ativo;
 	
-	public DadosBasicosTab(Button button, CadastroPessoaScreen cadastroPessoaScreen, int alinhamento){
+	public DadosBasicosTab(final Button button, CadastroPessoaScreen cadastroPessoaScreen, int alinhamento){
+		
+		button.addListener(new ChangeListener() {
+			
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				if (button.isChecked()){
+					
+					DadosBasicosTab.this.stage.setKeyboardFocus(nome);
+				}
+			}
+		});
 		
 		this.setBotao(button);
 		this.skin = cadastroPessoaScreen.skin;
@@ -440,6 +451,16 @@ public class DadosBasicosTab extends Tab {
 			public void cancelled() {
 				
 				utils.mostarAlerta(null, "Solicitação ao servidor cancelada.", stage, skin);
+			}
+		});
+	}
+
+	public void setFocoInicial() {
+		Gdx.app.postRunnable(new Runnable() {
+			
+			@Override
+			public void run() {
+				DadosBasicosTab.this.stage.setKeyboardFocus(nome);
 			}
 		});
 	}

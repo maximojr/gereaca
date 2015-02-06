@@ -84,7 +84,11 @@ public class CadastroPessoaScreen extends Tela {
 	private Tab montarTabDadosCadastrais(){
 		
 		final TextButton botao = new TextButton("Dados básicos", skin, "toggle");
-		return new DadosBasicosTab(botao, this, Align.topLeft);
+		final DadosBasicosTab tab = new DadosBasicosTab(botao, this, Align.topLeft);
+		
+		tab.setFocoInicial();
+		
+		return tab;
 	}
 
 	private Tab montarObjetivos(){

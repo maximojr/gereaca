@@ -212,10 +212,7 @@ public class Utils {
 
 	public void setSessionId(String sessionId) {
 		
-		if (utils.sessionId == null || utils.sessionId.isEmpty()){
-			
-			utils.sessionId = sessionId;
-		}
+		utils.sessionId = sessionId;
 	}
 	
 	public String formatCurrency(BigDecimal valor){

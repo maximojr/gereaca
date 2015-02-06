@@ -7,6 +7,7 @@ import java.util.List;
 import br.com.tapananuca.gereacademia.Utils;
 import br.com.tapananuca.gereacademia.comunicacao.Dobra;
 import br.com.tapananuca.gereacademia.comunicacao.GAResponse;
+import br.com.tapananuca.gereacademia.comunicacao.MedidaDTO;
 import br.com.tapananuca.gereacademia.comunicacao.MedidaPersonalDTO;
 import br.com.tapananuca.gereacademia.comunicacao.MedidaPersonalDTOResponse;
 import br.com.tapananuca.gereacademia.comunicacao.MesUtil;
@@ -30,7 +31,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
@@ -110,7 +110,7 @@ public class PersonalTab extends Tab {
 		
 		ano = new TextField(String.valueOf(dataRef.getYear() + 1900), skin);
 		
-		selectBoxMes.setSelected(MesUtil.getEnumByCodigo(Integer.valueOf(mesRef)).name());
+		selectBoxMes.setSelected(MesUtil.getEnumByCodigo(Integer.valueOf(mesRef)).getNome());
 		
 		mesChange = new SelectBoxMesChangeListener();
 		selectBoxMes.addListener(mesChange);
@@ -307,10 +307,10 @@ public class PersonalTab extends Tab {
 				this.tableAulas.row();
 			}
 			
-			final TextButton btnDia = new TextButton(String.valueOf(index), skin);
+			final TextButton btnDia = new TextButton(String.valueOf(index), skin, "toggle");
 			
-			if (dias.contains(index, true)){
-				btnDia.setStyle(skin.get("toggle", TextButtonStyle.class));
+			if (dias.contains(index, false)){
+				btnDia.toggle();
 			}
 			
 			final int dia = index;
@@ -318,6 +318,7 @@ public class PersonalTab extends Tab {
 				
 				@Override
 				public void changed(ChangeEvent event, Actor actor) {
+					
 					PersonalTab.this.diaCalendarioClick(dia, btnDia);
 				}
 			});
@@ -330,8 +331,44 @@ public class PersonalTab extends Tab {
 
 	private void diaCalendarioClick(int dia, TextButton botao) {
 		
-		//TODO
-		System.out.println("dia " + dia + " - " + botao.isChecked());
+		if (PersonalTab.this.cadastroPessoaScreen.getPessoaEdicaoId() == null){
+			
+			utils.mostarAlerta("Atenção", "Dados insuficientes, salve ou pesquise um cliente cadastrado.", stage, skin);
+			
+			return;
+		}
+		
+		final MedidaDTO medidaDTO = new MedidaDTO();
+		medidaDTO.setIdPessoa(PersonalTab.this.cadastroPessoaScreen.getPessoaEdicaoId().toString());
+		medidaDTO.setDataReferente(dia + "/" + MesUtil.getEnumByValue(this.selectBoxMes.getSelected()).getCodigo() + "/" + this.ano.getText());
+		
+		final HttpRequest request = utils.criarRequest(Utils.URL_PERSONAL_ADD_AULA, medidaDTO);
+		
+		utils.enviarRequest(request, stage, skin, new HttpResponseListener() {
+			
+			@Override
+			public void handleHttpResponse(HttpResponse httpResponse) {
+				
+				final GAResponse resp = utils.fromJson(GAResponse.class, httpResponse.getResultAsString());
+				
+				if (!resp.isSucesso()){
+					
+					utils.mostarAlerta("Atenção:", resp.getMsg(), stage, skin);
+				}
+			}
+			
+			@Override
+			public void failed(Throwable t) {
+				
+				utils.mostarAlerta("Erro:", "Erro ao tentar adicionar aula: " + t.getMessage() , stage, skin);
+			}
+			
+			@Override
+			public void cancelled() {
+				
+				utils.mostarAlerta(null, "Solicitação ao servidor cancelada.", stage, skin);
+			}
+		});
 	}
 
 	private void carregarPersonal() {
@@ -362,17 +399,24 @@ public class PersonalTab extends Tab {
 				
 				if (dto.isSucesso()){
 					
-					PersonalTab.this.montarCalendario(dto.getInicioSemana(), dto.getQtdDias(), dto.getDias());
-					
-					if (dto.getDatasMedidas() != null && dto.getDatasMedidas().size > 0){
+					Gdx.app.postRunnable(new Runnable() {
 						
-						for (String dt : dto.getDatasMedidas()){
+						@Override
+						public void run() {
 							
-							final CheckBox checkBox = new CheckBox(dt, skin);
-							listCheckDatasMedidas.add(checkBox);
-							datasMedidas.add(checkBox).left().row();
+							PersonalTab.this.montarCalendario(dto.getInicioSemana(), dto.getQtdDias(), dto.getDias());
+							
+							if (dto.getDatasMedidas() != null && dto.getDatasMedidas().size > 0){
+								
+								for (String dt : dto.getDatasMedidas()){
+									
+									final CheckBox checkBox = new CheckBox(dt, skin);
+									listCheckDatasMedidas.add(checkBox);
+									datasMedidas.add(checkBox).left().row();
+								}
+							}
 						}
-					}
+					});
 					
 				} else {
 					

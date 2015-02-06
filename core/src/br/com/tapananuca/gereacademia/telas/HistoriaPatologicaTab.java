@@ -42,6 +42,7 @@ public class HistoriaPatologicaTab extends Tab {
 				
 				if (button.isChecked()){
 					HistoriaPatologicaTab.this.carregarHistPat();
+					HistoriaPatologicaTab.this.stage.setKeyboardFocus(cirurgias);
 				}
 			}
 		});

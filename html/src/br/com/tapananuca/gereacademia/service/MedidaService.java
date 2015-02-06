@@ -310,7 +310,7 @@ public class MedidaService extends Service {
 		
 		final Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.MONTH, Integer.valueOf(data[0]) - 1);
-		dto.setQtdDias(calendar.getMaximum(Calendar.DAY_OF_MONTH));
+		dto.setQtdDias(calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
 		calendar.set(Calendar.DAY_OF_MONTH, 1);
 		dto.setInicioSemana(calendar.get(Calendar.DAY_OF_WEEK));
 	}
@@ -352,20 +352,23 @@ public class MedidaService extends Service {
 				aulaPersonal = (AulaPersonal) query.getSingleResult();
 			} catch (NoResultException e) {}
 			
+			em.getTransaction().begin();
+			
 			if (aulaPersonal != null){
 				
-				return "Já existe aula cadastrada no dia " + new SimpleDateFormat("dd/MM/yyyy").format(data);
+				em.remove(aulaPersonal);
+			} else {
+				
+				final Usuario usuario = em.find(Usuario.class, idUsuario);
+				
+				aulaPersonal = new AulaPersonal();
+				aulaPersonal.setUsuario(usuario);
+				aulaPersonal.setPessoa(pessoa);
+				aulaPersonal.setData(data);
+				
+				em.persist(aulaPersonal);
 			}
 			
-			final Usuario usuario = em.find(Usuario.class, idUsuario);
-			
-			aulaPersonal = new AulaPersonal();
-			aulaPersonal.setUsuario(usuario);
-			aulaPersonal.setPessoa(pessoa);
-			aulaPersonal.setData(data);
-			
-			em.getTransaction().begin();
-			em.persist(aulaPersonal);
 			em.getTransaction().commit();
 			
 		} finally {

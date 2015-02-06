@@ -106,6 +106,8 @@ public class MedidasTab extends Tab {
 					}
 					
 					MedidasTab.this.carregarMedidas();
+					
+					MedidasTab.this.stage.setKeyboardFocus(maPesoCorporal);
 				}
 			}
 		});
