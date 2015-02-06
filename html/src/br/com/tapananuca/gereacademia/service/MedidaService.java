@@ -244,16 +244,7 @@ public class MedidaService extends Service {
 		
 		try {
 			
-			Query query = 
-				em.createQuery(
-					"select concat(day(ap.data), '/', month(ap.data), '/', year(ap.data)) " + 
-					" from AulaPersonal ap join ap.pessoa p where p.id = :id order by ap.data");
-			
-			query.setParameter("id", idPessoa);
-			
-			res.setDatasAulas(this.getArrayFromList(query.getResultList()));
-			
-			query = em.createQuery(
+			final Query query = em.createQuery(
 				"select concat(day(m.dataReferente), '/', month(m.dataReferente), '/', year(m.dataReferente)) " + 
 				" from Medida m join m.pessoa p where p.id = :id order by m.dataReferente");
 			
@@ -261,12 +252,67 @@ public class MedidaService extends Service {
 			
 			res.setDatasMedidas(this.getArrayFromList(query.getResultList()));
 			
+			this.buscarDadosAulasPersonal(pessoaDTO, res, em);
+			
 		} finally {
 			
 			this.returnEm(em);
 		}
 		
 		return res;
+	}
+	
+	public MedidaPersonalDTOResponse buscarDatasAulasPersonal(PessoaDTO pessoaDTO){
+		
+		final MedidaPersonalDTOResponse res = new MedidaPersonalDTOResponse();
+		
+		if (pessoaDTO == null || pessoaDTO.getId() == null || pessoaDTO.getId().isEmpty()){
+			
+			res.setSucesso(false);
+			res.setMsg("Dados insuficientes");
+			return res;
+		}
+		
+		final EntityManager em = this.getEm();
+		
+		try {
+			
+			this.buscarDadosAulasPersonal(pessoaDTO, res, em);
+			
+		} finally {
+			
+			this.returnEm(em);
+		}
+		
+		return res;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void buscarDadosAulasPersonal(PessoaDTO pessoaDTO,
+			MedidaPersonalDTOResponse dto, EntityManager em){
+		
+		Query query = 
+			em.createQuery(
+				"select day(ap.data) " + 
+				" from AulaPersonal ap join ap.pessoa p where p.id = :id " + 
+				"  and month(ap.data) = :mes and year(ap.data) = :ano ");
+		
+		final String[] data = pessoaDTO.getDataInicio().split("/");
+		
+		final Long idPessoa = Long.valueOf(pessoaDTO.getId());
+		
+		query.setParameter("id", idPessoa);
+		
+		query.setParameter("mes", Integer.valueOf(data[0]));
+		query.setParameter("ano", Integer.valueOf(data[1]));
+		
+		dto.setDias(this.getArrayFromList(query.getResultList()));
+		
+		final Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.MONTH, Integer.valueOf(data[0]) - 1);
+		dto.setQtdDias(calendar.getMaximum(Calendar.DAY_OF_MONTH));
+		calendar.set(Calendar.DAY_OF_MONTH, 1);
+		dto.setInicioSemana(calendar.get(Calendar.DAY_OF_WEEK));
 	}
 	
 	public String adicionarAulaPersonal(MedidaDTO medidaDTO, Long idUsuario) {

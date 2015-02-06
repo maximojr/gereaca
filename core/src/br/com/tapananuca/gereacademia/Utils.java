@@ -66,6 +66,7 @@ public class Utils {
 	public static final String URL_PERSONAL_ABRIR_RELATORIO = URL_PERSONAL + "/abrir";
 	public static final String URL_PERSONAL_ENVIAR_RELATORIO = URL_PERSONAL + "/enviar";
 	public static final String URL_PERSONAL_KEY_RELATORIO = "rel";
+	public static final String URL_PERSONAL_DATAS_AULAS = URL_PERSONAL + "/datasaulas";
 	
 	public static final String URL_PAGAMENTOS = "/pagamentos";
 	public static final String URL_A_RECEBER = URL_PAGAMENTOS + "/receber";

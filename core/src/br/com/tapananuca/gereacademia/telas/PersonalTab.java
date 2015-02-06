@@ -1,14 +1,15 @@
 package br.com.tapananuca.gereacademia.telas;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import br.com.tapananuca.gereacademia.Utils;
 import br.com.tapananuca.gereacademia.comunicacao.Dobra;
 import br.com.tapananuca.gereacademia.comunicacao.GAResponse;
-import br.com.tapananuca.gereacademia.comunicacao.MedidaDTO;
 import br.com.tapananuca.gereacademia.comunicacao.MedidaPersonalDTO;
 import br.com.tapananuca.gereacademia.comunicacao.MedidaPersonalDTOResponse;
+import br.com.tapananuca.gereacademia.comunicacao.MesUtil;
 import br.com.tapananuca.gereacademia.comunicacao.NivelMaturacao;
 import br.com.tapananuca.gereacademia.comunicacao.PessoaDTO;
 
@@ -29,9 +30,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class PersonalTab extends Tab {
 
@@ -39,12 +42,21 @@ public class PersonalTab extends Tab {
 	private Utils utils;
 	private CadastroPessoaScreen cadastroPessoaScreen;
 	
-	private Table datasAulas, datasMedidas;
+	private Table datasMedidas;
 	private List<CheckBox> listCheckDatasMedidas;
 	private SelectBox<String> dobrasCalc;
 	private SelectBox<String> nivelMaturacao;
 	private Slider sliderPercentualPesoMaxRec;
 	
+	private final Table tableAulas;
+	
+	private final SelectBox<String> selectBoxMes;
+	
+	private final TextField ano;
+	
+	private final SelectBoxMesChangeListener mesChange;
+	
+	@SuppressWarnings("deprecation")
 	public PersonalTab(final Button button, CadastroPessoaScreen cadastroPessoaScreen, int alinhamento){
 		
 		button.addListener(new ChangeListener(){
@@ -77,74 +89,37 @@ public class PersonalTab extends Tab {
 		
 		this.conteudo = new Table(skin);
 		
-		final Table tableAulas = new Table(skin);
-		tableAulas.add("Aulas:").row();
+		tableAulas = new Table(skin);
+		conteudo.add("Aulas:").padTop(10).colspan(7).row();
 		
-		datasAulas = new Table(skin);
-		datasAulas.align(Align.topLeft);
-		final ScrollPane scrollDatasAulas = new ScrollPane(datasAulas, skin);
+		selectBoxMes = new SelectBox<String>(skin);
 		
-		tableAulas.add(scrollDatasAulas).height(200).width(150);
+		final String[] es = new String[MesUtil.values().length];
 		
-		final Table inTableAddAula = new Table(skin);
+		int index = 0;
+		for (MesUtil e : MesUtil.values()){
+			es[index] = e.getNome();
+			index++;
+		}
 		
-		final TextField novaAula = new TextField("", skin);
-		novaAula.setTextFieldFilter(utils.dateFilter);
-		inTableAddAula.add(novaAula).row();
+		selectBoxMes.setItems(es);
 		
-		final TextButton btnAddAula = new TextButton("Adicionar aula", skin);
-		btnAddAula.addListener(new ChangeListener(){
-
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				
-				if (PersonalTab.this.cadastroPessoaScreen.getPessoaEdicaoId() == null){
-					
-					utils.mostarAlerta("Atenção", "Dados insuficientes, salve ou pesquise um cliente cadastrado.", stage, skin);
-					
-					return;
-				}
-				
-				final MedidaDTO medidaDTO = new MedidaDTO();
-				medidaDTO.setIdPessoa(PersonalTab.this.cadastroPessoaScreen.getPessoaEdicaoId().toString());
-				medidaDTO.setDataReferente(novaAula.getText());
-				
-				final HttpRequest request = utils.criarRequest(Utils.URL_PERSONAL_ADD_AULA, medidaDTO);
-				
-				utils.enviarRequest(request, stage, skin, new HttpResponseListener() {
-					
-					@Override
-					public void handleHttpResponse(HttpResponse httpResponse) {
-						
-						final GAResponse resp = utils.fromJson(GAResponse.class, httpResponse.getResultAsString());
-						
-						if (resp.isSucesso()){
-							
-							datasAulas.add(medidaDTO.getDataReferente()).row();
-						} else {
-							
-							utils.mostarAlerta("Atenção:", resp.getMsg(), stage, skin);
-						}
-					}
-					
-					@Override
-					public void failed(Throwable t) {
-						
-						utils.mostarAlerta("Erro:", "Erro ao tentar adicionar aula: " + t.getMessage() , stage, skin);
-					}
-					
-					@Override
-					public void cancelled() {
-						
-						utils.mostarAlerta(null, "Solicitação ao servidor cancelada.", stage, skin);
-					}
-				});
-			}
-		});
+		final Date dataRef = new Date(TimeUtils.millis());
 		
-		inTableAddAula.add(btnAddAula).padTop(5);
+		final String mesRef = String.valueOf(dataRef.getMonth() + 1);
 		
-		tableAulas.add(inTableAddAula).padLeft(5);
+		ano = new TextField(String.valueOf(dataRef.getYear() + 1900), skin);
+		
+		selectBoxMes.setSelected(MesUtil.getEnumByCodigo(Integer.valueOf(mesRef)).name());
+		
+		mesChange = new SelectBoxMesChangeListener();
+		selectBoxMes.addListener(mesChange);
+		
+		final Table tabelaMesAno = new Table(skin);
+		tabelaMesAno.add(selectBoxMes);
+		tabelaMesAno.add(ano);
+		
+		conteudo.add(tabelaMesAno).row();
 		
 		conteudo.add(tableAulas).row().padTop(15);
 		
@@ -162,7 +137,7 @@ public class PersonalTab extends Tab {
 		dobrasCalc = new SelectBox<String>(skin);
 		
 		String[] valores = new String[Dobra.values().length];
-		int index = 0;
+		index = 0;
 		for (Dobra d : Dobra.values()){
 			valores[index] = d.getDescricao();
 			index++;
@@ -250,6 +225,114 @@ public class PersonalTab extends Tab {
 		
 		this.inicializar();
 	}
+	
+	class SelectBoxMesChangeListener extends ChangeListener{
+
+		@Override
+		public void changed(ChangeEvent event, Actor actor) {
+			
+			PersonalTab.this.montarCalendario();
+		}
+	}
+	
+	private void montarCalendario() {
+		
+		if (PersonalTab.this.cadastroPessoaScreen.getPessoaEdicaoId() == null){
+			
+			utils.mostarAlerta("Atenção", "Dados insuficientes, salve ou pesquise um cliente cadastrado.", stage, skin);
+			
+			return;
+		}
+		
+		final PessoaDTO pessoaDTO = new PessoaDTO(PersonalTab.this.cadastroPessoaScreen.getPessoaEdicaoId(), null);
+		pessoaDTO.setDataInicio(
+				String.valueOf(MesUtil.getEnumByValue(this.selectBoxMes.getSelected()).getCodigo()) + "/" +
+						this.ano.getText());
+		
+		final HttpRequest request = utils.criarRequest(Utils.URL_PERSONAL_DATAS_AULAS, pessoaDTO);
+		
+		utils.enviarRequest(request, stage, skin, new HttpResponseListener() {
+
+			@Override
+			public void handleHttpResponse(HttpResponse httpResponse) {
+				
+				final MedidaPersonalDTOResponse dto = utils.fromJson(MedidaPersonalDTOResponse.class, httpResponse.getResultAsString());
+				
+				if (dto.isSucesso()){
+					
+					PersonalTab.this.montarCalendario(dto.getInicioSemana(), dto.getQtdDias(), dto.getDias());
+					
+				} else {
+					
+					utils.mostarAlerta("Atenção:", dto.getMsg(), stage, skin);
+				}
+			}
+
+			@Override
+			public void failed(Throwable t) {
+				utils.mostarAlerta(null, "Erro ao carregar datas de aula: " + t.getLocalizedMessage(), stage, skin);
+			}
+
+			@Override
+			public void cancelled() {
+				utils.mostarAlerta(null, "Solicitação ao servidor cancelada.", stage, skin);
+			}
+		});
+	}
+
+	private void montarCalendario(int inicioSemana, int qtdDias, Array<Integer> dias) {
+		
+		this.tableAulas.clear();
+		
+		this.tableAulas.add("Dom");
+		this.tableAulas.add("Seg");
+		this.tableAulas.add("Ter");
+		this.tableAulas.add("Qua");
+		this.tableAulas.add("Qui");
+		this.tableAulas.add("Sex");
+		this.tableAulas.add("Sab").row();
+		
+		int qtdDiasAdd = 0;
+		
+		while (inicioSemana > 1){
+			this.tableAulas.add("");
+			inicioSemana--;
+			qtdDiasAdd++;
+		}
+		
+		for (int index = 1 ; index <= qtdDias ; index++){
+			
+			if (qtdDiasAdd > 0 && qtdDiasAdd % 7 == 0){
+				
+				this.tableAulas.row();
+			}
+			
+			final TextButton btnDia = new TextButton(String.valueOf(index), skin);
+			
+			if (dias.contains(index, true)){
+				btnDia.setStyle(skin.get("toggle", TextButtonStyle.class));
+			}
+			
+			final int dia = index;
+			btnDia.addListener(new ChangeListener() {
+				
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					PersonalTab.this.diaCalendarioClick(dia, btnDia);
+				}
+			});
+			
+			this.tableAulas.add(btnDia).width(50);
+			
+			qtdDiasAdd++;
+		}
+	}
+
+	private void diaCalendarioClick(int dia, TextButton botao) {
+		
+		//TODO
+		System.out.println("dia " + dia + " - " + botao.isChecked());
+	}
 
 	private void carregarPersonal() {
 		
@@ -260,11 +343,13 @@ public class PersonalTab extends Tab {
 			return;
 		}
 		
-		datasAulas.clearChildren();
 		datasMedidas.clearChildren();
 		listCheckDatasMedidas.clear();
 		
 		final PessoaDTO pessoaDTO = new PessoaDTO(PersonalTab.this.cadastroPessoaScreen.getPessoaEdicaoId(), null);
+		pessoaDTO.setDataInicio(
+				String.valueOf(MesUtil.getEnumByValue(this.selectBoxMes.getSelected()).getCodigo()) + "/" +
+						this.ano.getText());
 		
 		final HttpRequest request = utils.criarRequest(Utils.URL_PERSONAL_DATAS, pessoaDTO);
 		
@@ -277,13 +362,7 @@ public class PersonalTab extends Tab {
 				
 				if (dto.isSucesso()){
 					
-					if (dto.getDatasAulas() != null && dto.getDatasAulas().size > 0){
-						
-						for (String dt : dto.getDatasAulas()){
-							
-							datasAulas.add(dt).left().row();
-						}
-					}
+					PersonalTab.this.montarCalendario(dto.getInicioSemana(), dto.getQtdDias(), dto.getDias());
 					
 					if (dto.getDatasMedidas() != null && dto.getDatasMedidas().size > 0){
 						
@@ -294,6 +373,7 @@ public class PersonalTab extends Tab {
 							datasMedidas.add(checkBox).left().row();
 						}
 					}
+					
 				} else {
 					
 					utils.mostarAlerta("Atenção:", dto.getMsg(), stage, skin);

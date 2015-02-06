@@ -110,6 +110,9 @@ public class PersonalServlet extends BaseServlet {
 			final Long idUsuario = (Long) req.getSession().getAttribute(LoginServlet.PARAM_ID_LOGED_USER);
 			
 			ga = this.enviarEmailRelatorioAvaliacao(dados.toString(), idUsuario);
+		} else if (url.endsWith(Utils.URL_PERSONAL_DATAS_AULAS)) {
+			
+			ga = this.carregarDatasAulasPersonal(dados.toString());
 			
 		} else {
 			
@@ -124,6 +127,27 @@ public class PersonalServlet extends BaseServlet {
 		out.close();
 	}
 
+	private GAResponse carregarDatasAulasPersonal(String dados) {
+		
+		final PessoaDTO pessoaDTO = Utils.getInstance().fromJson(PessoaDTO.class, dados);
+		
+		final MedidaService medidaService = new MedidaService();
+		
+		MedidaPersonalDTOResponse ga = null;
+		
+		try {
+			
+			ga = medidaService.buscarDatasAulasPersonal(pessoaDTO);
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+			ga = new MedidaPersonalDTOResponse();
+			ga.setSucesso(false);
+			ga.setMsg(e.getLocalizedMessage());
+		}
+		
+		return ga;
+	}
 
 	private GAResponse carregarDatas(String dados) {
 		
