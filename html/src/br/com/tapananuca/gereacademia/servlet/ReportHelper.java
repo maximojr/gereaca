@@ -6,6 +6,8 @@ public class ReportHelper {
 	private byte[] dados;
 	
 	private String msg;
+	
+	private String nomeArquivo;
 
 	public byte[] getDados() {
 		return dados;
@@ -21,5 +23,13 @@ public class ReportHelper {
 
 	public void setMsg(String msg) {
 		this.msg = msg;
+	}
+
+	public String getNomeArquivo() {
+		return nomeArquivo;
+	}
+
+	public void setNomeArquivo(String nomeArquivo) {
+		this.nomeArquivo = nomeArquivo;
 	}
 }

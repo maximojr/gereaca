@@ -188,7 +188,7 @@ public class PessoaServlet extends BaseServlet {
 		} else if (helper.getDados() != null){
 			
 			final String key = String.valueOf(System.currentTimeMillis());
-			PersonalServlet.relatorios.put(key, helper.getDados());
+			PersonalServlet.relatorios.put(key, helper);
 			
 			ga.setMsg(key);
 		}

@@ -7,6 +7,7 @@
 	</parameter>
 	<parameter name="TIPO_AVALIACAO" class="java.lang.String"/>
 	<parameter name="IDADE" class="java.lang.Number"/>
+	<parameter name="DATAS" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -75,12 +76,12 @@
 			<staticText>
 				<reportElement x="0" y="40" width="75" height="20"/>
 				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[Data:]]></text>
+				<text><![CDATA[Data(s):]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="75" y="40" width="480" height="20"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format(new Date())]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{DATAS}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>

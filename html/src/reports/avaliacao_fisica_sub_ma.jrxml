@@ -21,14 +21,84 @@
 	<background>
 		<band splitType="Stretch"/>
 	</background>
+	<title>
+		<band height="20">
+			<staticText>
+				<reportElement x="0" y="1" width="555" height="19"/>
+				<box topPadding="0">
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Medidas Antropométricas]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="20">
+			<staticText>
+				<reportElement x="0" y="0" width="100" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Data]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="0" width="100" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Peso Corporal (kg)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="200" y="0" width="100" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Estatura (cm)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="300" y="0" width="100" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Cintura (cm)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="400" y="0" width="100" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Quadril (cm)]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<textField>
+				<reportElement x="0" y="0" width="100" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataReferente})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="100" y="0" width="100" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Float"><![CDATA[$F{maPesoCorporal}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="200" y="0" width="100" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Float"><![CDATA[new Float($F{maAltura}.floatValue() * 100)]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="300" y="0" width="100" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Float"><![CDATA[$F{maCintura}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="400" y="0" width="100" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Float"><![CDATA[$F{maQuadril}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
 	<summary>
 		<band height="216" splitType="Stretch">
 			<lineChart>
 				<chart>
 					<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="555" height="216"/>
-					<chartTitle>
-						<titleExpression><![CDATA[new String("Medidas Antropométricas")]]></titleExpression>
-					</chartTitle>
+					<chartTitle/>
 					<chartSubtitle/>
 					<chartLegend/>
 				</chart>
@@ -39,9 +109,9 @@
 						<valueExpression><![CDATA[$F{maPesoCorporal}]]></valueExpression>
 					</categorySeries>
 					<categorySeries>
-						<seriesExpression><![CDATA["Estatura (m)"]]></seriesExpression>
+						<seriesExpression><![CDATA["Estatura (cm)"]]></seriesExpression>
 						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataReferente})]]></categoryExpression>
-						<valueExpression><![CDATA[$F{maAltura}]]></valueExpression>
+						<valueExpression><![CDATA[new Float($F{maAltura}.floatValue() * 100)]]></valueExpression>
 					</categorySeries>
 					<categorySeries>
 						<seriesExpression><![CDATA["Cintura (cm)"]]></seriesExpression>

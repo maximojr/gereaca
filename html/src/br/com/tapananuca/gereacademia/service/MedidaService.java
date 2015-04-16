@@ -698,6 +698,8 @@ public class MedidaService extends Service {
 				}
 			}
 			
+			res.setNomeArquivo(pessoa.getNome().replace(" ", "_") + "_" + new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
+			
 		} catch (Exception e){
 			
 			res.setMsg(e.getLocalizedMessage());
@@ -970,6 +972,21 @@ public class MedidaService extends Service {
 		parameters.put("IDADE", idade);
 		parameters.put("TIPO_AVALIACAO", tipo);
 		parameters.put("SUBREPORT_DIR", url.getPath());
+		
+		final SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		
+		String datas = "";
+		for (Medida m : dto.getMedidas()){
+			
+			if (!datas.isEmpty()){
+				
+				datas += ", ";
+			}
+			
+			datas += df.format(m.getDataReferente());
+		}
+		
+		parameters.put("DATAS", datas);
 		
 		final List<AvaliacaoFisicaDTO> lista = new ArrayList<AvaliacaoFisicaDTO>(1);
 		lista.add(dto);

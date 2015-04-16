@@ -30,15 +30,115 @@
 	<background>
 		<band splitType="Stretch"/>
 	</background>
+	<title>
+		<band height="20">
+			<staticText>
+				<reportElement x="0" y="1" width="555" height="19"/>
+				<box bottomPadding="0">
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Medidas Circunferênciais (cm)]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="20">
+			<staticText>
+				<reportElement x="0" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Data]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="65" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Tórax]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="130" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Abdômen]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="195" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Cintura]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="260" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Bíceps]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="325" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Tríceps]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="390" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Coxa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="455" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Antebraço]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<textField>
+				<reportElement x="0" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataReferente})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="65" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Float"><![CDATA[$F{mcTorax}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="130" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Float"><![CDATA[$F{mcAbdomen}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="195" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Float"><![CDATA[$F{mcCintura}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="260" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Float"><![CDATA[$F{mcBiceps}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="325" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Float"><![CDATA[$F{mcTriceps}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="390" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Float"><![CDATA[$F{mcCoxa}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="455" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Float"><![CDATA[$F{mcAntebraco}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
 	<summary>
 		<band height="216" splitType="Stretch">
 			<lineChart>
 				<chart>
 					<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="555" height="216"/>
 					<chartTitle/>
-					<chartSubtitle>
-						<subtitleExpression><![CDATA[new String("Medidas Circunferênciais (cm)")]]></subtitleExpression>
-					</chartSubtitle>
+					<chartSubtitle/>
 					<chartLegend/>
 				</chart>
 				<categoryDataset>

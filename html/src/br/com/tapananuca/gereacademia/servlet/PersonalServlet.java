@@ -26,7 +26,7 @@ public class PersonalServlet extends BaseServlet {
 	 */
 	private static final long serialVersionUID = 8004202272031420174L;
 	
-	public static final Map<String, byte[]> relatorios = new HashMap<String, byte[]>();
+	public static final Map<String, ReportHelper> relatorios = new HashMap<String,ReportHelper>();
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -82,7 +82,7 @@ public class PersonalServlet extends BaseServlet {
 			} else if (helper.getDados() != null){
 				
 				final String key = String.valueOf(System.currentTimeMillis());
-				relatorios.put(key, helper.getDados());
+				relatorios.put(key, helper);
 				
 				ga.setMsg(key);
 			}
@@ -91,14 +91,14 @@ public class PersonalServlet extends BaseServlet {
 			
 			final String key = req.getParameter(Utils.URL_PERSONAL_KEY_RELATORIO);
 			
-			final byte[] dadosRelatorio = relatorios.get(key);
+			final ReportHelper dadosRelatorio = relatorios.get(key);
 			
 			resp.setContentType("application/pdf");
-			resp.addHeader("Content-Disposition", "attachment; filename=relatorio.pdf");
-			resp.setContentLength(dadosRelatorio.length);
+			resp.addHeader("Content-Disposition", "attachment; filename=" + dadosRelatorio.getNomeArquivo() + ".pdf");
+			resp.setContentLength(dadosRelatorio.getDados().length);
 			
 			final OutputStream responseOutputStream = resp.getOutputStream();
-			responseOutputStream.write(dadosRelatorio);
+			responseOutputStream.write(dadosRelatorio.getDados());
 			responseOutputStream.flush();
 			responseOutputStream.close();
 			
