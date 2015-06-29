@@ -641,6 +641,14 @@ public class MedidaService extends Service {
 			} else {
 				
 				final double somatorioMedidas = this.calcularSomatorioMedidas(lista, medidaPersonalDTO.getDobra());
+				
+				if (medidaPersonalDTO.getNivelMaturacao() == null){
+					
+					res.setMsg("Para menores de 18 anos escolha 2 dobras");
+					return res;
+				}
+				
+				
 				final double nivelMaturacao = medidaPersonalDTO.getNivelMaturacao().getPeso();
 				
 				if (medidaPersonalDTO.getDobra() == Dobra.DUAS) {
