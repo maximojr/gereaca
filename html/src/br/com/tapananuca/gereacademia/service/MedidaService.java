@@ -640,7 +640,7 @@ public class MedidaService extends Service {
 				
 			} else {
 				
-				final double somatorioMedidas = this.calcularSomatorioMedidas(lista, medidaPersonalDTO.getDobra());
+				final double somatorioMedidas = this.calcularSomatorioMedidas(lista.get(lista.size() - 1), medidaPersonalDTO.getDobra());
 				
 				if (medidaPersonalDTO.getNivelMaturacao() == null){
 					
@@ -725,184 +725,218 @@ public class MedidaService extends Service {
 	private byte[] protocolo7DobrasHomensAdultos(List<Medida> medidas, int idade, double percentualPesoMaximoRecomendado,
 			String avaliador, Pessoa pessoa) throws JRException{
 		
-		double peso = this.doubleOrZero(medidas.get(medidas.size() - 1).getMaPesoCorporal());
-		double estatura = this.doubleOrZero(medidas.get(medidas.size() - 1).getMaAltura());
+		final List<AvaliacaoFisicaDTO> dtos = new ArrayList<AvaliacaoFisicaDTO>();
 		
-		double somatorioMedias = this.calcularSomatorioMedidas(medidas, Dobra.SETE);
+		for (Medida med : medidas){
+			double peso = this.doubleOrZero(med.getMaPesoCorporal());
+			double estatura = this.doubleOrZero(med.getMaAltura());
+			
+			double somatorioMedias = this.calcularSomatorioMedidas(med, Dobra.SETE);
+			
+			double densidadeCorporal = 1.112 - (0.00043499 * somatorioMedias) + (0.00000055 * somatorioMedias * somatorioMedias) - (0.0002882 * idade);  
+			
+			double percentualGordura = ((4.95 / densidadeCorporal) - 4.5) * 100;
+			
+			double massaGorda = percentualGordura * peso / 100;
+			double massaMagra = peso - massaGorda;
+			double pesoMaximoRecomendavel = massaMagra / percentualPesoMaximoRecomendado;
+			double objetivoEmagrecimento = peso - pesoMaximoRecomendavel;
+			
+			dtos.add(this.montarDTO(medidas, densidadeCorporal, massaGorda, 
+							massaMagra, objetivoEmagrecimento, 
+							percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura));
+		}
 		
-		double densidadeCorporal = 1.112 - (0.00043499 * somatorioMedias) + (0.00000055 * somatorioMedias * somatorioMedias) - (0.0002882 * idade);  
-		
-		double percentualGordura = ((4.95 / densidadeCorporal) - 4.5) * 100;
-		
-		double massaGorda = percentualGordura * peso / 100;
-		double massaMagra = peso - massaGorda;
-		double pesoMaximoRecomendavel = massaMagra / percentualPesoMaximoRecomendado;
-		double objetivoEmagrecimento = peso - pesoMaximoRecomendavel;
-		
-		final AvaliacaoFisicaDTO dto = 
-				this.montarDTO(medidas, densidadeCorporal, massaGorda, 
-						massaMagra, objetivoEmagrecimento, 
-						percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura);
-		
-		return this.gerarRelatorioAvaliacaoFisica(Dobra.SETE.getDescricao(), avaliador, pessoa.getNome(), idade, dto);
+		return this.gerarRelatorioAvaliacaoFisica(Dobra.SETE.getDescricao(), avaliador, pessoa.getNome(), idade, dtos);
 	}
 	
 	private byte[] protocolo3DobrasHomensAdultos(List<Medida> medidas, int idade, double percentualPesoMaximoRecomendado,
 			String avaliador, Pessoa pessoa) throws JRException{
 		
-		double peso = this.doubleOrZero(medidas.get(medidas.size() - 1).getMaPesoCorporal());
-		double estatura = this.doubleOrZero(medidas.get(medidas.size() - 1).getMaAltura());
+		final List<AvaliacaoFisicaDTO> dtos = new ArrayList<AvaliacaoFisicaDTO>();
 		
-		double somatorioMedias = this.calcularSomatorioMedidas(medidas, Dobra.TRES);
+		for (Medida med : medidas){
+			
+			double peso = this.doubleOrZero(med.getMaPesoCorporal());
+			double estatura = this.doubleOrZero(med.getMaAltura());
+			
+			double somatorioMedias = this.calcularSomatorioMedidas(med, Dobra.TRES);
+			
+			double densidadeCorporal = 1.1093800 - (0.0008267 * somatorioMedias) + (0.0000016 * somatorioMedias * somatorioMedias) - (0.0002574 * idade);
+			
+			double percentualGordura = ((4.95 / densidadeCorporal) - 4.5) * 100;
+			
+			double massaGorda = percentualGordura * peso / 100; 
+			double massaMagra = peso - massaGorda; 
+			double pesoMaximoRecomendavel = massaMagra / percentualPesoMaximoRecomendado; 
+			double objetivoEmagrecimento = peso - pesoMaximoRecomendavel;
+			
+			dtos.add(this.montarDTO(medidas, densidadeCorporal, massaGorda, 
+							massaMagra, objetivoEmagrecimento, 
+							percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura));
+		}
 		
-		double densidadeCorporal = 1.1093800 - (0.0008267 * somatorioMedias) + (0.0000016 * somatorioMedias * somatorioMedias) - (0.0002574 * idade);
 		
-		double percentualGordura = ((4.95 / densidadeCorporal) - 4.5) * 100;
 		
-		double massaGorda = percentualGordura * peso / 100; 
-		double massaMagra = peso - massaGorda; 
-		double pesoMaximoRecomendavel = massaMagra / percentualPesoMaximoRecomendado; 
-		double objetivoEmagrecimento = peso - pesoMaximoRecomendavel;
-		
-		final AvaliacaoFisicaDTO dto = 
-				this.montarDTO(medidas, densidadeCorporal, massaGorda, 
-						massaMagra, objetivoEmagrecimento, 
-						percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura);
-		
-		return this.gerarRelatorioAvaliacaoFisica(Dobra.TRES.getDescricao(), avaliador, pessoa.getNome(), idade, dto);
+		return this.gerarRelatorioAvaliacaoFisica(Dobra.TRES.getDescricao(), avaliador, pessoa.getNome(), idade, dtos);
 	}
 	
 	private byte[] protocolo7DobrasMulheresAdultas(List<Medida> medidas, int idade, double percentualPesoMaximoRecomendado,
 			String avaliador, Pessoa pessoa) throws JRException{
 		
-		double peso = this.doubleOrZero(medidas.get(medidas.size() - 1).getMaPesoCorporal());
-		double estatura = this.doubleOrZero(medidas.get(medidas.size() - 1).getMaAltura());
+		final List<AvaliacaoFisicaDTO> dtos = new ArrayList<AvaliacaoFisicaDTO>();
 		
-		double somatorioMedias = this.calcularSomatorioMedidas(medidas, Dobra.SETE);
+		for (Medida med : medidas){
+			
+			double peso = this.doubleOrZero(med.getMaPesoCorporal());
+			double estatura = this.doubleOrZero(med.getMaAltura());
+			
+			double somatorioMedias = this.calcularSomatorioMedidas(med, Dobra.SETE);
+			
+			double densidadeCorporal = 1.0970 - (0.00046971 * somatorioMedias) + (0.00000056 * somatorioMedias * somatorioMedias) - (0.00012828 * idade );
+			
+			double percentualGordura = ((4.95 / densidadeCorporal) - 4.5) * 100;
+			
+			double massaGorda = percentualGordura * peso / 100; 
+			double massaMagra = peso - massaGorda; 
+			double pesoMaximoRecomendavel = massaMagra / percentualPesoMaximoRecomendado; 
+			double objetivoEmagrecimento = peso - pesoMaximoRecomendavel;
+			
+			dtos.add(this.montarDTO(medidas, densidadeCorporal, massaGorda, 
+							massaMagra, objetivoEmagrecimento, 
+							percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura));
+		}
 		
-		double densidadeCorporal = 1.0970 - (0.00046971 * somatorioMedias) + (0.00000056 * somatorioMedias * somatorioMedias) - (0.00012828 * idade );
-		
-		double percentualGordura = ((4.95 / densidadeCorporal) - 4.5) * 100;
-		
-		double massaGorda = percentualGordura * peso / 100; 
-		double massaMagra = peso - massaGorda; 
-		double pesoMaximoRecomendavel = massaMagra / percentualPesoMaximoRecomendado; 
-		double objetivoEmagrecimento = peso - pesoMaximoRecomendavel;
-		
-		final AvaliacaoFisicaDTO dto = 
-				this.montarDTO(medidas, densidadeCorporal, massaGorda, 
-						massaMagra, objetivoEmagrecimento, 
-						percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura);
-		
-		return this.gerarRelatorioAvaliacaoFisica(Dobra.SETE.getDescricao(), avaliador, pessoa.getNome(), idade, dto);
+		return this.gerarRelatorioAvaliacaoFisica(Dobra.SETE.getDescricao(), avaliador, pessoa.getNome(), idade, dtos);
 	}
 	
 	private byte[] protocolo3DobrasMulheresAdultas(List<Medida> medidas, int idade, double percentualPesoMaximoRecomendado,
 			String avaliador, Pessoa pessoa) throws JRException{
 		
-		double peso = this.doubleOrZero(medidas.get(medidas.size() - 1).getMaPesoCorporal());
-		double estatura = this.doubleOrZero(medidas.get(medidas.size() - 1).getMaAltura());
+		final List<AvaliacaoFisicaDTO> dtos = new ArrayList<AvaliacaoFisicaDTO>();
 		
-		double somatorioMedias = this.calcularSomatorioMedidas(medidas, Dobra.TRES);
+		for (Medida med : medidas){
+			
+			double peso = this.doubleOrZero(med.getMaPesoCorporal());
+			double estatura = this.doubleOrZero(med.getMaAltura());
+			
+			double somatorioMedias = this.calcularSomatorioMedidas(med, Dobra.TRES);
+			
+			double densidadeCorporal = 1.0994921 - (0.0009929 * somatorioMedias) + (0.0000023 * somatorioMedias * somatorioMedias) - (0.0001392 * idade);
+			
+			double percentualGordura = ((4.95 / densidadeCorporal) - 4.5) * 100; 
+			
+			double massaGorda = percentualGordura * peso / 100; 
+			double massaMagra = peso - massaGorda;
+			double pesoMaximoRecomendavel = massaMagra / percentualPesoMaximoRecomendado; 
+			double objetivoEmagrecimento = peso - pesoMaximoRecomendavel;
+			
+			dtos.add(this.montarDTO(medidas, densidadeCorporal, massaGorda, 
+							massaMagra, objetivoEmagrecimento, 
+							percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura));
+		}
 		
-		double densidadeCorporal = 1.0994921 - (0.0009929 * somatorioMedias) + (0.0000023 * somatorioMedias * somatorioMedias) - (0.0001392 * idade);
-		
-		double percentualGordura = ((4.95 / densidadeCorporal) - 4.5) * 100; 
-		
-		double massaGorda = percentualGordura * peso / 100; 
-		double massaMagra = peso - massaGorda;
-		double pesoMaximoRecomendavel = massaMagra / percentualPesoMaximoRecomendado; 
-		double objetivoEmagrecimento = peso - pesoMaximoRecomendavel;
-		
-		final AvaliacaoFisicaDTO dto = 
-				this.montarDTO(medidas, densidadeCorporal, massaGorda, 
-						massaMagra, objetivoEmagrecimento, 
-						percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura);
-		
-		return this.gerarRelatorioAvaliacaoFisica(Dobra.TRES.getDescricao(), avaliador, pessoa.getNome(), idade, dto);
+		return this.gerarRelatorioAvaliacaoFisica(Dobra.TRES.getDescricao(), avaliador, pessoa.getNome(), idade, dtos);
 	}
 	
 	private byte[] protocolo2DobrasHomensDobrasMaior35(List<Medida> medidas, int idade, double percentualPesoMaximoRecomendado, 
 			double somatorioMedidas, String avaliador, Pessoa pessoa) throws JRException {
 		
-		double peso = this.doubleOrZero(medidas.get(medidas.size() - 1).getMaPesoCorporal());
-		double estatura = this.doubleOrZero(medidas.get(medidas.size() - 1).getMaAltura());
+		final List<AvaliacaoFisicaDTO> dtos = new ArrayList<AvaliacaoFisicaDTO>();
 		
-		double percentualGordura = 0.783 * somatorioMedidas + 1.6;
-		double massaGorda = percentualGordura * peso / 100;
-		double massaMagra = peso - massaGorda;
-		double pesoMaximoRecomendavel = massaMagra / percentualPesoMaximoRecomendado;
-		double objetivoEmagrecimento = peso - pesoMaximoRecomendavel;
+		for (Medida med : medidas){
+			
+			double peso = this.doubleOrZero(med.getMaPesoCorporal());
+			double estatura = this.doubleOrZero(med.getMaAltura());
+			
+			double percentualGordura = 0.783 * somatorioMedidas + 1.6;
+			double massaGorda = percentualGordura * peso / 100;
+			double massaMagra = peso - massaGorda;
+			double pesoMaximoRecomendavel = massaMagra / percentualPesoMaximoRecomendado;
+			double objetivoEmagrecimento = peso - pesoMaximoRecomendavel;
+			
+			dtos.add(this.montarDTO(medidas, null, massaGorda, 
+							massaMagra, objetivoEmagrecimento, 
+							percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura));
+		}
 		
-		final AvaliacaoFisicaDTO dto = 
-				this.montarDTO(medidas, null, massaGorda, 
-						massaMagra, objetivoEmagrecimento, 
-						percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura);
-		
-		return this.gerarRelatorioAvaliacaoFisica(Dobra.DUAS.getDescricao(), avaliador, pessoa.getNome(), idade, dto);
+		return this.gerarRelatorioAvaliacaoFisica(Dobra.DUAS.getDescricao(), avaliador, pessoa.getNome(), idade, dtos);
 	}
 
 	private byte[] protocolo2DobrasHomensDobrasMenor35(List<Medida> medidas, int idade, double percentualPesoMaximoRecomendado, 
 			double somatorioMedidas, double nivelMaturacao, String avaliador, Pessoa pessoa) throws JRException {
 		
-		double peso = this.doubleOrZero(medidas.get(medidas.size() - 1).getMaPesoCorporal());
-		double estatura = this.doubleOrZero(medidas.get(medidas.size() - 1).getMaAltura());
+		final List<AvaliacaoFisicaDTO> dtos = new ArrayList<AvaliacaoFisicaDTO>();
 		
-		double percentualGordura = 1.21 * somatorioMedidas - 0.008 * (somatorioMedidas * somatorioMedidas) - nivelMaturacao;
-		double massaGorda = percentualGordura * peso / 100;
-		double massaMagra = peso - massaGorda;
-		double pesoMaximoRecomendavel = massaMagra / percentualPesoMaximoRecomendado;
-		double objetivoEmagrecimento = peso - pesoMaximoRecomendavel;
+		for (Medida med : medidas){
+			
+			double peso = this.doubleOrZero(med.getMaPesoCorporal());
+			double estatura = this.doubleOrZero(med.getMaAltura());
+			
+			double percentualGordura = 1.21 * somatorioMedidas - 0.008 * (somatorioMedidas * somatorioMedidas) - nivelMaturacao;
+			double massaGorda = percentualGordura * peso / 100;
+			double massaMagra = peso - massaGorda;
+			double pesoMaximoRecomendavel = massaMagra / percentualPesoMaximoRecomendado;
+			double objetivoEmagrecimento = peso - pesoMaximoRecomendavel;
+			
+			dtos.add(this.montarDTO(medidas, null, massaGorda, 
+							massaMagra, objetivoEmagrecimento, 
+							percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura));
+		}
 		
-		final AvaliacaoFisicaDTO dto = 
-				this.montarDTO(medidas, null, massaGorda, 
-						massaMagra, objetivoEmagrecimento, 
-						percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura);
-		
-		return this.gerarRelatorioAvaliacaoFisica(Dobra.DUAS.getDescricao(), avaliador, pessoa.getNome(), idade, dto);
+		return this.gerarRelatorioAvaliacaoFisica(Dobra.DUAS.getDescricao(), avaliador, pessoa.getNome(), idade, dtos);
 	}
 
 	private byte[] protocolo2DobrasMulheresDobrasMaior35(List<Medida> medidas, int idade, double percentualPesoMaximoRecomendado, 
 			double somatorioMedidas, String avaliador, Pessoa pessoa) throws JRException {
 		
-		double peso = this.doubleOrZero(medidas.get(medidas.size() - 1).getMaPesoCorporal());
-		double estatura = this.doubleOrZero(medidas.get(medidas.size() - 1).getMaAltura());
+		final List<AvaliacaoFisicaDTO> dtos = new ArrayList<AvaliacaoFisicaDTO>();
 		
-		double percentualGordura = 0.546 * somatorioMedidas + 9.7;
-		double massaGorda = percentualGordura * peso / 100;
-		double massaMagra = peso - massaGorda;
-		double pesoMaximoRecomendavel = massaMagra / percentualPesoMaximoRecomendado;
-		double objetivoEmagrecimento = peso - pesoMaximoRecomendavel;
+		for (Medida med : medidas){
+			
+			double peso = this.doubleOrZero(med.getMaPesoCorporal());
+			double estatura = this.doubleOrZero(med.getMaAltura());
+			
+			double percentualGordura = 0.546 * somatorioMedidas + 9.7;
+			double massaGorda = percentualGordura * peso / 100;
+			double massaMagra = peso - massaGorda;
+			double pesoMaximoRecomendavel = massaMagra / percentualPesoMaximoRecomendado;
+			double objetivoEmagrecimento = peso - pesoMaximoRecomendavel;
+			
+			dtos.add(this.montarDTO(medidas, null, massaGorda, 
+							massaMagra, objetivoEmagrecimento, 
+							percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura));
+		}
 		
-		final AvaliacaoFisicaDTO dto = 
-				this.montarDTO(medidas, null, massaGorda, 
-						massaMagra, objetivoEmagrecimento, 
-						percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura);
-		
-		return this.gerarRelatorioAvaliacaoFisica(Dobra.DUAS.getDescricao(), avaliador, pessoa.getNome(), idade, dto);
+		return this.gerarRelatorioAvaliacaoFisica(Dobra.DUAS.getDescricao(), avaliador, pessoa.getNome(), idade, dtos);
 	}
 
 	private byte[] protocolo2DobrasMulheresDobrasMenor35(List<Medida> medidas, int idade, double percentualPesoMaximoRecomendado, 
 			double somatorioMedidas, String avaliador, Pessoa pessoa) throws JRException {
 		
-		double peso = this.doubleOrZero(medidas.get(medidas.size() - 1).getMaPesoCorporal());
-		double estatura = this.doubleOrZero(medidas.get(medidas.size() - 1).getMaAltura());
+		final List<AvaliacaoFisicaDTO> dtos = new ArrayList<AvaliacaoFisicaDTO>();
 		
-		double percentualGordura = 1.33 * somatorioMedidas - 0.013 * (somatorioMedidas * somatorioMedidas) - 2.5;
-		double massaGorda = percentualGordura * peso / 100;
-		double massaMagra = peso - massaGorda;
-		double pesoMaximoRecomendavel = massaMagra / percentualPesoMaximoRecomendado;
-		double objetivoEmagrecimento = peso - pesoMaximoRecomendavel;
+		for (Medida med : medidas){
+			
+			double peso = this.doubleOrZero(med.getMaPesoCorporal());
+			double estatura = this.doubleOrZero(med.getMaAltura());
+			
+			double percentualGordura = 1.33 * somatorioMedidas - 0.013 * (somatorioMedidas * somatorioMedidas) - 2.5;
+			double massaGorda = percentualGordura * peso / 100;
+			double massaMagra = peso - massaGorda;
+			double pesoMaximoRecomendavel = massaMagra / percentualPesoMaximoRecomendado;
+			double objetivoEmagrecimento = peso - pesoMaximoRecomendavel;
+			
+			dtos.add(this.montarDTO(medidas, null, massaGorda, 
+							massaMagra, objetivoEmagrecimento, 
+							percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura));
+		}
 		
-		final AvaliacaoFisicaDTO dto = 
-				this.montarDTO(medidas, null, massaGorda, 
-						massaMagra, objetivoEmagrecimento, 
-						percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura);
 		
-		return this.gerarRelatorioAvaliacaoFisica(Dobra.DUAS.getDescricao(), avaliador, pessoa.getNome(), idade, dto);
+		return this.gerarRelatorioAvaliacaoFisica(Dobra.DUAS.getDescricao(), avaliador, pessoa.getNome(), idade, dtos);
 	}
 	
-	private double calcularSomatorioMedidas(List<Medida> medidas, Dobra dobra){
+	private double calcularSomatorioMedidas(final Medida m, Dobra dobra){
 		
 		double subescapular = 0;
 		double triceps = 0;
@@ -912,8 +946,6 @@ public class MedidaService extends Service {
 		double abdominal = 0; 
 		double coxa = 0;
 		
-		Medida m = medidas.get(medidas.size() - 1);
-			
 		subescapular = (this.doubleOrZero(m.getDcSubEscapular1()) + this.doubleOrZero(m.getDcSubEscapular2()) + this.doubleOrZero(m.getDcSubEscapular3())) / 3;
 		triceps = (this.doubleOrZero(m.getDcTriceps1()) + this.doubleOrZero(m.getDcTriceps2()) + this.doubleOrZero(m.getDcTriceps3())) / 3;
 		toraxica = (this.doubleOrZero(m.getDcToraxica1()) + this.doubleOrZero(m.getDcToraxica2()) + this.doubleOrZero(m.getDcToraxica3())) / 3;
@@ -964,11 +996,11 @@ public class MedidaService extends Service {
 	}
 	
 	private byte[] gerarRelatorioAvaliacaoFisica(
-			String tipo,
-			String nomeAvalidor, 
-			String nomePessoa, 
-			Integer idade,
-			AvaliacaoFisicaDTO dto) throws JRException{
+			final String tipo,
+			final String nomeAvalidor, 
+			final String nomePessoa, 
+			final Integer idade,
+			final List<AvaliacaoFisicaDTO> historico) throws JRException{
 		
 		final URL url = Thread.currentThread().getContextClassLoader().getResource("/reports");
 		
@@ -980,11 +1012,14 @@ public class MedidaService extends Service {
 		parameters.put("IDADE", idade);
 		parameters.put("TIPO_AVALIACAO", tipo);
 		parameters.put("SUBREPORT_DIR", url.getPath());
+		parameters.put("HISTORICO", historico);
 		
 		final SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		
+		final AvaliacaoFisicaDTO ultimaAvaliacao = historico.get(historico.size() - 1);
+		
 		String datas = "";
-		for (Medida m : dto.getMedidas()){
+		for (Medida m : ultimaAvaliacao.getMedidas()){
 			
 			if (!datas.isEmpty()){
 				
@@ -997,7 +1032,7 @@ public class MedidaService extends Service {
 		parameters.put("DATAS", datas);
 		
 		final List<AvaliacaoFisicaDTO> lista = new ArrayList<AvaliacaoFisicaDTO>(1);
-		lista.add(dto);
+		lista.add(ultimaAvaliacao);
 		
 		final JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(lista);
 		

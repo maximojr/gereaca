@@ -64,7 +64,7 @@
 			<staticText>
 				<reportElement x="195" y="0" width="65" height="20"/>
 				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[Cintura]]></text>
+				<text><![CDATA[Quadril]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="260" y="0" width="65" height="20"/>
@@ -153,7 +153,7 @@
 						<valueExpression><![CDATA[$F{mcAbdomen}]]></valueExpression>
 					</categorySeries>
 					<categorySeries>
-						<seriesExpression><![CDATA["Cintura"]]></seriesExpression>
+						<seriesExpression><![CDATA["Quadril"]]></seriesExpression>
 						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataReferente})]]></categoryExpression>
 						<valueExpression><![CDATA[$F{mcCintura}]]></valueExpression>
 					</categorySeries>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="avaliacao_fisica_sub_hist2" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="estaturaAtual" class="java.lang.Double">
+		<fieldDescription><![CDATA[estaturaAtual]]></fieldDescription>
+	</field>
+	<field name="massaGorda" class="java.lang.Double">
+		<fieldDescription><![CDATA[massaGorda]]></fieldDescription>
+	</field>
+	<field name="percentualGordura" class="java.lang.Double">
+		<fieldDescription><![CDATA[percentualGordura]]></fieldDescription>
+	</field>
+	<field name="pesoMaximoRecomendavel" class="java.lang.Double">
+		<fieldDescription><![CDATA[pesoMaximoRecomendavel]]></fieldDescription>
+	</field>
+	<field name="objetivoEmagrecimento" class="java.lang.Double">
+		<fieldDescription><![CDATA[objetivoEmagrecimento]]></fieldDescription>
+	</field>
+	<field name="percentualPesoMaximoRecomendado" class="java.lang.Double">
+		<fieldDescription><![CDATA[percentualPesoMaximoRecomendado]]></fieldDescription>
+	</field>
+	<field name="massaMagra" class="java.lang.Double">
+		<fieldDescription><![CDATA[massaMagra]]></fieldDescription>
+	</field>
+	<field name="pesoAtual" class="java.lang.Double">
+		<fieldDescription><![CDATA[pesoAtual]]></fieldDescription>
+	</field>
+	<field name="densidadeCorporal" class="java.lang.Double">
+		<fieldDescription><![CDATA[densidadeCorporal]]></fieldDescription>
+	</field>
+	<field name="medidas" class="java.util.List">
+		<fieldDescription><![CDATA[medidas]]></fieldDescription>
+	</field>
+	<field name="dataReferente" class="java.util.Date">
+		<fieldDescription><![CDATA[dataReferente]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="19" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="595" height="19"/>
+				<box bottomPadding="0">
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Histórico (1/2)]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Data]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="65" y="0" width="129" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Peso máximo recomendado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="194" y="0" width="114" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Percentual peso máximo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="308" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Peso]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="373" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Peso Ideal]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="438" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Estatura]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="503" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[I.M.C.]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataReferente})]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.0000" isBlankWhenNull="true">
+				<reportElement x="65" y="0" width="129" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{pesoMaximoRecomendavel}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.0000" isBlankWhenNull="true">
+				<reportElement x="194" y="0" width="114" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{percentualPesoMaximoRecomendado}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.0000" isBlankWhenNull="true">
+				<reportElement x="308" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{pesoAtual}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.0000" isBlankWhenNull="true">
+				<reportElement x="373" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[new Double($F{pesoAtual}.doubleValue() - $F{objetivoEmagrecimento}.doubleValue())]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.0000" isBlankWhenNull="true">
+				<reportElement x="438" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{estaturaAtual}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.0000" isBlankWhenNull="true">
+				<reportElement x="503" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[new Double($F{pesoAtual}.doubleValue() / ($F{estaturaAtual}.doubleValue() * $F{estaturaAtual}.doubleValue()))]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

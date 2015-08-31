@@ -8,6 +8,7 @@
 	<parameter name="TIPO_AVALIACAO" class="java.lang.String"/>
 	<parameter name="IDADE" class="java.lang.Number"/>
 	<parameter name="DATAS" class="java.lang.String"/>
+	<parameter name="HISTORICO" class="java.util.Collection" isForPrompting="false"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -248,21 +249,35 @@
 		</band>
 	</detail>
 	<summary>
-		<band height="300" splitType="Immediate">
+		<band height="295" splitType="Immediate">
 			<subreport>
-				<reportElement positionType="Float" x="0" y="0" width="555" height="100"/>
+				<reportElement positionType="Float" x="0" y="0" width="555" height="59"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{medidas})]]></dataSourceExpression>
 				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "avaliacao_fisica_sub_ma.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement positionType="Float" x="0" y="100" width="555" height="100"/>
+				<reportElement positionType="Float" x="0" y="59" width="555" height="59"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{medidas})]]></dataSourceExpression>
 				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "avaliacao_fisica_sub_mc.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement positionType="Float" x="0" y="200" width="555" height="100"/>
+				<reportElement positionType="Float" x="0" y="118" width="555" height="59"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{medidas})]]></dataSourceExpression>
 				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "avaliacao_fisica_sub_dc.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="0" y="177" width="555" height="59"/>
+				<subreportParameter name="HISTORICO">
+					<subreportParameterExpression><![CDATA[$P{HISTORICO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "avaliacao_fisica_sub_hist.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="0" y="236" width="555" height="59"/>
+				<subreportParameter name="HISTORICO">
+					<subreportParameterExpression><![CDATA[$P{HISTORICO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "avaliacao_fisica_sub_hist2.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</summary>
