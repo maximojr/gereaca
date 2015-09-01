@@ -33,8 +33,8 @@
 	<field name="medidas" class="java.util.List">
 		<fieldDescription><![CDATA[medidas]]></fieldDescription>
 	</field>
-	<field name="dataReferente" class="java.util.Date">
-		<fieldDescription><![CDATA[dataReferente]]></fieldDescription>
+	<field name="dataRef" class="java.util.Date">
+		<fieldDescription><![CDATA[dataRef]]></fieldDescription>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -61,32 +61,32 @@
 				<text><![CDATA[Data]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="65" y="0" width="129" height="20"/>
+				<reportElement x="65" y="0" width="149" height="20"/>
 				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[Peso máximo recomendado]]></text>
+				<text><![CDATA[Peso máximo recomendado (kg)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="194" y="0" width="114" height="20"/>
+				<reportElement x="214" y="0" width="132" height="20"/>
 				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[Percentual peso máximo]]></text>
+				<text><![CDATA[Percentual peso máximo (%)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="308" y="0" width="65" height="20"/>
+				<reportElement x="346" y="0" width="50" height="20"/>
 				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[Peso]]></text>
+				<text><![CDATA[Peso (kg)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="373" y="0" width="65" height="20"/>
+				<reportElement x="396" y="0" width="70" height="20"/>
 				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[Peso Ideal]]></text>
+				<text><![CDATA[Peso Ideal (kg)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="438" y="0" width="65" height="20"/>
+				<reportElement x="466" y="0" width="65" height="20"/>
 				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[Estatura]]></text>
+				<text><![CDATA[Estatura (m)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="503" y="0" width="65" height="20"/>
+				<reportElement x="531" y="0" width="64" height="20"/>
 				<textElement verticalAlignment="Middle"/>
 				<text><![CDATA[I.M.C.]]></text>
 			</staticText>
@@ -97,41 +97,38 @@
 			<textField>
 				<reportElement x="0" y="0" width="65" height="20"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataReferente})]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataRef})]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.0000" isBlankWhenNull="true">
-				<reportElement x="65" y="0" width="129" height="20"/>
-				<textElement verticalAlignment="Middle"/>
+				<reportElement x="65" y="0" width="149" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.Double"><![CDATA[$F{pesoMaximoRecomendavel}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.0000" isBlankWhenNull="true">
-				<reportElement x="194" y="0" width="114" height="20"/>
-				<textElement verticalAlignment="Middle"/>
+				<reportElement x="214" y="0" width="132" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.Double"><![CDATA[$F{percentualPesoMaximoRecomendado}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.0000" isBlankWhenNull="true">
-				<reportElement x="308" y="0" width="65" height="20"/>
-				<textElement verticalAlignment="Middle"/>
+				<reportElement x="346" y="0" width="50" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.Double"><![CDATA[$F{pesoAtual}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.0000" isBlankWhenNull="true">
-				<reportElement x="373" y="0" width="65" height="20"/>
-				<textElement verticalAlignment="Middle"/>
+				<reportElement x="396" y="0" width="70" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.Double"><![CDATA[new Double($F{pesoAtual}.doubleValue() - $F{objetivoEmagrecimento}.doubleValue())]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.0000" isBlankWhenNull="true">
-				<reportElement x="438" y="0" width="65" height="20"/>
-				<textElement verticalAlignment="Middle"/>
+				<reportElement x="466" y="0" width="65" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.Double"><![CDATA[$F{estaturaAtual}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.0000" isBlankWhenNull="true">
-				<reportElement x="503" y="0" width="65" height="20"/>
-				<textElement verticalAlignment="Middle"/>
+				<reportElement x="531" y="0" width="64" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.Double"><![CDATA[new Double($F{pesoAtual}.doubleValue() / ($F{estaturaAtual}.doubleValue() * $F{estaturaAtual}.doubleValue()))]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
-	<summary>
-		<band height="42" splitType="Stretch"/>
-	</summary>
 </jasperReport>

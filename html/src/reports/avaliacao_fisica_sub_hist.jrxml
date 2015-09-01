@@ -33,8 +33,8 @@
 	<field name="massaMagra" class="java.lang.Double">
 		<fieldDescription><![CDATA[massaMagra]]></fieldDescription>
 	</field>
-	<field name="dataReferente" class="java.util.Date">
-		<fieldDescription><![CDATA[dataReferente]]></fieldDescription>
+	<field name="dataRef" class="java.util.Date">
+		<fieldDescription><![CDATA[dataRef]]></fieldDescription>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -66,24 +66,24 @@
 				<text><![CDATA[Densidade corporal (g/ml)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="186" y="0" width="96" height="20"/>
+				<reportElement x="186" y="0" width="109" height="20"/>
 				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[Percentual gordura]]></text>
+				<text><![CDATA[Percentual gordura (%)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="282" y="0" width="65" height="20"/>
+				<reportElement x="295" y="0" width="80" height="20"/>
 				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[Massa gorda]]></text>
+				<text><![CDATA[Massa gorda (kg)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="347" y="0" width="65" height="20"/>
+				<reportElement x="375" y="0" width="84" height="20"/>
 				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[Massa magra]]></text>
+				<text><![CDATA[Massa magra (kg)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="412" y="0" width="92" height="20"/>
+				<reportElement x="459" y="0" width="114" height="20"/>
 				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[Obj. emagrecimento]]></text>
+				<text><![CDATA[Obj. emagrecimento (kg)]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
@@ -92,36 +92,33 @@
 			<textField>
 				<reportElement x="0" y="0" width="65" height="20"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataReferente})]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataRef})]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.0000" isBlankWhenNull="true">
 				<reportElement x="65" y="0" width="121" height="20"/>
-				<textElement verticalAlignment="Middle"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.Double"><![CDATA[$F{densidadeCorporal}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.0000" isBlankWhenNull="true">
-				<reportElement x="186" y="0" width="96" height="20"/>
-				<textElement verticalAlignment="Middle"/>
+				<reportElement x="186" y="0" width="109" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.Double"><![CDATA[$F{percentualGordura}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.0000" isBlankWhenNull="true">
-				<reportElement x="282" y="0" width="65" height="20"/>
-				<textElement verticalAlignment="Middle"/>
+				<reportElement x="295" y="0" width="80" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.Double"><![CDATA[$F{massaGorda}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.0000" isBlankWhenNull="true">
-				<reportElement x="347" y="0" width="65" height="20"/>
-				<textElement verticalAlignment="Middle"/>
+				<reportElement x="375" y="0" width="84" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.Double"><![CDATA[$F{massaMagra}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.0000" isBlankWhenNull="true">
-				<reportElement x="412" y="0" width="92" height="20"/>
-				<textElement verticalAlignment="Middle"/>
+				<reportElement x="459" y="0" width="114" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.Double"><![CDATA[$F{objetivoEmagrecimento}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
-	<summary>
-		<band height="42" splitType="Stretch"/>
-	</summary>
 </jasperReport>

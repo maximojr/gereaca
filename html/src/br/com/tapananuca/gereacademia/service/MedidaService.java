@@ -744,7 +744,7 @@ public class MedidaService extends Service {
 			
 			dtos.add(this.montarDTO(medidas, densidadeCorporal, massaGorda, 
 							massaMagra, objetivoEmagrecimento, 
-							percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura));
+							percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura, med.getDataReferente()));
 		}
 		
 		return this.gerarRelatorioAvaliacaoFisica(Dobra.SETE.getDescricao(), avaliador, pessoa.getNome(), idade, dtos);
@@ -773,7 +773,7 @@ public class MedidaService extends Service {
 			
 			dtos.add(this.montarDTO(medidas, densidadeCorporal, massaGorda, 
 							massaMagra, objetivoEmagrecimento, 
-							percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura));
+							percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura, med.getDataReferente()));
 		}
 		
 		
@@ -804,7 +804,7 @@ public class MedidaService extends Service {
 			
 			dtos.add(this.montarDTO(medidas, densidadeCorporal, massaGorda, 
 							massaMagra, objetivoEmagrecimento, 
-							percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura));
+							percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura, med.getDataReferente()));
 		}
 		
 		return this.gerarRelatorioAvaliacaoFisica(Dobra.SETE.getDescricao(), avaliador, pessoa.getNome(), idade, dtos);
@@ -833,7 +833,7 @@ public class MedidaService extends Service {
 			
 			dtos.add(this.montarDTO(medidas, densidadeCorporal, massaGorda, 
 							massaMagra, objetivoEmagrecimento, 
-							percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura));
+							percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura, med.getDataReferente()));
 		}
 		
 		return this.gerarRelatorioAvaliacaoFisica(Dobra.TRES.getDescricao(), avaliador, pessoa.getNome(), idade, dtos);
@@ -857,7 +857,7 @@ public class MedidaService extends Service {
 			
 			dtos.add(this.montarDTO(medidas, null, massaGorda, 
 							massaMagra, objetivoEmagrecimento, 
-							percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura));
+							percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura, med.getDataReferente()));
 		}
 		
 		return this.gerarRelatorioAvaliacaoFisica(Dobra.DUAS.getDescricao(), avaliador, pessoa.getNome(), idade, dtos);
@@ -881,7 +881,7 @@ public class MedidaService extends Service {
 			
 			dtos.add(this.montarDTO(medidas, null, massaGorda, 
 							massaMagra, objetivoEmagrecimento, 
-							percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura));
+							percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura, med.getDataReferente()));
 		}
 		
 		return this.gerarRelatorioAvaliacaoFisica(Dobra.DUAS.getDescricao(), avaliador, pessoa.getNome(), idade, dtos);
@@ -905,7 +905,7 @@ public class MedidaService extends Service {
 			
 			dtos.add(this.montarDTO(medidas, null, massaGorda, 
 							massaMagra, objetivoEmagrecimento, 
-							percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura));
+							percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura, med.getDataReferente()));
 		}
 		
 		return this.gerarRelatorioAvaliacaoFisica(Dobra.DUAS.getDescricao(), avaliador, pessoa.getNome(), idade, dtos);
@@ -929,7 +929,7 @@ public class MedidaService extends Service {
 			
 			dtos.add(this.montarDTO(medidas, null, massaGorda, 
 							massaMagra, objetivoEmagrecimento, 
-							percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura));
+							percentualGordura, pesoMaximoRecomendavel, percentualPesoMaximoRecomendado, peso, estatura, med.getDataReferente()));
 		}
 		
 		
@@ -978,7 +978,7 @@ public class MedidaService extends Service {
 	
 	private AvaliacaoFisicaDTO montarDTO(List<Medida> medidas, Double densidadeCorporal, Double massaGorda, 
 			Double massaMagra, Double objetivoEmagrecimento, Double percentualGordura, Double pesoMaximoRecomendavel, 
-			Double percentualPesoMaximoRecomendado, Double peso, Double estatura){
+			Double percentualPesoMaximoRecomendado, Double peso, Double estatura, Date dataRef){
 		
 		final AvaliacaoFisicaDTO dto = new AvaliacaoFisicaDTO();
 		dto.setMedidas(medidas);
@@ -991,6 +991,7 @@ public class MedidaService extends Service {
 		dto.setPercentualPesoMaximoRecomendado(100 - (percentualPesoMaximoRecomendado * 100));
 		dto.setPesoAtual(peso);
 		dto.setEstaturaAtual(estatura);
+		dto.setDataRef(dataRef);
 		
 		return dto;
 	}
@@ -1004,14 +1005,14 @@ public class MedidaService extends Service {
 		
 		final URL url = Thread.currentThread().getContextClassLoader().getResource("/reports");
 		
-		final String path = url.getPath() + "/avaliacao_fisica.jasper";
+		final String path = url.getPath().replaceAll("%20", " ");
 		
 		final Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("AVALIADOR", nomeAvalidor);
 		parameters.put("NOME_PESSOA", nomePessoa);
 		parameters.put("IDADE", idade);
 		parameters.put("TIPO_AVALIACAO", tipo);
-		parameters.put("SUBREPORT_DIR", url.getPath());
+		parameters.put("SUBREPORT_DIR", path);
 		parameters.put("HISTORICO", historico);
 		
 		final SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
@@ -1036,7 +1037,7 @@ public class MedidaService extends Service {
 		
 		final JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(lista);
 		
-		final JasperPrint print = JasperFillManager.fillReport(path, parameters, beanColDataSource);
+		final JasperPrint print = JasperFillManager.fillReport(path + "/avaliacao_fisica.jasper", parameters, beanColDataSource);
 		return JasperExportManager.exportReportToPdf(print);
 	}
 }

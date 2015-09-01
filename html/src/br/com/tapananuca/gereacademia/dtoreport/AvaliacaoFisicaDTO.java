@@ -1,5 +1,6 @@
 package br.com.tapananuca.gereacademia.dtoreport;
 
+import java.util.Date;
 import java.util.List;
 
 import br.com.tapananuca.gereacademia.model.Medida;
@@ -25,6 +26,8 @@ public class AvaliacaoFisicaDTO {
 	private Double pesoAtual;
 	
 	private Double estaturaAtual;
+	
+	private Date dataRef;
 
 	public List<Medida> getMedidas() {
 		return medidas;
@@ -104,5 +107,13 @@ public class AvaliacaoFisicaDTO {
 
 	public void setEstaturaAtual(Double estaturaAtual) {
 		this.estaturaAtual = estaturaAtual;
+	}
+
+	public Date getDataRef() {
+		return dataRef;
+	}
+
+	public void setDataRef(Date dataRef) {
+		this.dataRef = dataRef;
 	}
 }
