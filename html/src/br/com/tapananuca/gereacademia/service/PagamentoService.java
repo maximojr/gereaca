@@ -27,22 +27,28 @@ public class PagamentoService extends Service {
 		
 		try {
 			
+			final Calendar calInstance = Calendar.getInstance();
+			
+			final Date dataRef = calInstance.getTime();
+			
 			final Query query = em.createQuery("select pes from Pessoa pes "
 					+ " where pes.ativo = :ativo "
-					+ " and pes.inicio <= current_date() "
+					+ " and pes.inicio <= :dataRef "
 					+ " and pes.id not in ("
 					+ "   select distinct p.id "
 					+ "		from Pagamento pag "
 					+ "		join pag.pessoa p "
-					+ "  where month(pag.dataReferente) = month(current_date()) and year(pag.dataReferente) = year(current_date()) ) "
+					+ "  where month(pag.dataReferente) = :mesRef and year(pag.dataReferente) = :anoRef ) "
 					+ ")");
 			
 			query.setParameter("ativo", true);
+			query.setParameter("dataRef", dataRef);
+			query.setParameter("mesRef", calInstance.get(Calendar.MONTH) + 1);
+			query.setParameter("anoRef", calInstance.get(Calendar.YEAR));
 			
 			final List<Pessoa> pessoasACobrar = query.getResultList();
 			
 			Pagamento pagamento = null;
-			final Date dataRef = new Date();
 			
 			em.getTransaction().begin();
 			for (Pessoa p : pessoasACobrar){
