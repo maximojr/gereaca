@@ -6,7 +6,6 @@ import java.util.Calendar;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,7 +17,7 @@ import br.com.tapananuca.gereacademia.comunicacao.GAResponse;
 import br.com.tapananuca.gereacademia.service.PagamentoService;
 
 @WebServlet(name="pagamento", urlPatterns=Utils.URL_PAGAMENTOS + "/*")
-public class PagamentoServlet extends HttpServlet {
+public class PagamentoServlet extends BaseServlet {
 
 	/**
 	 * 

@@ -6,7 +6,6 @@ import java.util.Calendar;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,14 +19,18 @@ import br.com.tapananuca.gereacademia.comunicacao.HistoriaPatologicaDTO;
 import br.com.tapananuca.gereacademia.comunicacao.HistoriaPatologicaDTOResponse;
 import br.com.tapananuca.gereacademia.comunicacao.MedidaDTO;
 import br.com.tapananuca.gereacademia.comunicacao.MedidaDTOResponse;
+import br.com.tapananuca.gereacademia.comunicacao.MedidaPersonalDTO;
 import br.com.tapananuca.gereacademia.comunicacao.ObjetivoDTO;
 import br.com.tapananuca.gereacademia.comunicacao.ObjetivoDTOResponse;
 import br.com.tapananuca.gereacademia.comunicacao.PessoaDTO;
 import br.com.tapananuca.gereacademia.comunicacao.PessoaDTOResponse;
+import br.com.tapananuca.gereacademia.service.MedidaService;
 import br.com.tapananuca.gereacademia.service.PessoaService;
 
+import com.badlogic.gdx.utils.Array;
+
 @WebServlet(name="pessoa", urlPatterns=Utils.URL_PESSOA + "/*")
-public class PessoaServlet extends HttpServlet {
+public class PessoaServlet extends BaseServlet {
 
 	/**
 	 * 
@@ -110,7 +113,25 @@ public class PessoaServlet extends HttpServlet {
 			
 		} else if (url.endsWith(Utils.URL_PESSOA_MEDIDAS_SALVAR)){
 			
-			ga = this.salvarMedidasPessoa(dados.toString());
+			final MedidaDTO medidaDTO = Utils.getInstance().fromJson(MedidaDTO.class, dados.toString());
+			
+			ga = this.salvarMedidasPessoa(medidaDTO);
+		} else if (url.endsWith(Utils.URL_PESSOA_MEDIDAS_NOVA_DATA)){
+			
+			ga = this.adicionarNovaDataMedida(dados.toString());
+		} else if (url.endsWith(Utils.URL_PESSOA_MEDIDAS_GERAR_RELATORIO)){
+			
+			final Long idUsuario = (Long) req.getSession().getAttribute(LoginServlet.PARAM_ID_LOGED_USER);
+			
+			ga = this.gerarRelatorio(dados.toString(), idUsuario);
+		} else if (url.endsWith(Utils.URL_PESSOA_MEDIDAS_ENVIAR_RELATORIO)){
+			
+			final Long idUsuario = (Long) req.getSession().getAttribute(LoginServlet.PARAM_ID_LOGED_USER);
+			
+			ga = this.enviarRelatorio(dados.toString(), idUsuario);
+		} else if (url.endsWith(Utils.URL_CADASTRADOS)){
+			
+			ga = this.buscarPessoas(dados.toString());
 		} else {
 			
 			ga = new GAResponse();
@@ -124,6 +145,107 @@ public class PessoaServlet extends HttpServlet {
 		out.close();
 	}
 	
+	private GAResponse buscarPessoas(String dados) {
+		
+		final AReceberDTO dto = Utils.getInstance().fromJson(AReceberDTO.class, dados);
+		
+		final PessoaService pessoaService = new PessoaService();
+		
+		try {
+			
+			return pessoaService.buscarPessoas(30, Integer.valueOf(dto.getPaginaAtual()));
+		} catch (Exception e){
+			
+			final GAResponse ga = new GAResponse();
+			ga.setSucesso(false);
+			ga.setMsg(e.getLocalizedMessage());
+			
+			return ga;
+		}
+	}
+
+	private GAResponse gerarRelatorio(String dados, Long idUsuario) {
+		
+		final MedidaDTO medidaDTO = Utils.getInstance().fromJson(MedidaDTO.class, dados.toString());
+		
+		GAResponse ga = this.salvarMedidasPessoa(medidaDTO);
+		
+		if (!ga.isSucesso()){
+			
+			return ga;
+		}
+		
+		final MedidaPersonalDTO dto = this.montarPersonalDTO(medidaDTO);
+		
+		final MedidaService medidaService = new MedidaService();
+		
+		final ReportHelper helper = medidaService.avaliarComposicaoCorporal(dto, idUsuario);
+		
+		if (helper.getMsg() != null){
+			
+			ga.setSucesso(false);
+			ga.setMsg(helper.getMsg());
+		} else if (helper.getDados() != null){
+			
+			final String key = String.valueOf(System.currentTimeMillis());
+			PersonalServlet.relatorios.put(key, helper);
+			
+			ga.setMsg(key);
+		}
+		
+		return ga;
+	}
+
+	private GAResponse enviarRelatorio(String dados, Long idUsuario) {
+		
+		final MedidaDTO medidaDTO = Utils.getInstance().fromJson(MedidaDTO.class, dados.toString());
+		
+		GAResponse ga = this.salvarMedidasPessoa(medidaDTO);
+		
+		if (!ga.isSucesso()){
+			
+			return ga;
+		}
+		
+		final MedidaPersonalDTO dto = this.montarPersonalDTO(medidaDTO);
+		
+		final MedidaService medidaService = new MedidaService();
+		
+		String msg = null;
+		try {
+			
+			msg = medidaService.enviarAvaliacaoEmail(dto, idUsuario);
+		} catch (Exception e) {
+			
+			msg = e.getLocalizedMessage();
+			e.printStackTrace();
+		}
+		
+		if (msg != null){
+			
+			ga.setSucesso(false);
+			ga.setMsg(msg);
+		}
+		
+		return ga;
+	}
+	
+	private MedidaPersonalDTO montarPersonalDTO(MedidaDTO medidaDTO) {
+		
+		final MedidaPersonalDTO dto = new MedidaPersonalDTO();
+		dto.setIdPessoa(medidaDTO.getIdPessoa());
+		
+		final Array<String> data = new Array<String>();
+		data.add(medidaDTO.getDataReferente());
+		dto.setDatasMedidas(data);
+		
+		dto.setDobra(medidaDTO.getDobra());
+		dto.setNivelMaturacao(medidaDTO.getNivelMaturacao());
+		dto.setPercentualPesoMaximoRec(medidaDTO.getPercentualPesoMaximoRec());
+		
+		return dto;
+	}
+
 	private GAResponse buscarAniversarios(String dados){
 		
 		final AReceberDTO aReceberDTO = Utils.getInstance().fromJson(AReceberDTO.class, dados);
@@ -210,25 +332,16 @@ public class PessoaServlet extends HttpServlet {
 		
 		final PessoaService pessoaService = new PessoaService();
 		
-		Long idPessoa = null;
-		String msg = null;
+		GAResponse ga = null;
+		
 		try {
-			idPessoa = pessoaService.salvarPessoa(pessoaDTO);
+			ga = pessoaService.salvarPessoa(pessoaDTO);
 		} catch (Exception e) {
-			msg = e.getLocalizedMessage();
 			e.printStackTrace();
-		}
-		
-		final GAResponse ga = new GAResponse();
-		
-		if (idPessoa != null){
-
-			ga.setMsg("Pessoa cadastrada com sucesso.");
-			ga.setSessionId(idPessoa.toString());
-		} else {
 			
+			ga = new GAResponse();
 			ga.setSucesso(false);
-			ga.setMsg(msg);
+			ga.setMsg(e.getLocalizedMessage());
 		}
 		
 		return ga;
@@ -350,10 +463,9 @@ public class PessoaServlet extends HttpServlet {
 		
 		final HabitosDTO habitosDTO = Utils.getInstance().fromJson(HabitosDTO.class, dados);
 		
-		HabitosDTOResponse rs = null;
+		HabitosDTOResponse rs = new HabitosDTOResponse();
 		if (habitosDTO == null || habitosDTO.getIdPessoa() == null || habitosDTO.getIdPessoa().isEmpty()){
 			
-			rs = new HabitosDTOResponse();
 			rs.setSucesso(false);
 			rs.setMsg("Dados insuficientes para buscar hábitos.");
 			
@@ -366,7 +478,6 @@ public class PessoaServlet extends HttpServlet {
 			rs = pessoaService.buscarHabitos(Long.valueOf(habitosDTO.getIdPessoa()));
 		} catch (Exception e) {
 			
-			rs = new HabitosDTOResponse();
 			rs.setSucesso(false);
 			rs.setMsg(e.getLocalizedMessage());
 			e.printStackTrace();
@@ -406,6 +517,7 @@ public class PessoaServlet extends HttpServlet {
 		final MedidaDTO medidaDTO = Utils.getInstance().fromJson(MedidaDTO.class, dados);
 		
 		MedidaDTOResponse rs = null;
+		
 		if (medidaDTO == null || medidaDTO.getIdPessoa() == null || medidaDTO.getIdPessoa().isEmpty() ||
 				medidaDTO.getDataReferente() == null || medidaDTO.getDataReferente().isEmpty()){
 			
@@ -416,7 +528,7 @@ public class PessoaServlet extends HttpServlet {
 			return rs;
 		}
 		
-		final PessoaService pessoaService = new PessoaService();
+		final MedidaService medidaService = new MedidaService();
 		
 		try {
 			
@@ -425,7 +537,7 @@ public class PessoaServlet extends HttpServlet {
 			final Calendar calendar = Calendar.getInstance();
 			calendar.set(Integer.valueOf(strData[2]), Integer.valueOf(strData[1]) - 1, Integer.valueOf(strData[0]));
 			
-			rs = pessoaService.buscarMedidas(
+			rs = medidaService.buscarMedidas(
 					Long.valueOf(medidaDTO.getIdPessoa()),
 					calendar.getTime());
 			
@@ -440,16 +552,40 @@ public class PessoaServlet extends HttpServlet {
 		return rs;
 	}
 
-	private GAResponse salvarMedidasPessoa(String dados) {
+	private GAResponse salvarMedidasPessoa(MedidaDTO medidaDTO) {
 		
-		final MedidaDTO medidaDTO = Utils.getInstance().fromJson(MedidaDTO.class, dados);
-		
-		final PessoaService pessoaService = new PessoaService();
+		final MedidaService medidaService = new MedidaService();
 		
 		String msg = null;
 		
 		try {
-			msg = pessoaService.salvarMedidas(medidaDTO);
+			msg = medidaService.salvarMedidas(medidaDTO);
+		} catch (Exception e) {
+			
+			msg = e.getLocalizedMessage();
+			e.printStackTrace();
+		}
+		
+		final GAResponse ga = new GAResponse();
+		if (msg != null){
+			
+			ga.setSucesso(false);
+			ga.setMsg(msg);
+		}
+		
+		return ga;
+	}
+	
+	private GAResponse adicionarNovaDataMedida(String dados) {
+		
+		final MedidaDTO medidaDTO = Utils.getInstance().fromJson(MedidaDTO.class, dados);
+		
+		final MedidaService medidaService = new MedidaService();
+		
+		String msg = null;
+		
+		try {
+			msg = medidaService.adicionarData(medidaDTO);
 		} catch (Exception e) {
 			
 			msg = e.getLocalizedMessage();

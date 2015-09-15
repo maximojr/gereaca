@@ -108,8 +108,10 @@ public abstract class Service {
 	public void returnEm(EntityManager em){
 		
 		if (em.getTransaction().isActive()){
-			em.getTransaction().commit();
+			em.getTransaction().rollback();;
 		}
+		
+		em.clear();
 		
 		emPoll.add(em);
 	}

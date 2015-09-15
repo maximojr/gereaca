@@ -2,6 +2,8 @@ package br.com.tapananuca.gereacademia.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -11,17 +13,15 @@ import javax.persistence.Query;
 
 import br.com.tapananuca.gereacademia.comunicacao.AReceberDTO;
 import br.com.tapananuca.gereacademia.comunicacao.AReceberPaginaDTO;
+import br.com.tapananuca.gereacademia.comunicacao.GAResponse;
 import br.com.tapananuca.gereacademia.comunicacao.HabitosDTO;
 import br.com.tapananuca.gereacademia.comunicacao.HabitosDTOResponse;
 import br.com.tapananuca.gereacademia.comunicacao.HistoriaPatologicaDTO;
 import br.com.tapananuca.gereacademia.comunicacao.HistoriaPatologicaDTOResponse;
-import br.com.tapananuca.gereacademia.comunicacao.MedidaDTO;
-import br.com.tapananuca.gereacademia.comunicacao.MedidaDTOResponse;
 import br.com.tapananuca.gereacademia.comunicacao.ObjetivoDTO;
 import br.com.tapananuca.gereacademia.comunicacao.ObjetivoDTOResponse;
 import br.com.tapananuca.gereacademia.comunicacao.PessoaDTO;
 import br.com.tapananuca.gereacademia.comunicacao.PessoaDTOResponse;
-import br.com.tapananuca.gereacademia.model.Medida;
 import br.com.tapananuca.gereacademia.model.Pagamento;
 import br.com.tapananuca.gereacademia.model.Pessoa;
 
@@ -29,11 +29,58 @@ import com.badlogic.gdx.utils.Array;
 
 public class PessoaService extends Service{
 
-	public Long salvarPessoa(PessoaDTO pessoaDTO){
+	private final BigDecimal CEM = new BigDecimal(100);
+	
+	public GAResponse salvarPessoa(PessoaDTO pessoaDTO){
 		
-		if (pessoaDTO == null){
+		final GAResponse res = new GAResponse();
+		
+		if (pessoaDTO == null || pessoaDTO.getNome() == null || pessoaDTO.getNome().isEmpty() ||
+				pessoaDTO.getDataNascimento() == null || pessoaDTO.getDataNascimento().isEmpty() ||
+				pessoaDTO.getDataInicio() == null || pessoaDTO.getDataInicio().isEmpty() ||
+				pessoaDTO.getValorMensal() == null || pessoaDTO.getValorMensal().isEmpty()){
 			
-			return null;
+			res.setSucesso(false);
+			res.setMsg("Dados obrigatórios não preenchidos");
+			
+			return res;
+		}
+		
+		final SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		
+		Date nasc = null;
+		try {
+			nasc = df.parse(pessoaDTO.getDataNascimento());
+		} catch (ParseException e1) {
+			
+			res.setSucesso(false);
+			res.setMsg("Data de nascimento inválida");
+		}
+		
+		if (nasc == null){
+			
+			res.setSucesso(false);
+			res.setMsg("Data de nascimento inválida");
+		}
+		
+		Date inic = null;
+		try {
+			inic = df.parse(pessoaDTO.getDataInicio());
+		} catch (ParseException e1) {
+			
+			res.setSucesso(false);
+			res.setMsg("Data de início inválida");
+		}
+		
+		if (inic == null){
+			
+			res.setSucesso(false);
+			res.setMsg("Data de início inválida");
+		}
+		
+		if (!res.isSucesso()){
+			
+			return res;
 		}
 		
 		final EntityManager em = this.getEm();
@@ -58,16 +105,10 @@ public class PessoaService extends Service{
 				}
 			}
 			
-			String[] strData = pessoaDTO.getDataNascimento().split("/");
-			
 			final Calendar calendar = Calendar.getInstance();
-			calendar.set(Integer.valueOf(strData[2]), Integer.valueOf(strData[1]) - 1, Integer.valueOf(strData[0]));
-			pessoa.setDataNascimento(calendar.getTime());
 			
-			strData = pessoaDTO.getDataInicio().split("/");
-			calendar.set(Integer.valueOf(strData[2]), Integer.valueOf(strData[1]) - 1, Integer.valueOf(strData[0]));
-			pessoa.setInicio(calendar.getTime());
-			
+			pessoa.setDataNascimento(nasc);
+			pessoa.setInicio(inic);
 			pessoa.setBairro(pessoaDTO.getBairro());
 			pessoa.setEmail(pessoaDTO.getEmail());
 			pessoa.setEndereco(pessoaDTO.getEndereco());
@@ -85,12 +126,38 @@ public class PessoaService extends Service{
 				
 				em.persist(pessoa);
 				
-				final Pagamento pagamento = new Pagamento();
-				pagamento.setPessoa(pessoa);
-				pagamento.setValorDevido(pessoa.getValorMensal());
-				pagamento.setDataReferente(pessoa.getInicio());
+				calendar.setTimeInMillis(System.currentTimeMillis());
+				calendar.set(Calendar.AM_PM, Calendar.PM);
+				calendar.set(Calendar.HOUR, 0);
+				calendar.set(Calendar.MINUTE, 59);
+				calendar.set(Calendar.SECOND, 59);
 				
-				em.persist(pagamento);
+				if (pessoa.getInicio().before(calendar.getTime())){
+				
+					final Pagamento pagamento = new Pagamento();
+					pagamento.setPessoa(pessoa);
+					
+					final Calendar calInic = Calendar.getInstance();
+					calInic.setTime(inic);
+					
+					//caso inicio se de depois do dia 20 o primeiro pagamento é proporcional
+					if (calInic.get(Calendar.DATE) >= 20){
+						
+						final int dias = calendar.getActualMaximum(Calendar.DAY_OF_MONTH) - calInic.get(Calendar.DATE);
+						
+						final BigDecimal porcentagem = new BigDecimal(dias * 10 / 3);
+						
+						pagamento.setValorDevido(pessoa.getValorMensal().subtract(pessoa.getValorMensal().multiply(porcentagem).divide(CEM)));
+						
+					} else {
+						
+						pagamento.setValorDevido(pessoa.getValorMensal());
+					}
+					
+					pagamento.setDataReferente(calendar.getTime());
+					
+					em.persist(pagamento);
+				}
 				
 			} else {
 				
@@ -99,7 +166,9 @@ public class PessoaService extends Service{
 			
 			em.getTransaction().commit();
 			
-			return pessoa.getId();
+			res.setSessionId(pessoa.getId().toString());
+			
+			return res;
 			
 		} finally {
 			this.returnEm(em);
@@ -139,7 +208,16 @@ public class PessoaService extends Service{
 			
 			query.setParameter("mes", mes);
 			
-			dto.setQtdPaginas(String.valueOf(((Long)query.getSingleResult() / qtdRegistros) + 1));
+			final Long qtd = (Long)query.getSingleResult();
+			
+			if (qtd <= qtdRegistros){
+				
+				dto.setQtdPaginas("1");
+			} else {
+				
+				dto.setQtdPaginas(String.valueOf((qtd / qtdRegistros) + 1));
+			}
+			
 		} finally {
 			
 			this.returnEm(em);
@@ -173,7 +251,6 @@ public class PessoaService extends Service{
 			pessoa.setPrepFisica(objetivoDTO.isPrepFisica());
 			pessoa.setAutoRend(objetivoDTO.isAutoRend());
 			pessoa.setHipertrofia(objetivoDTO.isHipertrofia());
-			pessoa.setEmagrecimento(objetivoDTO.isEmagrecimento());
 			
 			em.getTransaction().begin();
 			em.merge(pessoa);
@@ -203,7 +280,7 @@ public class PessoaService extends Service{
 		try {
 			final Query query = em.createQuery("select new " + 
 					ObjetivoDTO.class.getCanonicalName() + 
-					"(p.estetica, p.lazer, p.saude, p.terapeutico, p.condFisico, p.prepFisica, p.autoRend, p.hipertrofia, p.emagrecimento) " +
+					"(p.estetica, p.lazer, p.saude, p.terapeutico, p.condFisico, p.prepFisica, p.autoRend, p.hipertrofia) " +
 					" from Pessoa p " +
 					" where p.id = :id ");
 			
@@ -421,18 +498,21 @@ public class PessoaService extends Service{
 			
 			if (pessoa == null){
 				
-				return "Dados básicos da pessoa não encontrados.";
+				return "Dados básicos da pessoa não encontrados";
 			}
 			
 			pessoa.setDieta(habitosDTO.getDieta());
 			pessoa.setPraticaAtivFisica(habitosDTO.getPraticaAtivFisica());
 			
-			final String[] strData = habitosDTO.getDataUltimoExameMedico().split("/");
-			final Calendar calendar = Calendar.getInstance();
-			calendar.set(Integer.valueOf(strData[2]), Integer.valueOf(strData[1]) - 1, Integer.valueOf(strData[0]));
-			pessoa.setDataNascimento(calendar.getTime());
+			Date dtUltimoExame = null;
+			try {
+				dtUltimoExame = new SimpleDateFormat("dd/MM/yyyy").parse(habitosDTO.getDataUltimoExameMedico());
+			} catch (ParseException e) {
+				
+				return "Data do último exame inválida";
+			}
 			
-			pessoa.setDataUltimoExameMedico(calendar.getTime());
+			pessoa.setDataUltimoExameMedico(dtUltimoExame);
 			
 			if (habitosDTO.getPeriodExameMedico() != null && !habitosDTO.getPeriodExameMedico().isEmpty()){
 				
@@ -449,158 +529,44 @@ public class PessoaService extends Service{
 			this.returnEm(em);
 		}
 	}
-
+	
 	@SuppressWarnings("unchecked")
-	public MedidaDTOResponse buscarMedidas(Long idPessoa, Date dataRef) {
+	public AReceberPaginaDTO buscarPessoas(int qtdRegistros, int pagina){
 		
-		final MedidaDTOResponse resp = new MedidaDTOResponse();
-		
-		if (idPessoa == null || dataRef == null){
-			
-			resp.setSucesso(false);
-			resp.setMsg("Dados insuficientes para buscar hábitos.");
-		}
+		final AReceberPaginaDTO res = new AReceberPaginaDTO();
 		
 		final EntityManager em = this.getEm();
 		
 		try {
-			Query query = em.createQuery("select new " +
-					MedidaDTO.class.getCanonicalName() +
-					"(m.maPesoCorporal, m.maAltura, m.maPesoMagro, m.maPesoGordura, m.maPorcentagemPG, " +
-					" m.maImc, m.maCintura, m.maQuadril, m.maPmrc, m.mcTorax, m.mcAbdomen, m.mcCintura, " +
-					" m.mcBiceps, m.mcTriceps, m.mcCoxa, m.mcAntebraco, m.dcBiceps, m.dcTriceps, " +
-					" m.dcSubAxilar, m.dcSupraIliacas, m.dcSubEscapular, m.dcToraxica, m.dcAbdominal, m.dcCoxa, m.dcPerna) " +
-					" from Medida m join m.pessoa p where p.id = :id and m.dataReferente = :dataRef ");
 			
-			query.setParameter("id", idPessoa);
-			query.setParameter("dataRef", dataRef);
+			Query query = em.createQuery("select count(id) from Pessoa");
 			
-			try {
-				resp.setMedidaDTO((MedidaDTO) query.getSingleResult());
-			} catch (NoResultException e) {
+			final Long qtd = (Long)query.getSingleResult();
+			
+			if (qtd <= qtdRegistros){
 				
-			}
-			
-			query = em.createQuery("select concat(day(m.dataReferente), '/', month(m.dataReferente), '/', year(m.dataReferente)) " +
-					" from Medida m join m.pessoa p where p.id = :id ");
-			
-			query.setParameter("id", idPessoa);
-			
-			final Array<String> dts = this.getArrayFromList(query.getResultList());
-			
-			final Calendar calendar = Calendar.getInstance();
-			calendar.setTime(dataRef);
-			
-			final String dtStr = 
-					calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
-			
-			if (!dts.contains(dtStr, false)){
-				
-				dts.add(dtStr);
-			}
-			
-			resp.setDatasRef(dts);
-			
-			return resp;
-		} finally {
-			
-			this.returnEm(em);
-		}
-	}
-
-	public String salvarMedidas(MedidaDTO medidaDTO) {
-		
-		if (medidaDTO == null || medidaDTO.getIdPessoa() == null || medidaDTO.getIdPessoa().isEmpty() ||
-				medidaDTO.getDataReferente() == null || medidaDTO.getDataReferente().isEmpty()){
-			
-			return "Dados insuficientes para salvar medidas";
-		}
-		
-		final Long idPessoa = Long.valueOf(medidaDTO.getIdPessoa());
-		
-		final String[] strData = medidaDTO.getDataReferente().split("/");
-		final Calendar calendar = Calendar.getInstance();
-		calendar.set(Integer.valueOf(strData[2]), Integer.valueOf(strData[1]) - 1, Integer.valueOf(strData[0]));
-		
-		final EntityManager em = this.getEm();
-		
-		try {
-			final Pessoa pessoa = em.find(Pessoa.class, idPessoa);
-			
-			if (pessoa == null){
-				
-				return "Pessoa não encontrada para cadastro de medidas.";
-			}
-			
-			final Query query = 
-				em.createQuery(
-					"select med from Medida med join med.pessoa pes where pes.id = :idPessoa and med.dataReferente = :dataRef");
-			
-			query.setParameter("idPessoa", idPessoa);
-			query.setParameter("dataRef", calendar.getTime());
-			
-			Medida medida = null;
-			
-			try {
-				medida = (Medida) query.getSingleResult();
-			} catch (NoResultException e) {
-				
-			}
-			
-			if (medida == null){
-				
-				medida = new Medida();
-				medida.setPessoa(pessoa);
-				medida.setDataReferente(calendar.getTime());
-			}
-			
-			medida.setDcAbdominal(this.floatOrNull(medidaDTO.getDcAbdominal()));
-			medida.setDcBiceps(this.floatOrNull(medidaDTO.getDcBiceps()));
-			medida.setDcCoxa(this.floatOrNull(medidaDTO.getDcCoxa()));
-			medida.setDcPerna(this.floatOrNull(medidaDTO.getDcPerna()));
-			medida.setDcSubAxilar(this.floatOrNull(medidaDTO.getDcSubAxilar()));
-			medida.setDcSubEscapular(this.floatOrNull(medidaDTO.getDcSubEscapular()));
-			medida.setDcSupraIliacas(this.floatOrNull(medidaDTO.getDcSupraIliacas()));
-			medida.setDcToraxica(this.floatOrNull(medidaDTO.getDcToraxica()));
-			medida.setDcTriceps(this.floatOrNull(medidaDTO.getDcTriceps()));
-			medida.setMaAltura(this.floatOrNull(medidaDTO.getMaAltura()));
-			medida.setMaCintura(this.floatOrNull(medidaDTO.getMaCintura()));
-			medida.setMaImc(this.floatOrNull(medidaDTO.getMaImc()));
-			medida.setMaPesoCorporal(this.floatOrNull(medidaDTO.getMaPesoCorporal()));
-			medida.setMaPesoGordura(this.floatOrNull(medidaDTO.getMaPesoGordura()));
-			medida.setMaPesoMagro(this.floatOrNull(medidaDTO.getMaPesoMagro()));
-			medida.setMaPmrc(this.floatOrNull(medidaDTO.getMaPmrc()));
-			medida.setMaPorcentagemPG(this.floatOrNull(medidaDTO.getMaPorcentagemPG()));
-			medida.setMaQuadril(this.floatOrNull(medidaDTO.getMaQuadril()));
-			medida.setMcAbdomen(this.floatOrNull(medidaDTO.getMcAbdomen()));
-			medida.setMcAntebraco(this.floatOrNull(medidaDTO.getMcAntebraco()));
-			medida.setMcBiceps(this.floatOrNull(medidaDTO.getMcBiceps()));
-			medida.setMcCintura(this.floatOrNull(medidaDTO.getMcCintura()));
-			medida.setMcCoxa(this.floatOrNull(medidaDTO.getMcCoxa()));
-			medida.setMcTorax(this.floatOrNull(medidaDTO.getMcTorax()));
-			medida.setMcTriceps(this.floatOrNull(medidaDTO.getMcTriceps()));
-			
-			em.getTransaction().begin();
-			
-			if (medida.getId() == null){
-				
-				em.persist(medida);
+				res.setQtdPaginas("1");
 			} else {
 				
-				em.merge(medida);
+				res.setQtdPaginas(String.valueOf((qtd / qtdRegistros) + 1));
 			}
 			
-			em.getTransaction().commit();
+			query = em.createQuery("select new "
+					+ AReceberDTO.class.getCanonicalName()
+					+ "(p.nome, '') "
+					+ " from Pessoa p "
+					+ " order by p.nome ");
 			
-			return null;
+			query.setMaxResults(qtdRegistros);
+			query.setFirstResult((pagina - 1) * qtdRegistros);
+			
+			res.setaReceber(this.getArrayFromList(query.getResultList()));
+			
 		} finally {
 			
 			this.returnEm(em);
 		}
-	}
-	
-	private Float floatOrNull(String valor){
 		
-		return valor == null ? null : Float.valueOf(valor);
+		return res;
 	}
 }

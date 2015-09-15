@@ -10,23 +10,31 @@ import br.com.tapananuca.gereacademia.Utils;
  */
 public class AReceberDTO implements JsonSerializer {
 
-	public String id;
+	private String id;
 	
-	public String nome;
+	private String nome;
 	
-	public String valor;
+	private String valor;
 	
-	public String dataRef;
+	private String dataRef;
 	
-	public String paginaAtual;
+	private String paginaAtual;
+	
+	private String multa;
 	
 	public AReceberDTO(){}
 	
-	public AReceberDTO(Long id, String nome, BigDecimal valor){
+	public AReceberDTO(Long id, String nome, BigDecimal valor, boolean multa){
 		
 		this.id = String.valueOf(id);
 		this.nome = nome;
-		this.valor = String.valueOf(valor);
+		
+		if (multa){
+			this.multa = "5";
+			this.valor = String.valueOf(valor.add(new BigDecimal(5)));
+		} else {
+			this.valor = String.valueOf(valor);
+		}
 	}
 	
 	public AReceberDTO(String nome, String data){
@@ -47,6 +55,7 @@ public class AReceberDTO implements JsonSerializer {
 		utils.addStringToJson(json, "valor", valor);
 		utils.addStringToJson(json, "dataRef", dataRef);
 		utils.addStringToJson(json, "paginaAtual", paginaAtual);
+		utils.addStringToJson(json, "multa", multa);
 		
 		json.append("}");
 		
@@ -91,6 +100,14 @@ public class AReceberDTO implements JsonSerializer {
 
 	public void setPaginaAtual(String paginaAtual) {
 		this.paginaAtual = paginaAtual;
+	}
+
+	public String getMulta() {
+		return multa;
+	}
+
+	public void setMulta(String multa) {
+		this.multa = multa;
 	}
 
 }

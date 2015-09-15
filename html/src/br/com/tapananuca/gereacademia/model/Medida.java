@@ -38,26 +38,11 @@ public class Medida {
 	@Column(name="MA_ALTURA")
 	private Float maAltura;
 	
-	@Column(name="MA_PESO_MAGRO")
-	private Float maPesoMagro;
-	
-	@Column(name="MA_PESO_GORDURA")
-	private Float maPesoGordura;
-	
-	@Column(name="MA_PORCENTAGEM_PG")
-	private Float maPorcentagemPG;
-	
-	@Column(name="MA_IMC")
-	private Float maImc;
-	
 	@Column(name="MA_CINTURA")
 	private Float maCintura;
 	
 	@Column(name="MA_QUADRIL")
 	private Float maQuadril;
-	
-	@Column(name="MA_PMRC")
-	private Float maPmrc;
 	
 	@Column(name="MC_TORAX")
 	private Float mcTorax;
@@ -80,32 +65,86 @@ public class Medida {
 	@Column(name="MC_ANTEBRACO")
 	private Float mcAntebraco;
 	
-	@Column(name="DC_BICEPS")
-	private Float dcBiceps;
+	@Column(name="DC_BICEPS_1")
+	private Float dcBiceps1;
 	
-	@Column(name="DC_TRICEPS")
-	private Float dcTriceps;
+	@Column(name="DC_TRICEPS_1")
+	private Float dcTriceps1;
 	
-	@Column(name="DC_SUB_AXILAR")
-	private Float dcSubAxilar;
+	@Column(name="DC_SUB_AXILAR_1")
+	private Float dcSubAxilar1;
 	
-	@Column(name="DC_SUPRA_ILIACAS")
-	private Float dcSupraIliacas;
+	@Column(name="DC_SUPRA_ILIACAS_1")
+	private Float dcSupraIliacas1;
 	
-	@Column(name="DC_SUB_ESCAPULAR")
-	private Float dcSubEscapular;
+	@Column(name="DC_SUB_ESCAPULAR_1")
+	private Float dcSubEscapular1;
 	
-	@Column(name="DC_TORAXICA")
-	private Float dcToraxica;
+	@Column(name="DC_TORAXICA_1")
+	private Float dcToraxica1;
 	
-	@Column(name="DC_ABDOMINAL")
-	private Float dcAbdominal;
+	@Column(name="DC_ABDOMINAL_1")
+	private Float dcAbdominal1;
 	
-	@Column(name="DC_COXA")
-	private Float dcCoxa;
+	@Column(name="DC_COXA_1")
+	private Float dcCoxa1;
 	
-	@Column(name="DC_PERNA")
-	private Float dcPerna;
+	@Column(name="DC_PERNA_1")
+	private Float dcPerna1;
+	
+	@Column(name="DC_BICEPS_2")
+	private Float dcBiceps2;
+	
+	@Column(name="DC_TRICEPS_2")
+	private Float dcTriceps2;
+	
+	@Column(name="DC_SUB_AXILAR_2")
+	private Float dcSubAxilar2;
+	
+	@Column(name="DC_SUPRA_ILIACAS_2")
+	private Float dcSupraIliacas2;
+	
+	@Column(name="DC_SUB_ESCAPULAR_2")
+	private Float dcSubEscapular2;
+	
+	@Column(name="DC_TORAXICA_2")
+	private Float dcToraxica2;
+	
+	@Column(name="DC_ABDOMINAL_2")
+	private Float dcAbdominal2;
+	
+	@Column(name="DC_COXA_2")
+	private Float dcCoxa2;
+	
+	@Column(name="DC_PERNA_2")
+	private Float dcPerna2;
+	
+	@Column(name="DC_BICEPS_3")
+	private Float dcBiceps3;
+	
+	@Column(name="DC_TRICEPS_3")
+	private Float dcTriceps3;
+	
+	@Column(name="DC_SUB_AXILAR_3")
+	private Float dcSubAxilar3;
+	
+	@Column(name="DC_SUPRA_ILIACAS_3")
+	private Float dcSupraIliacas3;
+	
+	@Column(name="DC_SUB_ESCAPULAR_3")
+	private Float dcSubEscapular3;
+	
+	@Column(name="DC_TORAXICA_3")
+	private Float dcToraxica3;
+	
+	@Column(name="DC_ABDOMINAL_3")
+	private Float dcAbdominal3;
+	
+	@Column(name="DC_COXA_3")
+	private Float dcCoxa3;
+	
+	@Column(name="DC_PERNA_3")
+	private Float dcPerna3;
 
 	public Long getId() {
 		return id;
@@ -147,38 +186,6 @@ public class Medida {
 		this.maAltura = maAltura;
 	}
 
-	public Float getMaPesoMagro() {
-		return maPesoMagro;
-	}
-
-	public void setMaPesoMagro(Float maPesoMagro) {
-		this.maPesoMagro = maPesoMagro;
-	}
-
-	public Float getMaPesoGordura() {
-		return maPesoGordura;
-	}
-
-	public void setMaPesoGordura(Float maPesoGordura) {
-		this.maPesoGordura = maPesoGordura;
-	}
-
-	public Float getMaPorcentagemPG() {
-		return maPorcentagemPG;
-	}
-
-	public void setMaPorcentagemPG(Float maPorcentagemPG) {
-		this.maPorcentagemPG = maPorcentagemPG;
-	}
-
-	public Float getMaImc() {
-		return maImc;
-	}
-
-	public void setMaImc(Float maImc) {
-		this.maImc = maImc;
-	}
-
 	public Float getMaCintura() {
 		return maCintura;
 	}
@@ -193,14 +200,6 @@ public class Medida {
 
 	public void setMaQuadril(Float maQuadril) {
 		this.maQuadril = maQuadril;
-	}
-
-	public Float getMaPmrc() {
-		return maPmrc;
-	}
-
-	public void setMaPmrc(Float maPmrc) {
-		this.maPmrc = maPmrc;
 	}
 
 	public Float getMcTorax() {
@@ -259,75 +258,219 @@ public class Medida {
 		this.mcAntebraco = mcAntebraco;
 	}
 
-	public Float getDcBiceps() {
-		return dcBiceps;
+	public Float getDcBiceps1() {
+		return dcBiceps1;
 	}
 
-	public void setDcBiceps(Float dcBiceps) {
-		this.dcBiceps = dcBiceps;
+	public void setDcBiceps1(Float dcBiceps1) {
+		this.dcBiceps1 = dcBiceps1;
 	}
 
-	public Float getDcTriceps() {
-		return dcTriceps;
+	public Float getDcTriceps1() {
+		return dcTriceps1;
 	}
 
-	public void setDcTriceps(Float dcTriceps) {
-		this.dcTriceps = dcTriceps;
+	public void setDcTriceps1(Float dcTriceps1) {
+		this.dcTriceps1 = dcTriceps1;
 	}
 
-	public Float getDcSubAxilar() {
-		return dcSubAxilar;
+	public Float getDcSubAxilar1() {
+		return dcSubAxilar1;
 	}
 
-	public void setDcSubAxilar(Float dcSubAxilar) {
-		this.dcSubAxilar = dcSubAxilar;
+	public void setDcSubAxilar1(Float dcSubAxilar1) {
+		this.dcSubAxilar1 = dcSubAxilar1;
 	}
 
-	public Float getDcSupraIliacas() {
-		return dcSupraIliacas;
+	public Float getDcSupraIliacas1() {
+		return dcSupraIliacas1;
 	}
 
-	public void setDcSupraIliacas(Float dcSupraIliacas) {
-		this.dcSupraIliacas = dcSupraIliacas;
+	public void setDcSupraIliacas1(Float dcSupraIliacas1) {
+		this.dcSupraIliacas1 = dcSupraIliacas1;
 	}
 
-	public Float getDcSubEscapular() {
-		return dcSubEscapular;
+	public Float getDcSubEscapular1() {
+		return dcSubEscapular1;
 	}
 
-	public void setDcSubEscapular(Float dcSubEscapular) {
-		this.dcSubEscapular = dcSubEscapular;
+	public void setDcSubEscapular1(Float dcSubEscapular1) {
+		this.dcSubEscapular1 = dcSubEscapular1;
 	}
 
-	public Float getDcToraxica() {
-		return dcToraxica;
+	public Float getDcToraxica1() {
+		return dcToraxica1;
 	}
 
-	public void setDcToraxica(Float dcToraxica) {
-		this.dcToraxica = dcToraxica;
+	public void setDcToraxica1(Float dcToraxica1) {
+		this.dcToraxica1 = dcToraxica1;
 	}
 
-	public Float getDcAbdominal() {
-		return dcAbdominal;
+	public Float getDcAbdominal1() {
+		return dcAbdominal1;
 	}
 
-	public void setDcAbdominal(Float dcAbdominal) {
-		this.dcAbdominal = dcAbdominal;
+	public void setDcAbdominal1(Float dcAbdominal1) {
+		this.dcAbdominal1 = dcAbdominal1;
 	}
 
-	public Float getDcCoxa() {
-		return dcCoxa;
+	public Float getDcCoxa1() {
+		return dcCoxa1;
 	}
 
-	public void setDcCoxa(Float dcCoxa) {
-		this.dcCoxa = dcCoxa;
+	public void setDcCoxa1(Float dcCoxa1) {
+		this.dcCoxa1 = dcCoxa1;
 	}
 
-	public Float getDcPerna() {
-		return dcPerna;
+	public Float getDcPerna1() {
+		return dcPerna1;
 	}
 
-	public void setDcPerna(Float dcPerna) {
-		this.dcPerna = dcPerna;
+	public void setDcPerna1(Float dcPerna1) {
+		this.dcPerna1 = dcPerna1;
+	}
+
+	public Float getDcBiceps2() {
+		return dcBiceps2;
+	}
+
+	public void setDcBiceps2(Float dcBiceps2) {
+		this.dcBiceps2 = dcBiceps2;
+	}
+
+	public Float getDcTriceps2() {
+		return dcTriceps2;
+	}
+
+	public void setDcTriceps2(Float dcTriceps2) {
+		this.dcTriceps2 = dcTriceps2;
+	}
+
+	public Float getDcSubAxilar2() {
+		return dcSubAxilar2;
+	}
+
+	public void setDcSubAxilar2(Float dcSubAxilar2) {
+		this.dcSubAxilar2 = dcSubAxilar2;
+	}
+
+	public Float getDcSupraIliacas2() {
+		return dcSupraIliacas2;
+	}
+
+	public void setDcSupraIliacas2(Float dcSupraIliacas2) {
+		this.dcSupraIliacas2 = dcSupraIliacas2;
+	}
+
+	public Float getDcSubEscapular2() {
+		return dcSubEscapular2;
+	}
+
+	public void setDcSubEscapular2(Float dcSubEscapular2) {
+		this.dcSubEscapular2 = dcSubEscapular2;
+	}
+
+	public Float getDcToraxica2() {
+		return dcToraxica2;
+	}
+
+	public void setDcToraxica2(Float dcToraxica2) {
+		this.dcToraxica2 = dcToraxica2;
+	}
+
+	public Float getDcAbdominal2() {
+		return dcAbdominal2;
+	}
+
+	public void setDcAbdominal2(Float dcAbdominal2) {
+		this.dcAbdominal2 = dcAbdominal2;
+	}
+
+	public Float getDcCoxa2() {
+		return dcCoxa2;
+	}
+
+	public void setDcCoxa2(Float dcCoxa2) {
+		this.dcCoxa2 = dcCoxa2;
+	}
+
+	public Float getDcPerna2() {
+		return dcPerna2;
+	}
+
+	public void setDcPerna2(Float dcPerna2) {
+		this.dcPerna2 = dcPerna2;
+	}
+
+	public Float getDcBiceps3() {
+		return dcBiceps3;
+	}
+
+	public void setDcBiceps3(Float dcBiceps3) {
+		this.dcBiceps3 = dcBiceps3;
+	}
+
+	public Float getDcTriceps3() {
+		return dcTriceps3;
+	}
+
+	public void setDcTriceps3(Float dcTriceps3) {
+		this.dcTriceps3 = dcTriceps3;
+	}
+
+	public Float getDcSubAxilar3() {
+		return dcSubAxilar3;
+	}
+
+	public void setDcSubAxilar3(Float dcSubAxilar3) {
+		this.dcSubAxilar3 = dcSubAxilar3;
+	}
+
+	public Float getDcSupraIliacas3() {
+		return dcSupraIliacas3;
+	}
+
+	public void setDcSupraIliacas3(Float dcSupraIliacas3) {
+		this.dcSupraIliacas3 = dcSupraIliacas3;
+	}
+
+	public Float getDcSubEscapular3() {
+		return dcSubEscapular3;
+	}
+
+	public void setDcSubEscapular3(Float dcSubEscapular3) {
+		this.dcSubEscapular3 = dcSubEscapular3;
+	}
+
+	public Float getDcToraxica3() {
+		return dcToraxica3;
+	}
+
+	public void setDcToraxica3(Float dcToraxica3) {
+		this.dcToraxica3 = dcToraxica3;
+	}
+
+	public Float getDcAbdominal3() {
+		return dcAbdominal3;
+	}
+
+	public void setDcAbdominal3(Float dcAbdominal3) {
+		this.dcAbdominal3 = dcAbdominal3;
+	}
+
+	public Float getDcCoxa3() {
+		return dcCoxa3;
+	}
+
+	public void setDcCoxa3(Float dcCoxa3) {
+		this.dcCoxa3 = dcCoxa3;
+	}
+
+	public Float getDcPerna3() {
+		return dcPerna3;
+	}
+
+	public void setDcPerna3(Float dcPerna3) {
+		this.dcPerna3 = dcPerna3;
 	}
 }

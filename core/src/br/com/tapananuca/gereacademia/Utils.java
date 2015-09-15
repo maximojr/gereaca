@@ -8,6 +8,7 @@ import java.util.Iterator;
 
 import br.com.tapananuca.gereacademia.comunicacao.JsonSerializer;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.Net.HttpRequest;
@@ -53,10 +54,24 @@ public class Utils {
 	public static final String URL_PESSOA_HABITO_SALVAR = URL_PESSOA_HABITOS + "/salvar";
 	public static final String URL_PESSOA_MEDIDAS = URL_PESSOA + "/medida";
 	public static final String URL_PESSOA_MEDIDAS_SALVAR = URL_PESSOA_MEDIDAS + "/salvar";
+	public static final String URL_PESSOA_MEDIDAS_NOVA_DATA = URL_PESSOA_MEDIDAS + "/novadata";
+	public static final String URL_PESSOA_MEDIDAS_GERAR_RELATORIO = URL_PESSOA_MEDIDAS + "/calcular";
+	public static final String URL_PESSOA_MEDIDAS_ENVIAR_RELATORIO = URL_PESSOA_MEDIDAS + "/enviar";
+	public static final String URL_CADASTRADOS = URL_PESSOA + "/cadastrados";
+	
+	public static final String URL_PERSONAL = "/personal";
+	public static final String URL_PERSONAL_DATAS = URL_PERSONAL + "/datas";
+	public static final String URL_PERSONAL_ADD_AULA = URL_PERSONAL + "/addAula";
+	public static final String URL_PERSONAL_GERAR_RELATORIO = URL_PERSONAL + "/calcular";
+	public static final String URL_PERSONAL_ABRIR_RELATORIO = URL_PERSONAL + "/abrir";
+	public static final String URL_PERSONAL_ENVIAR_RELATORIO = URL_PERSONAL + "/enviar";
+	public static final String URL_PERSONAL_KEY_RELATORIO = "rel";
+	public static final String URL_PERSONAL_DATAS_AULAS = URL_PERSONAL + "/datasaulas";
 	
 	public static final String URL_PAGAMENTOS = "/pagamentos";
 	public static final String URL_A_RECEBER = URL_PAGAMENTOS + "/receber";
 	public static final String URL_PAGAR = URL_PAGAMENTOS + "/pagar";
+	
 	
 	private final Json json;
 	
@@ -86,6 +101,11 @@ public class Utils {
 		}
 		
 		return utils;
+	}
+	
+	public String getPropertie(String key){
+		
+		return properties.get(key);
 	}
 	
 	public String criptografar(String msg){
@@ -126,7 +146,9 @@ public class Utils {
 		request.setHeader("Content-Type", "application/json");
         request.setHeader("Accept", "application/json");
         
-        if (sessionId != null){
+        //só seta cookie de sessão se já estiver logado e se não for versão web
+        //se for web não precisa, browser da um jeito
+        if (sessionId != null && Gdx.app.getType() != ApplicationType.WebGL){
         	request.setHeader("Cookie", "JSESSIONID=" + utils.sessionId);
         }
         
@@ -153,36 +175,44 @@ public class Utils {
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				
-				
-				telaBloqueio.addAction(Actions.sequence(Actions.fadeOut(0.4f, Interpolation.fade), Actions.removeActor()));
-				
-				callback.handleHttpResponse(httpResponse);
+				try {
+					
+					callback.handleHttpResponse(httpResponse);
+				} finally {
+					
+					telaBloqueio.addAction(Actions.sequence(Actions.fadeOut(0.4f, Interpolation.fade), Actions.removeActor()));
+				}
 			}
 			
 			@Override
 			public void failed(Throwable t) {
 				
-				telaBloqueio.addAction(Actions.sequence(Actions.fadeOut(0.4f, Interpolation.fade), Actions.removeActor()));
-				
-				callback.failed(t);
+				try {
+					
+					callback.failed(t);
+				} finally {
+					
+					telaBloqueio.addAction(Actions.sequence(Actions.fadeOut(0.4f, Interpolation.fade), Actions.removeActor()));
+				}
 			}
 			
 			@Override
 			public void cancelled() {
 				
-				telaBloqueio.addAction(Actions.sequence(Actions.fadeOut(0.4f, Interpolation.fade), Actions.removeActor()));
-				
-				callback.cancelled();
+				try {
+					
+					callback.cancelled();
+				} finally {
+					
+					telaBloqueio.addAction(Actions.sequence(Actions.fadeOut(0.4f, Interpolation.fade), Actions.removeActor()));
+				}
 			}
 		});
 	}
 
 	public void setSessionId(String sessionId) {
 		
-		if (utils.sessionId == null || utils.sessionId.isEmpty()){
-			
-			utils.sessionId = sessionId;
-		}
+		utils.sessionId = sessionId;
 	}
 	
 	public String formatCurrency(BigDecimal valor){
@@ -241,7 +271,7 @@ public class Utils {
 		final ScrollPane scroll = new ScrollPane(table, skin);
 		table.add(msg);
 		
-		window.add(scroll).width(300).height(300).row();
+		window.add(scroll).width(500).height(300).row();
 		TextButton ok = new TextButton("Ok", skin);
 		ok.addListener(new ChangeListener(){
 
@@ -324,6 +354,23 @@ public class Utils {
 		}
 	}
 	
+	
+	public void addJsonSerializerToJson(StringBuilder json, String nomeCampo, JsonSerializer valor){
+		
+		if (json == null){
+			
+			return;
+		}
+		
+		if (valor != null){
+			
+			json.append(json.length() == 1 ? "" : ",")
+				.append(nomeCampo)
+				.append(":");
+			
+			json.append(valor.toJson());
+		}
+	}
 	public <T extends JsonSerializer> void addGARequestCollectionToJson(StringBuilder json, String nomeCampo, Array<T> collection){
 		
 		json.append(nomeCampo)

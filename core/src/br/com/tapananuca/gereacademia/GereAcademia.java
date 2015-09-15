@@ -49,4 +49,9 @@ public class GereAcademia extends ApplicationAdapter {
 		this.telaAtual = telaAtual;
 		this.telaAtual.show();
 	}
+	
+	public void resize(int width, int height){
+		
+		telaAtual.getStage().getViewport().update(width, height, true);
+	}
 }

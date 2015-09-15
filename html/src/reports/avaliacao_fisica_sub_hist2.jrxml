@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="avaliacao_fisica_sub_hist2" pageWidth="555" pageHeight="842" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="estaturaAtual" class="java.lang.Double">
+		<fieldDescription><![CDATA[estaturaAtual]]></fieldDescription>
+	</field>
+	<field name="massaGorda" class="java.lang.Double">
+		<fieldDescription><![CDATA[massaGorda]]></fieldDescription>
+	</field>
+	<field name="percentualGordura" class="java.lang.Double">
+		<fieldDescription><![CDATA[percentualGordura]]></fieldDescription>
+	</field>
+	<field name="pesoMaximoRecomendavel" class="java.lang.Double">
+		<fieldDescription><![CDATA[pesoMaximoRecomendavel]]></fieldDescription>
+	</field>
+	<field name="objetivoEmagrecimento" class="java.lang.Double">
+		<fieldDescription><![CDATA[objetivoEmagrecimento]]></fieldDescription>
+	</field>
+	<field name="percentualPesoMaximoRecomendado" class="java.lang.Double">
+		<fieldDescription><![CDATA[percentualPesoMaximoRecomendado]]></fieldDescription>
+	</field>
+	<field name="massaMagra" class="java.lang.Double">
+		<fieldDescription><![CDATA[massaMagra]]></fieldDescription>
+	</field>
+	<field name="pesoAtual" class="java.lang.Double">
+		<fieldDescription><![CDATA[pesoAtual]]></fieldDescription>
+	</field>
+	<field name="densidadeCorporal" class="java.lang.Double">
+		<fieldDescription><![CDATA[densidadeCorporal]]></fieldDescription>
+	</field>
+	<field name="medidas" class="java.util.List">
+		<fieldDescription><![CDATA[medidas]]></fieldDescription>
+	</field>
+	<field name="dataRef" class="java.util.Date">
+		<fieldDescription><![CDATA[dataRef]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="19" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="555" height="19" backcolor="#F0F0F0"/>
+				<box bottomPadding="0">
+					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Histórico (1/2)]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="40" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="65" height="40"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Data]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="65" y="0" width="89" height="40"/>
+				<textElement verticalAlignment="Middle">
+					<font isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[Peso máximo recomendado (kg)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="154" y="0" width="132" height="40"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Percentual peso máximo (%)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="286" y="0" width="50" height="40"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Peso (kg)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="336" y="0" width="75" height="40"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Peso Ideal (kg)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="411" y="0" width="65" height="40"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Estatura (m)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="476" y="0" width="64" height="40"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[I.M.C.]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataRef})]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.0000" isBlankWhenNull="true">
+				<reportElement x="65" y="0" width="89" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{pesoMaximoRecomendavel}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.0000" isBlankWhenNull="true">
+				<reportElement x="154" y="0" width="132" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{percentualPesoMaximoRecomendado}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.0000" isBlankWhenNull="true">
+				<reportElement x="286" y="0" width="50" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{pesoAtual}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.0000" isBlankWhenNull="true">
+				<reportElement x="336" y="0" width="75" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[new Double($F{pesoAtual}.doubleValue() - $F{objetivoEmagrecimento}.doubleValue())]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.0000" isBlankWhenNull="true">
+				<reportElement x="411" y="0" width="65" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{estaturaAtual}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.0000" isBlankWhenNull="true">
+				<reportElement x="476" y="0" width="64" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[new Double($F{pesoAtual}.doubleValue() / ($F{estaturaAtual}.doubleValue() * $F{estaturaAtual}.doubleValue()))]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="216">
+			<lineChart>
+				<chart>
+					<reportElement x="0" y="0" width="555" height="216"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA["Peso máximo recomendado"]]></seriesExpression>
+						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataRef})]]></categoryExpression>
+						<valueExpression><![CDATA[$F{pesoMaximoRecomendavel}]]></valueExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["Percentual peso máximo"]]></seriesExpression>
+						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataRef})]]></categoryExpression>
+						<valueExpression><![CDATA[$F{percentualPesoMaximoRecomendado}]]></valueExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["Peso"]]></seriesExpression>
+						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataRef})]]></categoryExpression>
+						<valueExpression><![CDATA[$F{pesoAtual}]]></valueExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["Peso ideal"]]></seriesExpression>
+						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataRef})]]></categoryExpression>
+						<valueExpression><![CDATA[new Double($F{pesoAtual}.doubleValue() - $F{objetivoEmagrecimento}.doubleValue())]]></valueExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["Estatura"]]></seriesExpression>
+						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataRef})]]></categoryExpression>
+						<valueExpression><![CDATA[$F{estaturaAtual}]]></valueExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["I.M.C."]]></seriesExpression>
+						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataRef})]]></categoryExpression>
+						<valueExpression><![CDATA[new Double($F{pesoAtual}.doubleValue() / ($F{estaturaAtual}.doubleValue() * $F{estaturaAtual}.doubleValue()))]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<linePlot>
+					<plot/>
+					<categoryAxisFormat>
+						<axisFormat>
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat>
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</valueAxisFormat>
+				</linePlot>
+			</lineChart>
+		</band>
+	</summary>
+</jasperReport>

@@ -12,6 +12,7 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
+import br.com.tapananuca.gereacademia.job.GeraCobrancaJob;
 import br.com.tapananuca.gereacademia.service.PagamentoService;
 import br.com.tapananuca.gereacademia.service.Service;
 
@@ -35,8 +36,9 @@ public class InicialListener implements ServletContextListener {
 			
 			final Trigger trigger = TriggerBuilder.newTrigger()
                 .startNow()
-                .withSchedule(CronScheduleBuilder.monthlyOnDayAndHourAndMinute(1, 0, 0))
+                //.withSchedule(CronScheduleBuilder.monthlyOnDayAndHourAndMinute(1, 0, 0))
                 //.withSchedule(SimpleScheduleBuilder.repeatMinutelyForever())
+                .withSchedule(CronScheduleBuilder.cronSchedule("0 0 5 1 1/1 ? *")) //todo dia 1 de cada mes as 5 da manha
                 .endAt(null)
                 .build();
 			

@@ -8,8 +8,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import com.badlogic.gdx.utils.Array;
-
 import br.com.tapananuca.gereacademia.comunicacao.AReceberDTO;
 import br.com.tapananuca.gereacademia.comunicacao.AReceberPaginaDTO;
 import br.com.tapananuca.gereacademia.comunicacao.Baixa;
@@ -18,6 +16,8 @@ import br.com.tapananuca.gereacademia.model.Pagamento;
 import br.com.tapananuca.gereacademia.model.Pessoa;
 import br.com.tapananuca.gereacademia.model.Usuario;
 
+import com.badlogic.gdx.utils.Array;
+
 public class PagamentoService extends Service {
 
 	@SuppressWarnings("unchecked")
@@ -25,35 +25,46 @@ public class PagamentoService extends Service {
 		
 		final EntityManager em = this.getEm();
 		
-		final Query query = em.createQuery("select pes from Pessoa pes "
-				+ " where pes.ativo = :ativo "
-				+ " and pes.id not in ("
-				+ "   select p.id "
-				+ "		from Pagamento pag "
-				+ "		join pag.pessoa p "
-				+ "  where month(pag.dataReferente) = month(current_date()) and year(pag.dataReferente) = year(current_date())) "
-				+ ")");
-		
-		query.setParameter("ativo", true);
-		
-		final List<Pessoa> pessoasACobrar = query.getResultList();
-		
-		Pagamento pagamento = null;
-		final Date dataRef = new Date();
-		
-		em.getTransaction().begin();
-		for (Pessoa p : pessoasACobrar){
+		try {
 			
-			pagamento = new Pagamento();
-			pagamento.setPessoa(p);
-			pagamento.setValorDevido(p.getValorMensal());
-			pagamento.setDataReferente(dataRef);
+			final Calendar calInstance = Calendar.getInstance();
 			
-			em.persist(pagamento);
+			final Date dataRef = calInstance.getTime();
+			
+			final Query query = em.createQuery("select pes from Pessoa pes "
+					+ " where pes.ativo = :ativo "
+					+ " and pes.inicio <= :dataRef "
+					+ " and pes.id not in ("
+					+ "   select distinct p.id "
+					+ "		from Pagamento pag "
+					+ "		join pag.pessoa p "
+					+ "  where month(pag.dataReferente) = :mesRef and year(pag.dataReferente) = :anoRef ) "
+					+ ")");
+			
+			query.setParameter("ativo", true);
+			query.setParameter("dataRef", dataRef);
+			query.setParameter("mesRef", calInstance.get(Calendar.MONTH) + 1);
+			query.setParameter("anoRef", calInstance.get(Calendar.YEAR));
+			
+			final List<Pessoa> pessoasACobrar = query.getResultList();
+			
+			Pagamento pagamento = null;
+			
+			em.getTransaction().begin();
+			for (Pessoa p : pessoasACobrar){
+				
+				pagamento = new Pagamento();
+				pagamento.setPessoa(p);
+				pagamento.setValorDevido(p.getValorMensal());
+				pagamento.setDataReferente(dataRef);
+				
+				em.persist(pagamento);
+			}
+			em.getTransaction().commit();
+		} finally {
+		
+			this.returnEm(em);
 		}
-		em.getTransaction().commit();
-		
-		this.returnEm(em);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -63,11 +74,14 @@ public class PagamentoService extends Service {
 		
 		final Calendar calendar = Calendar.getInstance();
 		
+		//só se aplica multa caso o pagamento se dê depois do dia 15
+		//e o dia da data referente do pagamento seja menor que 15
 		StringBuilder hql = new StringBuilder("select new ");
 		hql.append(AReceberDTO.class.getCanonicalName())
 		   .append(" (pag.id, ")
 		   .append(" pes.nome, ")
-		   .append(" pag.valorDevido) ")
+		   .append(" pag.valorDevido, ")
+		   .append(" case when ((current_date - pag.dataReferente > 15) and (pag.dataBaixa is null)) then true else false end as multa) ")
 		   .append(" from Pagamento pag ")
 		   .append(" join pag.pessoa pes ")
 		   .append(" where ");
@@ -90,7 +104,7 @@ public class PagamentoService extends Service {
 			hql.append(" and pes.id = :idPessoa ");
 		}
 		
-		hql.append(" order by pag.dataReferente, pes.nome ");
+		hql.append(" order by pes.nome ");
 		
 		Query query = em.createQuery(hql.toString());
 		
@@ -155,7 +169,15 @@ public class PagamentoService extends Service {
 			query.setParameter("idPessoa", idPessoa);
 		}
 		
-		dto.setQtdPaginas(String.valueOf(((Long)query.getSingleResult() / qtdRegistros) + 1));
+		final Long qtd = (Long)query.getSingleResult();
+		
+		if (qtd <= qtdRegistros){
+			
+			dto.setQtdPaginas("1");
+		} else {
+			
+			dto.setQtdPaginas(String.valueOf((qtd / qtdRegistros) + 1));
+		}
 		
 		query = em.createQuery("select distinct "
 				+ " pag.dataReferente "
@@ -214,6 +236,11 @@ public class PagamentoService extends Service {
 					
 					pagamento.setDataBaixa(new Date());
 					pagamento.setValorPago(BigDecimal.valueOf(Double.valueOf(baixa.getValor())));
+					
+					if (baixa.getMulta() != null && !baixa.getMulta().isEmpty()){
+						pagamento.setMulta(new BigDecimal(Double.valueOf(baixa.getMulta())));
+					}
+					
 					pagamento.setUsuario(usuarioLogado);
 					em.merge(pagamento);
 				}
