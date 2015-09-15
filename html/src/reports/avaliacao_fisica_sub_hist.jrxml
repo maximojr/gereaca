@@ -81,7 +81,7 @@
 				<text><![CDATA[Massa magra (kg)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="461" y="0" width="78" height="40"/>
+				<reportElement x="461" y="0" width="94" height="40"/>
 				<textElement verticalAlignment="Middle"/>
 				<text><![CDATA[Obj. emagrecimento (kg)]]></text>
 			</staticText>
@@ -115,10 +115,64 @@
 				<textFieldExpression class="java.lang.Double"><![CDATA[$F{massaMagra}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.0000" isBlankWhenNull="true">
-				<reportElement x="461" y="0" width="78" height="20"/>
+				<reportElement x="461" y="0" width="94" height="20"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.Double"><![CDATA[$F{objetivoEmagrecimento}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
+	<summary>
+		<band height="216">
+			<lineChart>
+				<chart>
+					<reportElement x="0" y="0" width="555" height="216"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA["Densidade corporal"]]></seriesExpression>
+						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataRef})]]></categoryExpression>
+						<valueExpression><![CDATA[$F{densidadeCorporal}]]></valueExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["Percentual gordura"]]></seriesExpression>
+						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataRef})]]></categoryExpression>
+						<valueExpression><![CDATA[$F{percentualGordura}]]></valueExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["Massa gorda"]]></seriesExpression>
+						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataRef})]]></categoryExpression>
+						<valueExpression><![CDATA[$F{massaGorda}]]></valueExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["Massa magra"]]></seriesExpression>
+						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataRef})]]></categoryExpression>
+						<valueExpression><![CDATA[$F{massaMagra}]]></valueExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["Obj. Emagr."]]></seriesExpression>
+						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataRef})]]></categoryExpression>
+						<valueExpression><![CDATA[$F{objetivoEmagrecimento}]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<linePlot>
+					<plot/>
+					<categoryAxisFormat>
+						<axisFormat>
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat>
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</valueAxisFormat>
+				</linePlot>
+			</lineChart>
+		</band>
+	</summary>
 </jasperReport>

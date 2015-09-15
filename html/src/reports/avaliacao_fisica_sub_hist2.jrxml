@@ -134,4 +134,63 @@
 			</textField>
 		</band>
 	</detail>
+	<summary>
+		<band height="216">
+			<lineChart>
+				<chart>
+					<reportElement x="0" y="0" width="555" height="216"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA["Peso máximo recomendado"]]></seriesExpression>
+						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataRef})]]></categoryExpression>
+						<valueExpression><![CDATA[$F{pesoMaximoRecomendavel}]]></valueExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["Percentual peso máximo"]]></seriesExpression>
+						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataRef})]]></categoryExpression>
+						<valueExpression><![CDATA[$F{percentualPesoMaximoRecomendado}]]></valueExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["Peso"]]></seriesExpression>
+						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataRef})]]></categoryExpression>
+						<valueExpression><![CDATA[$F{pesoAtual}]]></valueExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["Peso ideal"]]></seriesExpression>
+						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataRef})]]></categoryExpression>
+						<valueExpression><![CDATA[new Double($F{pesoAtual}.doubleValue() - $F{objetivoEmagrecimento}.doubleValue())]]></valueExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["Estatura"]]></seriesExpression>
+						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataRef})]]></categoryExpression>
+						<valueExpression><![CDATA[$F{estaturaAtual}]]></valueExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["I.M.C."]]></seriesExpression>
+						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dataRef})]]></categoryExpression>
+						<valueExpression><![CDATA[new Double($F{pesoAtual}.doubleValue() / ($F{estaturaAtual}.doubleValue() * $F{estaturaAtual}.doubleValue()))]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<linePlot>
+					<plot/>
+					<categoryAxisFormat>
+						<axisFormat>
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat>
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</valueAxisFormat>
+				</linePlot>
+			</lineChart>
+		</band>
+	</summary>
 </jasperReport>

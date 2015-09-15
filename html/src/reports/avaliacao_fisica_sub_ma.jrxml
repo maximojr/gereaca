@@ -23,10 +23,13 @@
 	</background>
 	<title>
 		<band height="20">
+			<break>
+				<reportElement x="0" y="0" width="100" height="1"/>
+			</break>
 			<staticText>
-				<reportElement x="0" y="1" width="555" height="19"/>
+				<reportElement mode="Opaque" x="0" y="1" width="555" height="19" backcolor="#F0F0F0"/>
 				<box topPadding="0">
-					<topPen lineWidth="1.0"/>
+					<topPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
