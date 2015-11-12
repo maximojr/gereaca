@@ -34,6 +34,8 @@ public class PessoaDTO implements GARequest {
 	
 	private boolean ativo;
 	
+	private String lembrete;
+	
 	public PessoaDTO() {}
 	
 	public PessoaDTO(Long id, String nome){
@@ -44,7 +46,7 @@ public class PessoaDTO implements GARequest {
 	
 	public PessoaDTO(String nome, int diaDtNasc, int mesDtNasc, int anoDtNasc, EstadoCivil estadoCivil, Character sexo,
 			String endereco, String numero, String bairro, String telefone, String email,
-			int diaDtInic, int mesDtInic, int anoDtInic, BigDecimal valorMensal, Boolean ativo) {
+			int diaDtInic, int mesDtInic, int anoDtInic, BigDecimal valorMensal, Boolean ativo, String lembrete) {
 		
 		this.nome = nome;
 		this.dataNascimento = (diaDtNasc < 10 ? "0" + diaDtNasc : diaDtNasc) + "/" + 
@@ -62,6 +64,7 @@ public class PessoaDTO implements GARequest {
 				anoDtInic;
 		this.valorMensal = String.valueOf(valorMensal.floatValue());
 		this.ativo = ativo == null ? false : ativo;
+		this.lembrete = lembrete;
 	}
 	
 	@Override
@@ -88,6 +91,7 @@ public class PessoaDTO implements GARequest {
 		utils.addStringToJson(json, "bairro", bairro);
 		utils.addStringToJson(json, "telefone", telefone);
 		utils.addBooleanToJson(json, "ativo", ativo);
+		utils.addStringToJson(json, "lembrete", lembrete);
 		
 		if (estadoCivil != null){
 		
@@ -201,5 +205,13 @@ public class PessoaDTO implements GARequest {
 
 	public void setAtivo(boolean ativo) {
 		this.ativo = ativo;
+	}
+
+	public String getLembrete() {
+		return lembrete;
+	}
+
+	public void setLembrete(String lembrete) {
+		this.lembrete = lembrete;
 	}
 }

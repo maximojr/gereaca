@@ -132,6 +132,9 @@ public class Pessoa {
 	
 	@Column(name="PERIODO_EXAME_MEDICO")
 	private Integer periodExameMedico;
+	
+	@Column(name="LEMBRETE")
+	private String lembrete;
 
 	public Long getId() {
 		return id;
@@ -395,5 +398,13 @@ public class Pessoa {
 
 	public void setPeriodExameMedico(Integer periodExameMedico) {
 		this.periodExameMedico = periodExameMedico;
+	}
+
+	public String getLembrete() {
+		return lembrete;
+	}
+
+	public void setLembrete(String lembrete) {
+		this.lembrete = lembrete;
 	}
 }

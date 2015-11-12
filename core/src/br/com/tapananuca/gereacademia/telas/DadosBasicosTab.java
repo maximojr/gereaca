@@ -43,6 +43,7 @@ public class DadosBasicosTab extends Tab {
 	private TextField telefone;
 	private TextField email;
 	private TextField dataInicio;
+	private TextField lembrete;
 	private TextField valorMensal;
 	private CheckBox ativo;
 	
@@ -194,6 +195,12 @@ public class DadosBasicosTab extends Tab {
 		conteudo.add(valorMensal).left().row();
 		cadastroPessoaScreen.elementosFocaveis.add(valorMensal);
 		
+		conteudo.add("Lembrete:").left().row();
+		
+		lembrete = new TextField("", skin);
+		conteudo.add(lembrete).width(400).left().row();
+		cadastroPessoaScreen.elementosFocaveis.add(lembrete);
+		
 		ativo = new CheckBox("Ativo", skin);
 		ativo.setChecked(true);
 		conteudo.add(ativo).left().row().padTop(30);
@@ -230,6 +237,7 @@ public class DadosBasicosTab extends Tab {
 				DadosBasicosTab.this.email.setText("");
 				DadosBasicosTab.this.dataInicio.setText("");
 				DadosBasicosTab.this.valorMensal.setText("");
+				DadosBasicosTab.this.lembrete.setText("");
 				DadosBasicosTab.this.ativo.setChecked(true);
 				DadosBasicosTab.this.cadastroPessoaScreen.cabecalho.setText("Novo cliente");
 				
@@ -348,6 +356,7 @@ public class DadosBasicosTab extends Tab {
 		pessoaDTO.setTelefone(this.telefone.getText());
 		pessoaDTO.setEmail(this.email.getText());
 		pessoaDTO.setValorMensal(this.valorMensal.getText().replace(",", "."));
+		pessoaDTO.setLembrete(this.lembrete.getText());
 		pessoaDTO.setEstadoCivil(EstadoCivil.getEnumByValue(this.listEstadoCivil.getSelected()));
 		pessoaDTO.setDataInicio(this.dataInicio.getText());
 		pessoaDTO.setAtivo(this.ativo.isChecked());
@@ -422,6 +431,7 @@ public class DadosBasicosTab extends Tab {
 						DadosBasicosTab.this.telefone.setText(utils.emptyOrString(pessoaDTO.getTelefone()));
 						DadosBasicosTab.this.email.setText(utils.emptyOrString(pessoaDTO.getEmail()));
 						DadosBasicosTab.this.valorMensal.setText(utils.formatCurrency(pessoaDTO.getValorMensal()));
+						DadosBasicosTab.this.lembrete.setText(pessoaDTO.getLembrete());
 						DadosBasicosTab.this.dataInicio.setText(pessoaDTO.getDataInicio());
 						DadosBasicosTab.this.listEstadoCivil.setSelected(pessoaDTO.getEstadoCivil().getDescricao());
 						DadosBasicosTab.this.ativo.setChecked(pessoaDTO.isAtivo());

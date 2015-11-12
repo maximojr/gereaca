@@ -119,6 +119,7 @@ public class PessoaService extends Service{
 			pessoa.setValorMensal(new BigDecimal(pessoaDTO.getValorMensal()).setScale(2, RoundingMode.HALF_UP));
 			pessoa.setEstadoCivil(pessoaDTO.getEstadoCivil());
 			pessoa.setAtivo(pessoaDTO.isAtivo());
+			pessoa.setLembrete(pessoaDTO.getLembrete());
 			
 			em.getTransaction().begin();
 			
@@ -352,7 +353,7 @@ public class PessoaService extends Service{
 			hql.append(PessoaDTO.class.getCanonicalName())
 			   .append("(p.nome, day(p.dataNascimento), month(p.dataNascimento), year(p.dataNascimento), p.estadoCivil, p.sexo, ")
 			   .append("p.endereco, p.numero, p.bairro, p.telefone, p.email, ")
-			   .append("day(p.inicio), month(p.inicio), year(p.inicio), p.valorMensal, p.ativo)")
+			   .append("day(p.inicio), month(p.inicio), year(p.inicio), p.valorMensal, p.ativo, p.lembrete)")
 			   .append(" from Pessoa p ")
 			   .append(" where p.id = :id ");
 			
