@@ -431,7 +431,7 @@ public class DadosBasicosTab extends Tab {
 						DadosBasicosTab.this.telefone.setText(utils.emptyOrString(pessoaDTO.getTelefone()));
 						DadosBasicosTab.this.email.setText(utils.emptyOrString(pessoaDTO.getEmail()));
 						DadosBasicosTab.this.valorMensal.setText(utils.formatCurrency(pessoaDTO.getValorMensal()));
-						DadosBasicosTab.this.lembrete.setText(pessoaDTO.getLembrete());
+						DadosBasicosTab.this.lembrete.setText(utils.emptyOrString(pessoaDTO.getLembrete()));
 						DadosBasicosTab.this.dataInicio.setText(pessoaDTO.getDataInicio());
 						DadosBasicosTab.this.listEstadoCivil.setSelected(pessoaDTO.getEstadoCivil().getDescricao());
 						DadosBasicosTab.this.ativo.setChecked(pessoaDTO.isAtivo());
