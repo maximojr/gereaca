@@ -68,7 +68,8 @@ public class PagamentoService extends Service {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public AReceberPaginaDTO buscarPagamentos(Date dataRef, Long idPessoa, Integer qtdRegistros, Integer pagina, boolean emAberto){
+	public AReceberPaginaDTO buscarPagamentos(Date dataRef, Long idPessoa, Integer qtdRegistros, Integer pagina, 
+			boolean emAberto, String tipoAtv){
 		
 		final EntityManager em = this.getEm();
 		
@@ -104,6 +105,11 @@ public class PagamentoService extends Service {
 			hql.append(" and pes.id = :idPessoa ");
 		}
 		
+		if (tipoAtv != null && !tipoAtv.isEmpty()){
+			
+			hql.append(" and pes.atividades like :tipoAtv ");
+		}
+		
 		hql.append(" order by pes.nome ");
 		
 		Query query = em.createQuery(hql.toString());
@@ -119,6 +125,11 @@ public class PagamentoService extends Service {
 		if (idPessoa != null){
 			
 			query.setParameter("idPessoa", idPessoa);
+		}
+		
+		if (tipoAtv != null && !tipoAtv.isEmpty()){
+			
+			query.setParameter("tipoAtv", tipoAtv);
 		}
 		
 		if (pagina != null && qtdRegistros != null){
@@ -154,6 +165,11 @@ public class PagamentoService extends Service {
 			hql.append(" and pes.id = :idPessoa ");
 		}
 		
+		if (tipoAtv != null && !tipoAtv.isEmpty()){
+			
+			hql.append(" and pes.atividades like :tipoAtv ");
+		}
+		
 		query = em.createQuery(hql.toString());
 		
 		if (dataRef != null){
@@ -167,6 +183,11 @@ public class PagamentoService extends Service {
 		if (idPessoa != null){
 			
 			query.setParameter("idPessoa", idPessoa);
+		}
+		
+		if (tipoAtv != null && !tipoAtv.isEmpty()){
+			
+			query.setParameter("tipoAtv", tipoAtv);
 		}
 		
 		final Long qtd = (Long)query.getSingleResult();

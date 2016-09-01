@@ -135,6 +135,11 @@ public class Pessoa {
 	
 	@Column(name="LEMBRETE")
 	private String lembrete;
+	
+	//campo gravado em formato binário
+	//ex.: 000 - nenhuma atividade, 010 - apenas atividade representada pelo segundo digito
+	@Column(name="ATIVIDADES")
+	private String atividades;
 
 	public Long getId() {
 		return id;
@@ -406,5 +411,13 @@ public class Pessoa {
 
 	public void setLembrete(String lembrete) {
 		this.lembrete = lembrete;
+	}
+
+	public String getAtividades() {
+		return atividades;
+	}
+
+	public void setAtividades(String atividades) {
+		this.atividades = atividades;
 	}
 }
