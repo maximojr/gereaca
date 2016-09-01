@@ -4,6 +4,7 @@ package br.com.tapananuca.gereacademia.telas;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.tapananuca.gereacademia.Atividade;
 import br.com.tapananuca.gereacademia.GereAcademia;
 import br.com.tapananuca.gereacademia.Utils;
 import br.com.tapananuca.gereacademia.comunicacao.AReceberDTO;
@@ -50,6 +51,7 @@ public class MenuPrincipalScreen extends Tela {
 	
 	private final SelectBox<String> datasRefPagamento;
 	private final SelectBox<String> datasRefAniversario;
+	private final SelectBox<Atividade> tiposAtividades;
 	
 	private List<DataHolder> dataHolderBaixa;
 	
@@ -77,6 +79,9 @@ public class MenuPrincipalScreen extends Tela {
 		datasRefPagamento = new SelectBox<String>(skin);
 		dataRefPgto = new DataRefPagamentoChangeListener();
 		datasRefPagamento.addListener(dataRefPgto);
+		
+		tiposAtividades = new SelectBox<Atividade>(skin);
+		tiposAtividades.addListener(dataRefPgto);
 		
 		datasRefAniversario = new SelectBox<String>(skin);
 		
@@ -303,6 +308,25 @@ public class MenuPrincipalScreen extends Tela {
 		containerAniv.setActor(tableAniversarios);
 		
 		tablePrincipal.add(containerAniv).height(360).width(500).colspan(3).fill();
+		
+		//combo atividades
+		if (tiposAtividades.getItems().size == 0){
+			final Atividade[] atvs = new Atividade[4];
+			atvs[0] = Atividade.TODAS;
+			atvs[1] = Atividade.MUSCULACAO;
+			atvs[2] = Atividade.FUNCIONAL;
+			atvs[3] = Atividade.DANCA;
+			
+			tiposAtividades.setItems(atvs);
+		}
+		
+		final Table inTable = new Table(skin);
+		
+		inTable.add("A receber: ");
+		inTable.add(datasRefPagamento);
+		inTable.add(tiposAtividades);
+		
+		tablePagamentos.add(inTable).colspan(3).row();
 	}
 	
 	class DataHolder{
@@ -320,7 +344,10 @@ public class MenuPrincipalScreen extends Tela {
 		@Override
 		public void changed(ChangeEvent event, Actor actor) {
 			
-			MenuPrincipalScreen.this.carregarPagamentosAReceber(1, datasRefPagamento.getSelected());
+			MenuPrincipalScreen.this.carregarPagamentosAReceber(
+					1, 
+					datasRefPagamento.getSelected(), 
+					tiposAtividades.getSelected());
 		}
 	}
 	
@@ -345,7 +372,7 @@ public class MenuPrincipalScreen extends Tela {
 
 	public void carregarTabelasMenuPrincipal(int pagina, String dataRef) {
 		
-		this.carregarPagamentosAReceber(pagina, dataRef);
+		this.carregarPagamentosAReceber(pagina, dataRef, Atividade.TODAS);
 		
 		final Integer mes = Integer.valueOf(dataRef.split("/")[0]);
 		
@@ -356,21 +383,20 @@ public class MenuPrincipalScreen extends Tela {
 		}
 	}
 	
-	private void carregarPagamentosAReceber(final int pagina, final String dataRef){
+	private void carregarPagamentosAReceber(final int pagina, final String dataRef, final Atividade tipoAtv){
+		
+		if (dataRef == null){
+			
+			return;
+		}
 		
 		tablePagamentos.clear();
 		dataHolderBaixa.clear();
 		
-		final Table inTable = new Table(skin);
-		
-		inTable.add("A receber: ");
-		inTable.add(datasRefPagamento);
-		
-		tablePagamentos.add(inTable).colspan(3).row();
-		
 		final AReceberDTO dto = new AReceberDTO();
 		dto.setPaginaAtual(String.valueOf(pagina));
 		dto.setDataRef(dataRef);
+		dto.setTipoAtv(tipoAtv.getCodigo());
 		
 		final HttpRequest req = this.utils.criarRequest(Utils.URL_A_RECEBER, dto);
 		
@@ -471,7 +497,10 @@ public class MenuPrincipalScreen extends Tela {
 										
 										if (pagina > 1){
 											
-											MenuPrincipalScreen.this.carregarPagamentosAReceber(pagina - 1, datasRefPagamento.getSelected());
+											MenuPrincipalScreen.this.carregarPagamentosAReceber(
+													pagina - 1, 
+													datasRefPagamento.getSelected(),
+													tiposAtividades.getSelected());
 										}
 									}
 								});
@@ -487,7 +516,10 @@ public class MenuPrincipalScreen extends Tela {
 										
 										if (pagina < Integer.valueOf(aReceberPaginaDTO.getQtdPaginas())){
 											
-											MenuPrincipalScreen.this.carregarPagamentosAReceber(pagina + 1, datasRefPagamento.getSelected());
+											MenuPrincipalScreen.this.carregarPagamentosAReceber(
+													pagina + 1, 
+													datasRefPagamento.getSelected(),
+													tiposAtividades.getSelected());
 										}
 									}
 								});
@@ -595,21 +627,30 @@ public class MenuPrincipalScreen extends Tela {
 					utils.mostarAlerta(null, "Erro ao efetuar baixa " + ga != null ? ga.getMsg() : "", stage, skin);
 				}
 				
-				MenuPrincipalScreen.this.carregarPagamentosAReceber(1, datasRefPagamento.getSelected());
+				MenuPrincipalScreen.this.carregarPagamentosAReceber(
+						1, 
+						datasRefPagamento.getSelected(),
+						tiposAtividades.getSelected());
 			}
 			
 			@Override
 			public void failed(Throwable t) {
 				
 				utils.mostarAlerta(null, "Erro ao efetuar baixa: " + t.getLocalizedMessage(), stage, skin);
-				MenuPrincipalScreen.this.carregarPagamentosAReceber(1, datasRefPagamento.getSelected());
+				MenuPrincipalScreen.this.carregarPagamentosAReceber(
+						1, 
+						datasRefPagamento.getSelected(),
+						tiposAtividades.getSelected());
 			}
 			
 			@Override
 			public void cancelled() {
 				
 				utils.mostarAlerta(null, "Requisição cancelada", stage, skin);
-				MenuPrincipalScreen.this.carregarPagamentosAReceber(1, datasRefPagamento.getSelected());
+				MenuPrincipalScreen.this.carregarPagamentosAReceber(
+						1, 
+						datasRefPagamento.getSelected(),
+						tiposAtividades.getSelected());
 			}
 		});
 	}

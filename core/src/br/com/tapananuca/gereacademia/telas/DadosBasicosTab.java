@@ -47,6 +47,10 @@ public class DadosBasicosTab extends Tab {
 	private TextField valorMensal;
 	private CheckBox ativo;
 	
+	private CheckBox checkMusculacao;
+	private CheckBox checkFuncional;
+	private CheckBox checkDanca;
+	
 	public DadosBasicosTab(final Button button, CadastroPessoaScreen cadastroPessoaScreen, int alinhamento){
 		
 		button.addListener(new ChangeListener() {
@@ -201,9 +205,24 @@ public class DadosBasicosTab extends Tab {
 		conteudo.add(lembrete).width(400).left().row();
 		cadastroPessoaScreen.elementosFocaveis.add(lembrete);
 		
+		conteudo.add(new Label("Atividades:", skin)).left().row();
+		
+		final Table inTableAtv = new Table();
+		
+		checkMusculacao = new CheckBox("Musculação", skin);
+		inTableAtv.add(checkMusculacao).left();
+		
+		checkFuncional = new CheckBox("Funcional", skin);
+		inTableAtv.add(checkFuncional).padLeft(10).left();
+		
+		checkDanca = new CheckBox("Dança", skin);
+		inTableAtv.add(checkDanca).padLeft(10).left();
+		
+		conteudo.add(inTableAtv).left().row();
+		
 		ativo = new CheckBox("Ativo", skin);
 		ativo.setChecked(true);
-		conteudo.add(ativo).left().row().padTop(30);
+		conteudo.add(ativo).left().padTop(20).row();
 		
 		final TextButton botaoSalvar = new TextButton("Salvar", skin);
 		botaoSalvar.addListener(new ChangeListener(){
@@ -239,6 +258,9 @@ public class DadosBasicosTab extends Tab {
 				DadosBasicosTab.this.valorMensal.setText("");
 				DadosBasicosTab.this.lembrete.setText("");
 				DadosBasicosTab.this.ativo.setChecked(true);
+				DadosBasicosTab.this.checkMusculacao.setChecked(false);
+				DadosBasicosTab.this.checkFuncional.setChecked(false);
+				DadosBasicosTab.this.checkDanca.setChecked(false);
 				DadosBasicosTab.this.cadastroPessoaScreen.cabecalho.setText("Novo cliente");
 				
 				DadosBasicosTab.this.cadastroPessoaScreen.botaoTabObjetivos.setDisabled(true);
@@ -249,9 +271,9 @@ public class DadosBasicosTab extends Tab {
 			}
 		});
 		
-		tbBtn.add(botaoNovo).row().padTop(20);
+		tbBtn.add(botaoNovo).row();
 		
-		conteudo.add(tbBtn).left();
+		conteudo.add(tbBtn).left().padTop(20);
 		
 		this.inicializar();
 	}
@@ -360,6 +382,7 @@ public class DadosBasicosTab extends Tab {
 		pessoaDTO.setEstadoCivil(EstadoCivil.getEnumByValue(this.listEstadoCivil.getSelected()));
 		pessoaDTO.setDataInicio(this.dataInicio.getText());
 		pessoaDTO.setAtivo(this.ativo.isChecked());
+		pessoaDTO.setAtividades(this.montarValorAtividades());
 		
 		final HttpRequest httpRequest = utils.criarRequest(Utils.URL_PESSOA_DADOS_BASICOS_SALVAR, pessoaDTO);
 		
@@ -403,6 +426,13 @@ public class DadosBasicosTab extends Tab {
 		});
 	}
 	
+	private String montarValorAtividades() {
+		
+		return (this.checkMusculacao.isChecked() ? "1" : "0") + 
+				(this.checkFuncional.isChecked() ? "1" : "0") +
+				(this.checkDanca.isChecked() ? "1" : "0");
+	}
+
 	private void editar() {
 		
 		final PessoaDTO dto = new PessoaDTO(DadosBasicosTab.this.cadastroPessoaScreen.getPessoaEdicaoId(), null);
@@ -435,6 +465,7 @@ public class DadosBasicosTab extends Tab {
 						DadosBasicosTab.this.dataInicio.setText(pessoaDTO.getDataInicio());
 						DadosBasicosTab.this.listEstadoCivil.setSelected(pessoaDTO.getEstadoCivil().getDescricao());
 						DadosBasicosTab.this.ativo.setChecked(pessoaDTO.isAtivo());
+						DadosBasicosTab.this.setarChecksAtividades(pessoaDTO.getAtividades());
 						
 						DadosBasicosTab.this.cadastroPessoaScreen.cabecalho.setText("Editar dados cliente");
 						
@@ -463,6 +494,22 @@ public class DadosBasicosTab extends Tab {
 				utils.mostarAlerta(null, "Solicitação ao servidor cancelada.", stage, skin);
 			}
 		});
+	}
+
+	protected void setarChecksAtividades(final String atvs) {
+		
+		if (atvs != null && !atvs.isEmpty()){
+			
+			this.checkMusculacao.setChecked(atvs.charAt(0) == '1');
+			
+			if (atvs.length() > 1){
+				this.checkFuncional.setChecked(atvs.charAt(1) == '1');
+			}
+			
+			if (atvs.length() > 2){
+				this.checkDanca.setChecked(atvs.charAt(3) == '1');
+			}
+		}
 	}
 
 	public void setFocoInicial() {

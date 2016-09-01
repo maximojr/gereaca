@@ -122,7 +122,8 @@ public class PagamentoServlet extends BaseServlet {
 							null, 
 							10, 
 							Integer.valueOf(aReceberDTO.getPaginaAtual()), 
-							true);
+							true,
+							aReceberDTO.getTipoAtv());
 			
 			return resp;
 		} catch (Exception e) {

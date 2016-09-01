@@ -22,6 +22,8 @@ public class AReceberDTO implements JsonSerializer {
 	
 	private String multa;
 	
+	private String tipoAtv;
+	
 	public AReceberDTO(){}
 	
 	public AReceberDTO(Long id, String nome, BigDecimal valor, boolean multa){
@@ -56,6 +58,7 @@ public class AReceberDTO implements JsonSerializer {
 		utils.addStringToJson(json, "dataRef", dataRef);
 		utils.addStringToJson(json, "paginaAtual", paginaAtual);
 		utils.addStringToJson(json, "multa", multa);
+		utils.addStringToJson(json, "tipoAtv", tipoAtv);
 		
 		json.append("}");
 		
@@ -108,6 +111,14 @@ public class AReceberDTO implements JsonSerializer {
 
 	public void setMulta(String multa) {
 		this.multa = multa;
+	}
+
+	public String getTipoAtv() {
+		return tipoAtv;
+	}
+
+	public void setTipoAtv(String tipoAtv) {
+		this.tipoAtv = tipoAtv;
 	}
 
 }
