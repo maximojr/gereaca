@@ -145,6 +145,7 @@ public class PagamentoService extends Service {
 		hql = new StringBuilder("select ");
 		hql.append(" count(pag.id) ")
 		   .append(" from Pagamento pag ")
+		   .append(" join pag.pessoa pes ")
 		   .append(" where ");
 		
 		if (emAberto){

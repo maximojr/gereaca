@@ -23,4 +23,16 @@ public enum Atividade {
 	public String getCodigo(){
 		return this.codigo;
 	}
+	
+	public static String getCodigoByDesc(final String desc){
+		
+		for (Atividade atv : Atividade.values()){
+			
+			if (atv.toString().equals(desc)){
+				return atv.getCodigo();
+			}
+		}
+		
+		return null;
+	}
 }
