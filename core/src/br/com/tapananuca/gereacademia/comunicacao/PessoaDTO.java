@@ -96,7 +96,7 @@ public class PessoaDTO implements GARequest {
 		utils.addStringToJson(json, "telefone", telefone);
 		utils.addBooleanToJson(json, "ativo", ativo);
 		utils.addStringToJson(json, "lembrete", lembrete);
-		utils.addStringToJson(json, "atividades", atividades);
+		utils.addStringToJson(json, "atividades", "_" + atividades);
 		
 		if (estadoCivil != null){
 		

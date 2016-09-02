@@ -51,7 +51,7 @@ public class MenuPrincipalScreen extends Tela {
 	
 	private final SelectBox<String> datasRefPagamento;
 	private final SelectBox<String> datasRefAniversario;
-	private final SelectBox<Atividade> tiposAtividades;
+	private final SelectBox<String> tiposAtividades;
 	
 	private List<DataHolder> dataHolderBaixa;
 	
@@ -80,7 +80,7 @@ public class MenuPrincipalScreen extends Tela {
 		dataRefPgto = new DataRefPagamentoChangeListener();
 		datasRefPagamento.addListener(dataRefPgto);
 		
-		tiposAtividades = new SelectBox<Atividade>(skin);
+		tiposAtividades = new SelectBox<String>(skin);
 		tiposAtividades.addListener(dataRefPgto);
 		
 		datasRefAniversario = new SelectBox<String>(skin);
@@ -311,11 +311,11 @@ public class MenuPrincipalScreen extends Tela {
 		
 		//combo atividades
 		if (tiposAtividades.getItems().size == 0){
-			final Atividade[] atvs = new Atividade[4];
-			atvs[0] = Atividade.TODAS;
-			atvs[1] = Atividade.MUSCULACAO;
-			atvs[2] = Atividade.FUNCIONAL;
-			atvs[3] = Atividade.DANCA;
+			final String[] atvs = new String[4];
+			atvs[0] = Atividade.TODAS.toString();
+			atvs[1] = Atividade.MUSCULACAO.toString();
+			atvs[2] = Atividade.FUNCIONAL.toString();
+			atvs[3] = Atividade.DANCA.toString();
 			
 			tiposAtividades.setItems(atvs);
 		}
@@ -372,7 +372,7 @@ public class MenuPrincipalScreen extends Tela {
 
 	public void carregarTabelasMenuPrincipal(int pagina, String dataRef) {
 		
-		this.carregarPagamentosAReceber(pagina, dataRef, Atividade.TODAS);
+		this.carregarPagamentosAReceber(pagina, dataRef, Atividade.TODAS.toString());
 		
 		final Integer mes = Integer.valueOf(dataRef.split("/")[0]);
 		
@@ -383,7 +383,7 @@ public class MenuPrincipalScreen extends Tela {
 		}
 	}
 	
-	private void carregarPagamentosAReceber(final int pagina, final String dataRef, final Atividade tipoAtv){
+	private void carregarPagamentosAReceber(final int pagina, final String dataRef, final String tipoAtv){
 		
 		if (dataRef == null){
 			
@@ -393,10 +393,20 @@ public class MenuPrincipalScreen extends Tela {
 		tablePagamentos.clear();
 		dataHolderBaixa.clear();
 		
+		final Table inTable = new Table(skin);
+		
+		inTable.add("A receber: ");
+		inTable.add(datasRefPagamento);
+		
+		inTable.add("Atividade: ");
+		inTable.add(tiposAtividades);
+		
+		tablePagamentos.add(inTable).colspan(3).row();
+		
 		final AReceberDTO dto = new AReceberDTO();
 		dto.setPaginaAtual(String.valueOf(pagina));
 		dto.setDataRef(dataRef);
-		dto.setTipoAtv(tipoAtv.getCodigo());
+		dto.setTipoAtv(Atividade.getCodigoByDesc(tipoAtv));
 		
 		final HttpRequest req = this.utils.criarRequest(Utils.URL_A_RECEBER, dto);
 		

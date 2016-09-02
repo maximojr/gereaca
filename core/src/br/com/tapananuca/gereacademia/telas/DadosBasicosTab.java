@@ -428,12 +428,18 @@ public class DadosBasicosTab extends Tab {
 	
 	private String montarValorAtividades() {
 		
-		return (this.checkMusculacao.isChecked() ? "1" : "0") + 
+		return (
+				(this.checkMusculacao.isChecked() ? "1" : "0") + 
 				(this.checkFuncional.isChecked() ? "1" : "0") +
-				(this.checkDanca.isChecked() ? "1" : "0");
+				(this.checkDanca.isChecked() ? "1" : "0")
+		);
 	}
 
 	private void editar() {
+		
+		this.checkMusculacao.setChecked(false);
+		this.checkFuncional.setChecked(false);
+		this.checkDanca.setChecked(false);
 		
 		final PessoaDTO dto = new PessoaDTO(DadosBasicosTab.this.cadastroPessoaScreen.getPessoaEdicaoId(), null);
 		
@@ -496,9 +502,11 @@ public class DadosBasicosTab extends Tab {
 		});
 	}
 
-	protected void setarChecksAtividades(final String atvs) {
+	protected void setarChecksAtividades(String atvs) {
 		
 		if (atvs != null && !atvs.isEmpty()){
+			
+			atvs = atvs.replaceAll("_", "");
 			
 			this.checkMusculacao.setChecked(atvs.charAt(0) == '1');
 			
@@ -507,7 +515,7 @@ public class DadosBasicosTab extends Tab {
 			}
 			
 			if (atvs.length() > 2){
-				this.checkDanca.setChecked(atvs.charAt(3) == '1');
+				this.checkDanca.setChecked(atvs.charAt(2) == '1');
 			}
 		}
 	}

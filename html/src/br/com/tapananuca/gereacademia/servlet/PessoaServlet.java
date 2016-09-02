@@ -330,6 +330,11 @@ public class PessoaServlet extends BaseServlet {
 		
 		final PessoaDTO pessoaDTO = Utils.getInstance().fromJson(PessoaDTO.class, dados);
 		
+		if (pessoaDTO.getAtividades() != null){
+			
+			pessoaDTO.setAtividades(pessoaDTO.getAtividades().replaceAll("_", ""));
+		}
+		
 		final PessoaService pessoaService = new PessoaService();
 		
 		GAResponse ga = null;
