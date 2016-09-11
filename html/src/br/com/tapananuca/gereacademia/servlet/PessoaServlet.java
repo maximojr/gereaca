@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import br.com.tapananuca.gereacademia.Util;
 import br.com.tapananuca.gereacademia.Utils;
 import br.com.tapananuca.gereacademia.comunicacao.AReceberDTO;
 import br.com.tapananuca.gereacademia.comunicacao.AReceberPaginaDTO;
@@ -156,6 +157,8 @@ public class PessoaServlet extends BaseServlet {
 			return pessoaService.buscarPessoas(30, Integer.valueOf(dto.getPaginaAtual()));
 		} catch (Exception e){
 			
+			Util.enviarEmailErro(e);
+			
 			final GAResponse ga = new GAResponse();
 			ga.setSucesso(false);
 			ga.setMsg(e.getLocalizedMessage());
@@ -217,6 +220,8 @@ public class PessoaServlet extends BaseServlet {
 			msg = medidaService.enviarAvaliacaoEmail(dto, idUsuario);
 		} catch (Exception e) {
 			
+			Util.enviarEmailErro(e);
+			
 			msg = e.getLocalizedMessage();
 			e.printStackTrace();
 		}
@@ -262,6 +267,8 @@ public class PessoaServlet extends BaseServlet {
 			return resp;
 		} catch (Exception e) {
 			
+			Util.enviarEmailErro(e);
+			
 			GAResponse ga = new GAResponse();
 			ga.setSucesso(false);
 			ga.setMsg(e.getMessage());
@@ -288,6 +295,8 @@ public class PessoaServlet extends BaseServlet {
 		try {
 			return pessoaService.buscarNomesPessoa(pessoaDTO.getNome());
 		} catch (Exception e) {
+			
+			Util.enviarEmailErro(e);
 			
 			final GAResponse ga = new GAResponse();
 			ga.setSucesso(false);
@@ -317,6 +326,8 @@ public class PessoaServlet extends BaseServlet {
 			rs = pessoaService.buscarDadosPessoa(Long.valueOf(pessoaDTO.getId()));
 		} catch (Exception e) {
 			
+			Util.enviarEmailErro(e);
+			
 			rs = new PessoaDTOResponse();
 			rs.setSucesso(false);
 			rs.setMsg(e.getLocalizedMessage());
@@ -342,6 +353,9 @@ public class PessoaServlet extends BaseServlet {
 		try {
 			ga = pessoaService.salvarPessoa(pessoaDTO);
 		} catch (Exception e) {
+			
+			Util.enviarEmailErro(e);
+			
 			e.printStackTrace();
 			
 			ga = new GAResponse();
@@ -372,6 +386,8 @@ public class PessoaServlet extends BaseServlet {
 			rs = pessoaService.buscarObjetivos(Long.valueOf(objetivoDTO.getIdPessoa()));
 		} catch (Exception e) {
 			
+			Util.enviarEmailErro(e);
+			
 			rs = new ObjetivoDTOResponse();
 			rs.setSucesso(false);
 			rs.setMsg(e.getLocalizedMessage());
@@ -392,6 +408,8 @@ public class PessoaServlet extends BaseServlet {
 		try {
 			msg = pessoaService.salvarObjetivos(objetivoDTO);
 		} catch (Exception e) {
+			
+			Util.enviarEmailErro(e);
 			
 			msg = e.getLocalizedMessage();
 			e.printStackTrace();
@@ -429,6 +447,8 @@ public class PessoaServlet extends BaseServlet {
 			rs = pessoaService.buscarHistPatologica(Long.valueOf(historiaPatologicaDTO.getIdPessoa()));
 		} catch (Exception e) {
 			
+			Util.enviarEmailErro(e);
+			
 			rs = new HistoriaPatologicaDTOResponse();
 			rs.setSucesso(false);
 			rs.setMsg(e.getLocalizedMessage());
@@ -449,6 +469,8 @@ public class PessoaServlet extends BaseServlet {
 		try {
 			msg = pessoaService.salvarHistoriaPatologica(historiaPatologicaDTO);
 		} catch (Exception e) {
+			
+			Util.enviarEmailErro(e);
 			
 			msg = e.getLocalizedMessage();
 			e.printStackTrace();
@@ -483,6 +505,8 @@ public class PessoaServlet extends BaseServlet {
 			rs = pessoaService.buscarHabitos(Long.valueOf(habitosDTO.getIdPessoa()));
 		} catch (Exception e) {
 			
+			Util.enviarEmailErro(e);
+			
 			rs.setSucesso(false);
 			rs.setMsg(e.getLocalizedMessage());
 			e.printStackTrace();
@@ -502,6 +526,8 @@ public class PessoaServlet extends BaseServlet {
 		try {
 			msg = pessoaService.salvarHabitos(habitosDTO);
 		} catch (Exception e) {
+			
+			Util.enviarEmailErro(e);
 			
 			msg = e.getLocalizedMessage();
 			e.printStackTrace();
@@ -548,6 +574,8 @@ public class PessoaServlet extends BaseServlet {
 			
 		} catch (Exception e) {
 			
+			Util.enviarEmailErro(e);
+			
 			rs = new MedidaDTOResponse();
 			rs.setSucesso(false);
 			rs.setMsg(e.getLocalizedMessage());
@@ -566,6 +594,8 @@ public class PessoaServlet extends BaseServlet {
 		try {
 			msg = medidaService.salvarMedidas(medidaDTO);
 		} catch (Exception e) {
+			
+			Util.enviarEmailErro(e);
 			
 			msg = e.getLocalizedMessage();
 			e.printStackTrace();
@@ -592,6 +622,8 @@ public class PessoaServlet extends BaseServlet {
 		try {
 			msg = medidaService.adicionarData(medidaDTO);
 		} catch (Exception e) {
+			
+			Util.enviarEmailErro(e);
 			
 			msg = e.getLocalizedMessage();
 			e.printStackTrace();

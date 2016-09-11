@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import br.com.tapananuca.gereacademia.Util;
 import br.com.tapananuca.gereacademia.Utils;
 import br.com.tapananuca.gereacademia.comunicacao.AReceberDTO;
 import br.com.tapananuca.gereacademia.comunicacao.AReceberPaginaDTO;
@@ -94,6 +95,8 @@ public class PagamentoServlet extends BaseServlet {
 			
 			msg = e.getLocalizedMessage();
 			e.printStackTrace();
+			
+			Util.enviarEmailErro(e);
 		}
 		
 		if (msg != null){
@@ -127,6 +130,8 @@ public class PagamentoServlet extends BaseServlet {
 			
 			return resp;
 		} catch (Exception e) {
+			
+			Util.enviarEmailErro(e);
 			
 			final GAResponse ga = new GAResponse();
 			ga.setSucesso(false);

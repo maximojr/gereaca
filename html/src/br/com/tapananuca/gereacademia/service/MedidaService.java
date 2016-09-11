@@ -22,6 +22,7 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import br.com.tapananuca.gereacademia.Util;
 import br.com.tapananuca.gereacademia.comunicacao.Dobra;
 import br.com.tapananuca.gereacademia.comunicacao.MedidaDTO;
 import br.com.tapananuca.gereacademia.comunicacao.MedidaDTOResponse;
@@ -712,6 +713,8 @@ public class MedidaService extends Service {
 			
 			res.setMsg(e.getLocalizedMessage());
 			e.printStackTrace();
+			
+			Util.enviarEmailErro(e);
 		} finally {
 			
 			this.returnEm(em);

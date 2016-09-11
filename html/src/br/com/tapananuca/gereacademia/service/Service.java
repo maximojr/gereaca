@@ -12,6 +12,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import br.com.tapananuca.gereacademia.Util;
+
 import com.badlogic.gdx.utils.Array;
 
 public abstract class Service {
@@ -62,6 +64,8 @@ public abstract class Service {
 			} catch (URISyntaxException e) {
 				
 				e.printStackTrace();
+				
+				Util.enviarEmailErro(e);
 			}
 			
 		    for (int index = 0 ; index < poolSize ; index++){

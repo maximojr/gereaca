@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import br.com.tapananuca.gereacademia.Util;
 import br.com.tapananuca.gereacademia.Utils;
 import br.com.tapananuca.gereacademia.comunicacao.GAResponse;
 import br.com.tapananuca.gereacademia.comunicacao.MedidaDTO;
@@ -140,6 +141,8 @@ public class PersonalServlet extends BaseServlet {
 			ga = medidaService.buscarDatasAulasPersonal(pessoaDTO);
 		} catch (Exception e) {
 			
+			Util.enviarEmailErro(e);
+			
 			e.printStackTrace();
 			ga = new MedidaPersonalDTOResponse();
 			ga.setSucesso(false);
@@ -161,6 +164,8 @@ public class PersonalServlet extends BaseServlet {
 			
 			ga = medidaService.buscarDatas(pessoaDTO);
 		} catch (Exception e) {
+			
+			Util.enviarEmailErro(e);
 			
 			e.printStackTrace();
 			ga = new MedidaPersonalDTOResponse();
@@ -191,8 +196,9 @@ public class PersonalServlet extends BaseServlet {
 			
 		} catch (Exception e){
 			
-			e.printStackTrace();
+			Util.enviarEmailErro(e);
 			
+			e.printStackTrace();
 			ga.setSucesso(false);
 			ga.setMsg(e.getLocalizedMessage());
 		}
@@ -213,6 +219,9 @@ public class PersonalServlet extends BaseServlet {
 			res = medidaService.avaliarComposicaoCorporal(medidaPersonalDTO, idUsuario);
 		} catch (Exception e) {
 			
+			Util.enviarEmailErro(e);
+			
+			e.printStackTrace();
 			res = new ReportHelper();
 			res.setMsg(e.getLocalizedMessage());
 		}
@@ -235,6 +244,8 @@ public class PersonalServlet extends BaseServlet {
 			msg = medidaService.enviarAvaliacaoEmail(medidaPersonalDTO, idUsuario);
 			
 		} catch (Exception e) {
+			
+			Util.enviarEmailErro(e);
 			
 			e.printStackTrace();
 			msg = e.getLocalizedMessage();

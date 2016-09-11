@@ -8,6 +8,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import br.com.tapananuca.gereacademia.Util;
 import br.com.tapananuca.gereacademia.comunicacao.AReceberDTO;
 import br.com.tapananuca.gereacademia.comunicacao.AReceberPaginaDTO;
 import br.com.tapananuca.gereacademia.comunicacao.Baixa;
@@ -61,6 +62,11 @@ public class PagamentoService extends Service {
 				em.persist(pagamento);
 			}
 			em.getTransaction().commit();
+		} catch (Exception e){
+			
+			Util.enviarEmailErro(e);
+			
+			e.printStackTrace();
 		} finally {
 		
 			this.returnEm(em);
