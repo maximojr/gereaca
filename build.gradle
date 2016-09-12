@@ -76,10 +76,10 @@ project(":html") {
 		compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion:sources"
         compile "com.badlogicgames.gdx:gdx-box2d-gwt:$gdxVersion:sources"
-        runtime group: "org.hibernate", name: "hibernate-core", version: "4.3.7.Final"
+        compile group: "org.hibernate", name: "hibernate-core", version: "4.3.7.Final"
         runtime group: "postgresql", name: "postgresql", version: "9.1-901.jdbc4"
-        runtime group: "org.hibernate", name: "hibernate-entitymanager", version: "4.3.7.Final"
-        compile group: "javax.persistence", name: "persistence-api", version: "1.0.2"
+        compile group: "org.hibernate", name: "hibernate-entitymanager", version: "4.3.7.Final"
+        compile group: "org.hibernate.javax.persistence", name: "hibernate-jpa-2.1-api", version: "1.0.0.Final"
         
         compile group: "log4j", name: "log4j", version: "1.2.17"
         compile group: "org.slf4j", name: "slf4j-api", version: "1.7.7"
