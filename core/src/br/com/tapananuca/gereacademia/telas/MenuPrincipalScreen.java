@@ -34,7 +34,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -287,7 +287,7 @@ public class MenuPrincipalScreen extends Tela {
 		
 		tableBotoes.add(logOut).padLeft(5);
 		tableBotoes.align(Align.left);
-		tablePrincipal.add(tableBotoes).fill().row().padTop(50);
+		tablePrincipal.add(tableBotoes).fill().padTop(50).row();
 		
 		tablePagamentos = new Table(skin);
 		
@@ -364,7 +364,7 @@ public class MenuPrincipalScreen extends Tela {
 	private TextField createCurrencyField(String valor, Skin skin){
 		
 		final TextField campoValor = new TextField(utils.formatCurrency(valor), skin);
-		campoValor.setRightAligned(true);
+		campoValor.setAlignment(Align.right);
 		campoValor.setTextFieldFilter(Utils.getInstance().currencyFilter);
 		
 		return campoValor;
@@ -699,7 +699,7 @@ public class MenuPrincipalScreen extends Tela {
 							if (aReceberPaginaDTO.getaReceber() != null && aReceberPaginaDTO.getaReceber().size != 0){
 								
 								tableAniversarios.add("Nome").width(300);
-								tableAniversarios.add("Dia").row().padTop(10);
+								tableAniversarios.add("Dia").padTop(10).row();
 								
 								int index = 0;
 								for (AReceberDTO dto : aReceberPaginaDTO.getaReceber()){

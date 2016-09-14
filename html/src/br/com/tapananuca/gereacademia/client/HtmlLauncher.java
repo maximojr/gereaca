@@ -12,8 +12,8 @@ public class HtmlLauncher extends GwtApplication {
                 return new GwtApplicationConfiguration(800, 900);
         }
 
-        @Override
-        public ApplicationListener getApplicationListener () {
-                return new GereAcademia();
-        }
+		@Override
+		public ApplicationListener createApplicationListener() {
+			return new GereAcademia();
+		}
 }

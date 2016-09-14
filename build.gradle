@@ -1,7 +1,7 @@
 buildscript {
     repositories {
         mavenCentral()
-        mavenLocal()
+        
         maven { url 'https://github.com/steffenschaefer/gwt-gradle-plugin/raw/maven-repo/' }
     }
     dependencies {
@@ -21,12 +21,12 @@ allprojects {
     version = '1.0'
     ext {
         appName = 'gereacademia'
-        gdxVersion = '1.4.1'
+        gdxVersion = '1.9.4'
         roboVMVersion = '0.0.14'
     }
 
     repositories {
-        mavenLocal()
+        
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
@@ -57,7 +57,7 @@ project(":android") {
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
-        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+        
         natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi"
         natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi-v7a"
         natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86"
@@ -99,7 +99,7 @@ project(":core") {
 
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
+        
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         
     }
