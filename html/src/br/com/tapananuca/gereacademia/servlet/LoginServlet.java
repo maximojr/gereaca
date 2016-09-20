@@ -82,7 +82,7 @@ public class LoginServlet extends BaseServlet{
 
 	private GAResponse efetuarLogin(String dados, HttpServletRequest req) {
 		
-		final LoginDTO loginDTO = Utils.getInstance().fromJson(LoginDTO.class, dados);
+		final LoginDTO loginDTO = Utils.getInstance().fromJson(new LoginDTO(), dados);
 		
 		final GAResponse ga = new GAResponse();
 		
@@ -122,7 +122,7 @@ public class LoginServlet extends BaseServlet{
 		
 		final GAResponse ga = new GAResponse();
 		
-		final LoginDTO loginDTO = Utils.getInstance().fromJson(LoginDTO.class, dados);
+		final LoginDTO loginDTO = Utils.getInstance().fromJson(new LoginDTO(), dados);
 		
 		final UsuarioService usuarioService = new UsuarioService();
 		

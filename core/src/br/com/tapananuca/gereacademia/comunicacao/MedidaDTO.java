@@ -188,6 +188,75 @@ public class MedidaDTO implements GARequest {
 		
 		return json.toString();
 	}
+	
+	@Override
+	public <T extends JsonSerializer> T fromJson(T t, String jsonString) {
+		
+		final MedidaDTO dto = (MedidaDTO) t;
+		
+		dto.setIdPessoa(Utils.getInstance().getValorFromJsonString("idPessoa", jsonString));
+		dto.setDataReferente(Utils.getInstance().getValorFromJsonString("dataReferente", jsonString));
+		
+		dto.setMaPesoCorporal(Utils.getInstance().getValorFromJsonString("maPesoCorporal", jsonString));
+		dto.setMaAltura(Utils.getInstance().getValorFromJsonString("maAltura", jsonString));
+		dto.setMaCintura(Utils.getInstance().getValorFromJsonString("maCintura", jsonString));
+		dto.setMaQuadril(Utils.getInstance().getValorFromJsonString("maQuadril", jsonString));
+		
+		dto.setMcTorax(Utils.getInstance().getValorFromJsonString("mcTorax", jsonString));
+		dto.setMcAbdomen(Utils.getInstance().getValorFromJsonString("mcAbdomen", jsonString));
+		dto.setMcCintura(Utils.getInstance().getValorFromJsonString("mcCintura", jsonString));
+		
+		dto.setMcBiceps(Utils.getInstance().getValorFromJsonString("mcBiceps", jsonString));
+		dto.setMcTriceps(Utils.getInstance().getValorFromJsonString("mcTriceps", jsonString));
+		dto.setMcCoxa(Utils.getInstance().getValorFromJsonString("mcCoxa", jsonString));
+		dto.setMcAntebraco(Utils.getInstance().getValorFromJsonString("mcAntebraco", jsonString));
+		
+		dto.setDcBiceps1(Utils.getInstance().getValorFromJsonString("dcBiceps1", jsonString));
+		dto.setDcTriceps1(Utils.getInstance().getValorFromJsonString("dcTriceps1", jsonString));
+		dto.setDcSubAxilar1(Utils.getInstance().getValorFromJsonString("dcSubAxilar1", jsonString));
+		dto.setDcSupraIliacas1(Utils.getInstance().getValorFromJsonString("dcSupraIliacas1", jsonString));
+		dto.setDcSubEscapular1(Utils.getInstance().getValorFromJsonString("dcSubEscapular1", jsonString));
+		dto.setDcToraxica1(Utils.getInstance().getValorFromJsonString("dcToraxica1", jsonString));
+		dto.setDcAbdominal1(Utils.getInstance().getValorFromJsonString("dcAbdominal1", jsonString));
+		dto.setDcCoxa1(Utils.getInstance().getValorFromJsonString("dcCoxa1", jsonString));
+		dto.setDcPerna1(Utils.getInstance().getValorFromJsonString("dcPerna1", jsonString));
+		
+		dto.setDcBiceps2(Utils.getInstance().getValorFromJsonString("dcBiceps2", jsonString));
+		dto.setDcTriceps2(Utils.getInstance().getValorFromJsonString("dcTriceps2", jsonString));
+		dto.setDcSubAxilar2(Utils.getInstance().getValorFromJsonString("dcSubAxilar2", jsonString));
+		dto.setDcSupraIliacas2(Utils.getInstance().getValorFromJsonString("dcSupraIliacas2", jsonString));
+		dto.setDcSubEscapular2(Utils.getInstance().getValorFromJsonString("dcSubEscapular2", jsonString));
+		dto.setDcToraxica2(Utils.getInstance().getValorFromJsonString("dcToraxica2", jsonString));
+		dto.setDcAbdominal2(Utils.getInstance().getValorFromJsonString("dcAbdominal2", jsonString));
+		dto.setDcCoxa2(Utils.getInstance().getValorFromJsonString("dcCoxa2", jsonString));
+		dto.setDcPerna2(Utils.getInstance().getValorFromJsonString("dcPerna2", jsonString));
+		
+		dto.setDcBiceps3(Utils.getInstance().getValorFromJsonString("dcBiceps3", jsonString));
+		dto.setDcTriceps3(Utils.getInstance().getValorFromJsonString("dcTriceps3", jsonString));
+		dto.setDcSubAxilar3(Utils.getInstance().getValorFromJsonString("dcSubAxilar3", jsonString));
+		dto.setDcSupraIliacas3(Utils.getInstance().getValorFromJsonString("dcSupraIliacas3", jsonString));
+		dto.setDcSubEscapular3(Utils.getInstance().getValorFromJsonString("dcSubEscapular3", jsonString));
+		dto.setDcToraxica3(Utils.getInstance().getValorFromJsonString("dcToraxica3", jsonString));
+		dto.setDcAbdominal3(Utils.getInstance().getValorFromJsonString("dcAbdominal3", jsonString));
+		dto.setDcCoxa3(Utils.getInstance().getValorFromJsonString("dcCoxa3", jsonString));
+		dto.setDcPerna3(Utils.getInstance().getValorFromJsonString("dcPerna3", jsonString));
+		
+		String valueEnum = Utils.getInstance().getValorFromJsonString("dobra", jsonString);
+		
+		if (valueEnum != null && !valueEnum.isEmpty()){
+			dto.setDobra(Dobra.valueOf(valueEnum));
+		}
+		
+		valueEnum = Utils.getInstance().getValorFromJsonString("nivelMaturacao", jsonString);
+		
+		if (valueEnum != null && !valueEnum.isEmpty()){
+			dto.setNivelMaturacao(NivelMaturacao.valueOf(valueEnum));
+		}
+		
+		dto.setPercentualPesoMaximoRec(Utils.getInstance().getValorFromJsonString("percentualPesoMaximoRec", jsonString));
+		
+		return t;
+	}
 
 	public String getIdPessoa() {
 		return idPessoa;

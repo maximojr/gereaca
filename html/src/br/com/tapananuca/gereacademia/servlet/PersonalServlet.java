@@ -130,7 +130,7 @@ public class PersonalServlet extends BaseServlet {
 
 	private GAResponse carregarDatasAulasPersonal(String dados) {
 		
-		final PessoaDTO pessoaDTO = Utils.getInstance().fromJson(PessoaDTO.class, dados);
+		final PessoaDTO pessoaDTO = Utils.getInstance().fromJson(new PessoaDTO(), dados);
 		
 		final MedidaService medidaService = new MedidaService();
 		
@@ -154,7 +154,7 @@ public class PersonalServlet extends BaseServlet {
 
 	private GAResponse carregarDatas(String dados) {
 		
-		final PessoaDTO pessoaDTO = Utils.getInstance().fromJson(PessoaDTO.class, dados);
+		final PessoaDTO pessoaDTO = Utils.getInstance().fromJson(new PessoaDTO(), dados);
 		
 		final MedidaService medidaService = new MedidaService();
 		
@@ -178,7 +178,7 @@ public class PersonalServlet extends BaseServlet {
 
 	private GAResponse addAula(String dados, Long idUsuarioLogado) {
 		
-		final MedidaDTO medidaDTO = Utils.getInstance().fromJson(MedidaDTO.class, dados);
+		final MedidaDTO medidaDTO = Utils.getInstance().fromJson(new MedidaDTO(), dados);
 		
 		final MedidaService medidaService = new MedidaService();
 		
@@ -208,7 +208,7 @@ public class PersonalServlet extends BaseServlet {
 
 	private ReportHelper gerarRelatorioAvaliacao(String dados, Long idUsuario) {
 		
-		final MedidaPersonalDTO medidaPersonalDTO = Utils.getInstance().fromJson(MedidaPersonalDTO.class, dados);
+		final MedidaPersonalDTO medidaPersonalDTO = Utils.getInstance().fromJson(new MedidaPersonalDTO(), dados);
 		
 		final MedidaService medidaService = new MedidaService();
 		
@@ -233,7 +233,7 @@ public class PersonalServlet extends BaseServlet {
 		
 		final GAResponse ga = new GAResponse();
 		
-		final MedidaPersonalDTO medidaPersonalDTO = Utils.getInstance().fromJson(MedidaPersonalDTO.class, dados);
+		final MedidaPersonalDTO medidaPersonalDTO = Utils.getInstance().fromJson(new MedidaPersonalDTO(), dados);
 		
 		final MedidaService medidaService = new MedidaService();
 		

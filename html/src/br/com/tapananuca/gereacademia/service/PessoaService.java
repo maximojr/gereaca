@@ -4,8 +4,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -25,7 +27,6 @@ import br.com.tapananuca.gereacademia.comunicacao.PessoaDTOResponse;
 import br.com.tapananuca.gereacademia.model.Pagamento;
 import br.com.tapananuca.gereacademia.model.Pessoa;
 
-import com.badlogic.gdx.utils.Array;
 
 public class PessoaService extends Service{
 
@@ -201,7 +202,7 @@ public class PessoaService extends Service{
 			}
 			
 			dto = new AReceberPaginaDTO();
-			dto.setaReceber(this.getArrayFromList(query.getResultList()));
+			dto.setaReceber(query.getResultList());
 			
 			query = em.createQuery("select " +
 					" count(pes.id) " +
@@ -326,7 +327,7 @@ public class PessoaService extends Service{
 			final Query query = em.createQuery(hql.toString());
 			query.setParameter("nome", "%" + nome + "%");
 			
-			resp.setPessoasDTO(this.getArrayFromList(query.getResultList()));
+			resp.setPessoasDTO(query.getResultList());
 		} finally {
 			
 			this.returnEm(em);
@@ -368,7 +369,7 @@ public class PessoaService extends Service{
 				
 			}
 			
-			final Array<PessoaDTO> ar = new Array<PessoaDTO>(1);
+			final List<PessoaDTO> ar = new ArrayList<PessoaDTO>(1);
 			ar.add(dto);
 			
 			resp.setPessoasDTO(ar);
@@ -562,7 +563,7 @@ public class PessoaService extends Service{
 			query.setMaxResults(qtdRegistros);
 			query.setFirstResult((pagina - 1) * qtdRegistros);
 			
-			res.setaReceber(this.getArrayFromList(query.getResultList()));
+			res.setaReceber(query.getResultList());
 			
 		} finally {
 			

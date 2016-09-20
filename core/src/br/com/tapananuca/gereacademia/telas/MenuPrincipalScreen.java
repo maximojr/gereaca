@@ -34,10 +34,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 
 public class MenuPrincipalScreen extends Tela {
 
@@ -164,7 +164,7 @@ public class MenuPrincipalScreen extends Tela {
 							@Override
 							public void handleHttpResponse(HttpResponse httpResponse) {
 								
-								final GAResponse ga = utils.fromJson(GAResponse.class, httpResponse.getResultAsString());
+								final GAResponse ga = utils.fromJson(new GAResponse(), httpResponse.getResultAsString());
 								
 								if (ga.isSucesso()){
 									
@@ -248,7 +248,7 @@ public class MenuPrincipalScreen extends Tela {
 					@Override
 					public void handleHttpResponse(HttpResponse httpResponse) {
 						
-						final GAResponse ga = utils.fromJson(GAResponse.class, httpResponse.getResultAsString());
+						final GAResponse ga = utils.fromJson(new GAResponse(), httpResponse.getResultAsString());
 						
 						if (ga != null && ga.isSucesso()){
 							
@@ -415,7 +415,7 @@ public class MenuPrincipalScreen extends Tela {
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				
-				final AReceberPaginaDTO aReceberPaginaDTO = utils.fromJson(AReceberPaginaDTO.class, httpResponse.getResultAsString());
+				final AReceberPaginaDTO aReceberPaginaDTO = utils.fromJson(new AReceberPaginaDTO(), httpResponse.getResultAsString());
 				
 				if (aReceberPaginaDTO.isSucesso()){
 					
@@ -424,7 +424,7 @@ public class MenuPrincipalScreen extends Tela {
 						@Override
 						public void run() {
 							
-							if (aReceberPaginaDTO.getaReceber() != null && aReceberPaginaDTO.getaReceber().size != 0){
+							if (aReceberPaginaDTO.getaReceber() != null && aReceberPaginaDTO.getaReceber().size() != 0){
 								
 								tablePagamentos.add("Nome").center().width(300);
 								tablePagamentos.add("Multa");
@@ -558,12 +558,12 @@ public class MenuPrincipalScreen extends Tela {
 							datasRefPagamento.removeListener(dataRefPgto);
 							datasRefPagamento.clearItems();
 							
-							if (!aReceberPaginaDTO.getDatasRef().contains(dataRef, false)){
+							if (!aReceberPaginaDTO.getDatasRef().contains(dataRef)){
 								
 								aReceberPaginaDTO.getDatasRef().add(dataRef);
 							}
 							
-							final String[] es = new String[aReceberPaginaDTO.getDatasRef().size];
+							final String[] es = new String[aReceberPaginaDTO.getDatasRef().size()];
 							
 							int index = 0;
 							for (String e : aReceberPaginaDTO.getDatasRef()){
@@ -616,7 +616,7 @@ public class MenuPrincipalScreen extends Tela {
 			}
 		}
 		
-		if (dadosBaixa.getBaixas().size == 0){
+		if (dadosBaixa.getBaixas().size() == 0){
 			return;
 		}
 		
@@ -627,7 +627,7 @@ public class MenuPrincipalScreen extends Tela {
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				
-				final GAResponse ga = utils.fromJson(GAResponse.class, httpResponse.getResultAsString());
+				final GAResponse ga = utils.fromJson(new GAResponse(), httpResponse.getResultAsString());
 				
 				if (ga != null && ga.isSucesso()){
 					
@@ -687,7 +687,7 @@ public class MenuPrincipalScreen extends Tela {
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				
-				final AReceberPaginaDTO aReceberPaginaDTO = utils.fromJson(AReceberPaginaDTO.class, httpResponse.getResultAsString());
+				final AReceberPaginaDTO aReceberPaginaDTO = utils.fromJson(new AReceberPaginaDTO(), httpResponse.getResultAsString());
 				
 				if (aReceberPaginaDTO.isSucesso()){
 					
@@ -696,7 +696,7 @@ public class MenuPrincipalScreen extends Tela {
 						@Override
 						public void run() {
 							
-							if (aReceberPaginaDTO.getaReceber() != null && aReceberPaginaDTO.getaReceber().size != 0){
+							if (aReceberPaginaDTO.getaReceber() != null && aReceberPaginaDTO.getaReceber().size() != 0){
 								
 								tableAniversarios.add("Nome").width(300);
 								tableAniversarios.add("Dia").padTop(10).row();

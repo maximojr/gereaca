@@ -562,7 +562,7 @@ public class MedidasTab extends Tab {
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				
-				final GAResponse resp = utils.fromJson(GAResponse.class, httpResponse.getResultAsString());
+				final GAResponse resp = utils.fromJson(new GAResponse(), httpResponse.getResultAsString());
 				
 				if (resp.isSucesso()){
 					
@@ -605,7 +605,7 @@ public class MedidasTab extends Tab {
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				
-				final GAResponse ga = utils.fromJson(GAResponse.class, httpResponse.getResultAsString());
+				final GAResponse ga = utils.fromJson(new GAResponse(), httpResponse.getResultAsString());
 				
 				if (ga.isSucesso()){
 					
@@ -703,7 +703,7 @@ public class MedidasTab extends Tab {
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				
 				final MedidaDTOResponse resp = 
-						utils.fromJson(MedidaDTOResponse.class, httpResponse.getResultAsString());
+						utils.fromJson(new MedidaDTOResponse(), httpResponse.getResultAsString());
 				
 				if (resp.isSucesso()){
 					
@@ -762,7 +762,7 @@ public class MedidasTab extends Tab {
 					MedidasTab.this.dataReferenteMedida.removeListener(dataRefChangeListener);
 					MedidasTab.this.dataReferenteMedida.clearItems();
 					
-					final String[] es = new String[resp.getDatasRef().size];
+					final String[] es = new String[resp.getDatasRef().size()];
 					
 					int index = 0;
 					for (String e : resp.getDatasRef()){
@@ -881,7 +881,7 @@ public class MedidasTab extends Tab {
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				
-				final GAResponse resp = utils.fromJson(GAResponse.class, httpResponse.getResultAsString());
+				final GAResponse resp = utils.fromJson(new GAResponse(), httpResponse.getResultAsString());
 				
 				if (resp.isSucesso()){
 					
@@ -949,7 +949,7 @@ public class MedidasTab extends Tab {
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				
 				final MedidaDTOResponse resp = 
-						utils.fromJson(MedidaDTOResponse.class, httpResponse.getResultAsString());
+						utils.fromJson(new MedidaDTOResponse(), httpResponse.getResultAsString());
 				
 				if (resp.isSucesso()){
 					

@@ -107,6 +107,43 @@ public class PessoaDTO implements GARequest {
 		
 		return json.toString();
 	}
+	
+	@Override
+	public <T extends JsonSerializer> T fromJson(T t, String jsonString) {
+		
+		final PessoaDTO dto = (PessoaDTO) t;
+		
+		dto.setId(Utils.getInstance().getValorFromJsonString("id", jsonString));
+		dto.setNome(Utils.getInstance().getValorFromJsonString("nome", jsonString));
+		
+		String sexo = Utils.getInstance().getValorFromJsonString("sexo", jsonString);
+		if (sexo != null && !sexo.isEmpty()){
+			dto.setSexo(sexo.charAt(0));
+		}
+		
+		dto.setEmail(Utils.getInstance().getValorFromJsonString("email", jsonString));
+		dto.setDataNascimento(Utils.getInstance().getValorFromJsonString("dataNascimento", jsonString));
+		dto.setDataInicio(Utils.getInstance().getValorFromJsonString("dataInicio", jsonString));
+		dto.setValorMensal(Utils.getInstance().getValorFromJsonString("valorMensal", jsonString));
+		dto.setEndereco(Utils.getInstance().getValorFromJsonString("endereco", jsonString));
+		dto.setNumero(Utils.getInstance().getValorFromJsonString("numero", jsonString));
+		dto.setBairro(Utils.getInstance().getValorFromJsonString("bairro", jsonString));
+		dto.setTelefone(Utils.getInstance().getValorFromJsonString("telefone", jsonString));
+		dto.setAtivo(Boolean.valueOf(Utils.getInstance().getValorFromJsonString("ativo", jsonString)));
+		dto.setLembrete(Utils.getInstance().getValorFromJsonString("lembrete", jsonString));
+		dto.setAtividades(Utils.getInstance().getValorFromJsonString("atividades", jsonString));
+		
+		String estadoCivil = Utils.getInstance().getValorFromJsonString("estadoCivil", jsonString);
+		
+		if (estadoCivil != null && !estadoCivil.isEmpty()){
+			dto.setEstadoCivil(EstadoCivil.valueOf(
+				Utils.getInstance().getValorFromJsonString("estadoCivil", jsonString)));
+		} else {
+			dto.setEstadoCivil(EstadoCivil.SOLTEIRO);
+		}
+		
+		return t;
+	}
 
 	public String getId() {
 		return id;

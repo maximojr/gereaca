@@ -1,14 +1,15 @@
 package br.com.tapananuca.gereacademia.comunicacao;
 
-import br.com.tapananuca.gereacademia.Utils;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.badlogic.gdx.utils.Array;
+import br.com.tapananuca.gereacademia.Utils;
 
 public class MedidaPersonalDTO implements GARequest {
 
 	private String idPessoa;
 	
-	private Array<String> datasMedidas;
+	private List<String> datasMedidas;
 	
 	private Dobra dobra;
 	
@@ -18,7 +19,7 @@ public class MedidaPersonalDTO implements GARequest {
 	
 	public MedidaPersonalDTO() {
 		
-		datasMedidas = new Array<String>();
+		datasMedidas = new ArrayList<String>();
 	}
 	
 	@Override
@@ -47,6 +48,49 @@ public class MedidaPersonalDTO implements GARequest {
 		
 		return json.toString();
 	}
+	
+	@Override
+	public <T extends JsonSerializer> T fromJson(T t, String jsonString) {
+		
+		final MedidaPersonalDTO dto = (MedidaPersonalDTO) t;
+		
+		dto.setIdPessoa(Utils.getInstance().getValorFromJsonString("idPessoa", jsonString));
+		dto.setPercentualPesoMaximoRec(Utils.getInstance().getValorFromJsonString("percentualPesoMaximoRec", jsonString));
+		
+		String enumVal = Utils.getInstance().getValorFromJsonString("nivelMaturacao", jsonString);
+		
+		if (enumVal != null && !enumVal.isEmpty()){
+			dto.setNivelMaturacao(NivelMaturacao.valueOf(enumVal));
+		}
+		
+		enumVal = Utils.getInstance().getValorFromJsonString("dobra", jsonString);
+		
+		if (enumVal != null && !enumVal.isEmpty()){
+			dto.setDobra(Dobra.valueOf(enumVal));
+		}
+		
+		jsonString = jsonString.substring(jsonString.indexOf("datasMedidas")+14, jsonString.length());
+		int indexCol = 0;
+		
+		dto.setDatasMedidas(new ArrayList<String>());
+		
+		while (indexCol != -1 && indexCol < jsonString.indexOf("]")){
+			
+			String aux = jsonString.substring(indexCol, jsonString.indexOf(",")).replace("]", "");
+			
+			if (!aux.isEmpty()){
+				dto.getDatasMedidas().add(aux);
+			}
+			
+			indexCol = jsonString.indexOf(",", indexCol);
+			
+			jsonString = Utils.getInstance().replaceFirst(jsonString, ",", "");
+		}
+		
+		return t;
+	}
+	
+	
 
 	public String getIdPessoa() {
 		return idPessoa;
@@ -56,11 +100,11 @@ public class MedidaPersonalDTO implements GARequest {
 		this.idPessoa = idPessoa;
 	}
 
-	public Array<String> getDatasMedidas() {
+	public List<String> getDatasMedidas() {
 		return datasMedidas;
 	}
 
-	public void setDatasMedidas(Array<String> datasMedidas) {
+	public void setDatasMedidas(List<String> datasMedidas) {
 		this.datasMedidas = datasMedidas;
 	}
 

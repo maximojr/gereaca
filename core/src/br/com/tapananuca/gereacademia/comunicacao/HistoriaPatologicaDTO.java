@@ -59,6 +59,33 @@ public class HistoriaPatologicaDTO implements GARequest {
 		
 		return json.toString();
 	}
+	
+	@Override
+	public <T extends JsonSerializer> T fromJson(T t, String jsonString) {
+		
+		final HistoriaPatologicaDTO dto = (HistoriaPatologicaDTO) t;
+		
+		dto.setIdPessoa(Utils.getInstance().getValorFromJsonString("idPessoa", jsonString));
+		dto.setCirurgias(Utils.getInstance().getValorFromJsonString("cirurgias", jsonString));
+		dto.setSintomasDoencas(Utils.getInstance().getValorFromJsonString("sintomasDoencas", jsonString));
+		dto.setMedicamentos(Utils.getInstance().getValorFromJsonString("medicamentos", jsonString));
+		dto.setLesoes(Utils.getInstance().getValorFromJsonString("lesoes", jsonString));
+		dto.setAlergias(Utils.getInstance().getValorFromJsonString("alergias", jsonString));
+		dto.setOutros(Utils.getInstance().getValorFromJsonString("outros", jsonString));
+		
+		String val = Utils.getInstance().getValorFromJsonString("cardiopatia", jsonString);
+		
+		if (val != null && !val.isEmpty()){
+			dto.setCardiopatia(Boolean.valueOf(val));
+		}
+		
+		val = Utils.getInstance().getValorFromJsonString("hipertensao", jsonString);
+		if (val != null && !val.isEmpty()){
+			dto.setHipertensao(Boolean.valueOf(val));
+		}
+		
+		return t;
+	}
 
 	public String getIdPessoa() {
 		return idPessoa;

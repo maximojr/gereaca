@@ -114,7 +114,7 @@ public class ObjetivosTab extends Tab {
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				
-				final ObjetivoDTOResponse resp = utils.fromJson(ObjetivoDTOResponse.class, httpResponse.getResultAsString());
+				final ObjetivoDTOResponse resp = utils.fromJson(new ObjetivoDTOResponse(), httpResponse.getResultAsString());
 				
 				if (resp.isSucesso()){
 					
@@ -180,7 +180,7 @@ public class ObjetivosTab extends Tab {
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				
-				final GAResponse resp = utils.fromJson(GAResponse.class, httpResponse.getResultAsString());
+				final GAResponse resp = utils.fromJson(new GAResponse(), httpResponse.getResultAsString());
 				
 				if (resp.isSucesso()){
 					

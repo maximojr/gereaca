@@ -5,6 +5,7 @@ import java.math.RoundingMode;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
+import java.util.List;
 
 import br.com.tapananuca.gereacademia.comunicacao.JsonSerializer;
 
@@ -26,7 +27,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldFilter;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -130,13 +130,85 @@ public class Utils {
 		return sb.toString();
 	}
 	
-	public <T> T fromJson(Class<T> clazz, String jsonString){
-		return json.fromJson(clazz, jsonString.replace("\n", "<br>"));
+	public <T extends JsonSerializer> T fromJson(T t, String jsonString){
+		
+		if (jsonString.isEmpty()){
+			
+			return t;
+		}
+		
+		return t.fromJson(t, jsonString.replace("\n", "<br>"));
 	}
 	
 	public String toJson(JsonSerializer jsonSerializer){
 		
 		return jsonSerializer.toJson();
+	}
+	
+	public String getValorFromJsonString(String campo, String jsonString){
+		
+		if (campo == null || jsonString == null){
+			
+			return null;
+		}
+		
+		if (jsonString.contains(campo+":")){
+			
+			int index = jsonString.indexOf(campo) + campo.length();
+			
+			String valorAux = jsonString.substring(index, jsonString.length());
+			
+			valorAux = valorAux.trim();
+			
+			valorAux = valorAux.replaceFirst(":", "").trim();
+			
+			jsonString = jsonString.replaceFirst(":", "");
+			
+			int indexFimValor = 0;
+			
+			if (valorAux.startsWith("\"")){
+				
+				index++;
+				//termina em "
+				indexFimValor = jsonString.indexOf("\"", index);
+				
+//				if (indexFimValor == -1){
+//					
+//					//termina no fim do json
+//					indexFimValor = jsonString.indexOf("}", index);
+//				}
+			} else {
+				
+				//termina em virgula
+				indexFimValor = jsonString.indexOf(",", index);
+				
+				if (indexFimValor == -1 || (jsonString.indexOf("}", index) != - 1 &&
+						jsonString.indexOf("}", index) < indexFimValor)){
+					
+					//termina no fim do json
+					indexFimValor = jsonString.indexOf("}", index);
+				}
+			}
+			
+			final String valorfinal = 
+				jsonString.substring(index, (indexFimValor == -1 ? jsonString.length() : indexFimValor));
+			
+			return valorfinal.isEmpty() ? null : valorfinal.replace("]", "").replace("[", "");
+		}
+		
+		return null;
+	}
+	
+	public String replaceFirst(String src, String search, String replace){
+		
+		int index = src.indexOf(search);
+		
+		if (index == -1){
+			
+			return src;
+		}
+		
+		return src.substring(0, index) + replace + src.substring(index + search.length(), src.length());
 	}
 	
 	public HttpRequest criarRequest(String url, JsonSerializer parametros){
@@ -371,7 +443,7 @@ public class Utils {
 			json.append(valor.toJson());
 		}
 	}
-	public <T extends JsonSerializer> void addGARequestCollectionToJson(StringBuilder json, String nomeCampo, Array<T> collection){
+	public <T extends JsonSerializer> void addGARequestCollectionToJson(StringBuilder json, String nomeCampo, List<T> collection){
 		
 		json.append(nomeCampo)
 			.append(":[");
@@ -394,7 +466,7 @@ public class Utils {
 		json.append("]");
 	}
 	
-	public <T extends Object> void addCollectionToJson(StringBuilder json, String nomeCampo, Array<T> collection){
+	public <T extends Object> void addCollectionToJson(StringBuilder json, String nomeCampo, List<T> collection){
 		
 		json.append(nomeCampo)
 			.append(":[");
@@ -425,6 +497,16 @@ public class Utils {
 		}
 		
 		return object.toString();
+	}
+	
+	public boolean valueOfFalse(String src){
+		
+		if (src == null){
+			
+			return false;
+		}
+		
+		return Boolean.valueOf(src);
 	}
 	
 	public final TextFieldFilter currencyFilter = new TextFieldFilter() {

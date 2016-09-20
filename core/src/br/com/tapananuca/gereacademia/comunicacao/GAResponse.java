@@ -47,4 +47,16 @@ public class GAResponse implements JsonSerializer{
 		
 		return json.toString();
 	}
+
+	@Override
+	public <T extends JsonSerializer> T fromJson(T t, String jsonString) {
+		
+		final GAResponse dto = (GAResponse) t;
+		
+		dto.setSucesso(Boolean.valueOf(Utils.getInstance().getValorFromJsonString("sucesso", jsonString)));
+		dto.setSessionId(Utils.getInstance().getValorFromJsonString("sessionId", jsonString));
+		dto.setMsg(Utils.getInstance().getValorFromJsonString("msg", jsonString));
+		
+		return t;
+	}
 }

@@ -31,9 +31,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class PersonalTab extends Tab {
@@ -256,7 +255,7 @@ public class PersonalTab extends Tab {
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				
-				final MedidaPersonalDTOResponse dto = utils.fromJson(MedidaPersonalDTOResponse.class, httpResponse.getResultAsString());
+				final MedidaPersonalDTOResponse dto = utils.fromJson(new MedidaPersonalDTOResponse(), httpResponse.getResultAsString());
 				
 				if (dto.isSucesso()){
 					
@@ -280,7 +279,7 @@ public class PersonalTab extends Tab {
 		});
 	}
 
-	private void montarCalendario(int inicioSemana, int qtdDias, Array<Integer> dias) {
+	private void montarCalendario(int inicioSemana, int qtdDias, List<Integer> dias) {
 		
 		this.tableAulas.clear();
 		
@@ -309,7 +308,7 @@ public class PersonalTab extends Tab {
 			
 			final TextButton btnDia = new TextButton(String.valueOf(index), skin, "toggle");
 			
-			if (dias.contains(index, false)){
+			if (dias.contains(index)){
 				btnDia.toggle();
 			}
 			
@@ -349,7 +348,7 @@ public class PersonalTab extends Tab {
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				
-				final GAResponse resp = utils.fromJson(GAResponse.class, httpResponse.getResultAsString());
+				final GAResponse resp = utils.fromJson(new GAResponse(), httpResponse.getResultAsString());
 				
 				if (!resp.isSucesso()){
 					
@@ -395,7 +394,7 @@ public class PersonalTab extends Tab {
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				
-				final MedidaPersonalDTOResponse dto = utils.fromJson(MedidaPersonalDTOResponse.class, httpResponse.getResultAsString());
+				final MedidaPersonalDTOResponse dto = utils.fromJson(new MedidaPersonalDTOResponse(), httpResponse.getResultAsString());
 				
 				if (dto.isSucesso()){
 					
@@ -406,7 +405,7 @@ public class PersonalTab extends Tab {
 							
 							PersonalTab.this.montarCalendario(dto.getInicioSemana(), dto.getQtdDias(), dto.getDias());
 							
-							if (dto.getDatasMedidas() != null && dto.getDatasMedidas().size > 0){
+							if (dto.getDatasMedidas() != null && dto.getDatasMedidas().size() > 0){
 								
 								for (String dt : dto.getDatasMedidas()){
 									
@@ -455,7 +454,7 @@ public class PersonalTab extends Tab {
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				
-				final GAResponse ga = utils.fromJson(GAResponse.class, httpResponse.getResultAsString());
+				final GAResponse ga = utils.fromJson(new GAResponse(), httpResponse.getResultAsString());
 				
 				if (ga.isSucesso()){
 					
@@ -499,7 +498,7 @@ public class PersonalTab extends Tab {
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				
-				final GAResponse ga = utils.fromJson(GAResponse.class, httpResponse.getResultAsString());
+				final GAResponse ga = utils.fromJson(new GAResponse(), httpResponse.getResultAsString());
 				
 				if (ga.isSucesso()){
 					
@@ -538,7 +537,7 @@ public class PersonalTab extends Tab {
 				String.valueOf(
 						(100 - this.sliderPercentualPesoMaxRec.getValue()) / 100));
 		
-		final Array<String> datas = new Array<String>();
+		final List<String> datas = new ArrayList<String>();
 		
 		for (CheckBox c : this.listCheckDatasMedidas){
 			
