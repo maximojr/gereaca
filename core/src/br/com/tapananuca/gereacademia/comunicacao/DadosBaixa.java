@@ -52,8 +52,8 @@ public class DadosBaixa implements GARequest {
 			baixas.add(b.fromJson(b, aux));
 			
 			//jsonString.replaceFirst("[", "");
-			jsonString = Utils.getInstance().replaceFirst(jsonString, "[", "");
-			indexCol = jsonString.indexOf("[");
+			jsonString = jsonString.substring(indexEndCol + 1, jsonString.length());
+			indexCol = jsonString.indexOf("{");
 			
 			//baixas.add(b);
 		}
@@ -70,5 +70,4 @@ public class DadosBaixa implements GARequest {
 	public void setBaixas(List<Baixa> baixas) {
 		this.baixas = baixas;
 	}
-
 }
