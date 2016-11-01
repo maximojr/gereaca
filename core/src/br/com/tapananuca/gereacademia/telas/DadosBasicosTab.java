@@ -305,11 +305,11 @@ public class DadosBasicosTab extends Tab {
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				
-				final PessoaDTOResponse resp = utils.fromJson(PessoaDTOResponse.class, httpResponse.getResultAsString());
+				final PessoaDTOResponse resp = utils.fromJson(new PessoaDTOResponse(), httpResponse.getResultAsString());
 				
 				if (resp != null && resp.isSucesso()){
 					
-					if (resp.getPessoasDTO() != null && resp.getPessoasDTO().size != 0){
+					if (resp.getPessoasDTO() != null && resp.getPessoasDTO().size() != 0){
 						
 						for (final PessoaDTO p : resp.getPessoasDTO()){
 							
@@ -391,7 +391,7 @@ public class DadosBasicosTab extends Tab {
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				
-				final GAResponse resp = utils.fromJson(GAResponse.class, httpResponse.getResultAsString());
+				final GAResponse resp = utils.fromJson(new GAResponse(), httpResponse.getResultAsString());
 				
 				if (resp.isSucesso()){
 					
@@ -450,13 +450,13 @@ public class DadosBasicosTab extends Tab {
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				
-				final PessoaDTOResponse resp = utils.fromJson(PessoaDTOResponse.class, httpResponse.getResultAsString());
+				final PessoaDTOResponse resp = utils.fromJson(new PessoaDTOResponse(), httpResponse.getResultAsString());
 				
 				if (resp.isSucesso()){
 					
-					if (resp.getPessoasDTO() != null && resp.getPessoasDTO().size != 0){
+					if (resp.getPessoasDTO() != null && resp.getPessoasDTO().size() != 0){
 						
-						final PessoaDTO pessoaDTO = resp.getPessoasDTO().first();
+						final PessoaDTO pessoaDTO = resp.getPessoasDTO().get(0);
 						
 						DadosBasicosTab.this.nome.setText(pessoaDTO.getNome());
 						DadosBasicosTab.this.dataNasc.setText(pessoaDTO.getDataNascimento());
@@ -491,7 +491,7 @@ public class DadosBasicosTab extends Tab {
 			@Override
 			public void failed(Throwable t) {
 				
-				utils.mostarAlerta("Erro:", "Erro ao tentar salvar dados: " + t.getMessage() , stage, skin);
+				utils.mostarAlerta("Erro:", "Erro ao tentar carregar dados: " + t.getMessage() , stage, skin);
 			}
 			
 			@Override

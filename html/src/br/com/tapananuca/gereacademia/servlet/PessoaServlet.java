@@ -2,7 +2,9 @@ package br.com.tapananuca.gereacademia.servlet;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -27,8 +29,6 @@ import br.com.tapananuca.gereacademia.comunicacao.PessoaDTO;
 import br.com.tapananuca.gereacademia.comunicacao.PessoaDTOResponse;
 import br.com.tapananuca.gereacademia.service.MedidaService;
 import br.com.tapananuca.gereacademia.service.PessoaService;
-
-import com.badlogic.gdx.utils.Array;
 
 @WebServlet(name="pessoa", urlPatterns=Utils.URL_PESSOA + "/*")
 public class PessoaServlet extends BaseServlet {
@@ -114,7 +114,7 @@ public class PessoaServlet extends BaseServlet {
 			
 		} else if (url.endsWith(Utils.URL_PESSOA_MEDIDAS_SALVAR)){
 			
-			final MedidaDTO medidaDTO = Utils.getInstance().fromJson(MedidaDTO.class, dados.toString());
+			final MedidaDTO medidaDTO = Utils.getInstance().fromJson(new MedidaDTO(), dados.toString());
 			
 			ga = this.salvarMedidasPessoa(medidaDTO);
 		} else if (url.endsWith(Utils.URL_PESSOA_MEDIDAS_NOVA_DATA)){
@@ -148,7 +148,7 @@ public class PessoaServlet extends BaseServlet {
 	
 	private GAResponse buscarPessoas(String dados) {
 		
-		final AReceberDTO dto = Utils.getInstance().fromJson(AReceberDTO.class, dados);
+		final AReceberDTO dto = Utils.getInstance().fromJson(new AReceberDTO(), dados);
 		
 		final PessoaService pessoaService = new PessoaService();
 		
@@ -169,7 +169,7 @@ public class PessoaServlet extends BaseServlet {
 
 	private GAResponse gerarRelatorio(String dados, Long idUsuario) {
 		
-		final MedidaDTO medidaDTO = Utils.getInstance().fromJson(MedidaDTO.class, dados.toString());
+		final MedidaDTO medidaDTO = Utils.getInstance().fromJson(new MedidaDTO(), dados.toString());
 		
 		GAResponse ga = this.salvarMedidasPessoa(medidaDTO);
 		
@@ -201,7 +201,7 @@ public class PessoaServlet extends BaseServlet {
 
 	private GAResponse enviarRelatorio(String dados, Long idUsuario) {
 		
-		final MedidaDTO medidaDTO = Utils.getInstance().fromJson(MedidaDTO.class, dados.toString());
+		final MedidaDTO medidaDTO = Utils.getInstance().fromJson(new MedidaDTO(), dados.toString());
 		
 		GAResponse ga = this.salvarMedidasPessoa(medidaDTO);
 		
@@ -240,7 +240,7 @@ public class PessoaServlet extends BaseServlet {
 		final MedidaPersonalDTO dto = new MedidaPersonalDTO();
 		dto.setIdPessoa(medidaDTO.getIdPessoa());
 		
-		final Array<String> data = new Array<String>();
+		final List<String> data = new ArrayList<String>();
 		data.add(medidaDTO.getDataReferente());
 		dto.setDatasMedidas(data);
 		
@@ -253,7 +253,7 @@ public class PessoaServlet extends BaseServlet {
 
 	private GAResponse buscarAniversarios(String dados){
 		
-		final AReceberDTO aReceberDTO = Utils.getInstance().fromJson(AReceberDTO.class, dados);
+		final AReceberDTO aReceberDTO = Utils.getInstance().fromJson(new AReceberDTO(), dados);
 		
 		final PessoaService pessoaService = new PessoaService();
 		
@@ -279,7 +279,7 @@ public class PessoaServlet extends BaseServlet {
 	
 	private GAResponse buscarNomesPessoa(String dados){
 		
-		final PessoaDTO pessoaDTO = Utils.getInstance().fromJson(PessoaDTO.class, dados);
+		final PessoaDTO pessoaDTO = Utils.getInstance().fromJson(new PessoaDTO(), dados);
 		
 		if (pessoaDTO == null){
 			
@@ -308,7 +308,7 @@ public class PessoaServlet extends BaseServlet {
 
 	private GAResponse buscarDadosPessoa(String dados) {
 		
-		final PessoaDTO pessoaDTO = Utils.getInstance().fromJson(PessoaDTO.class, dados);
+		final PessoaDTO pessoaDTO = Utils.getInstance().fromJson(new PessoaDTO(), dados);
 		
 		PessoaDTOResponse rs = null;
 		if (pessoaDTO == null || pessoaDTO.getId() == null /*|| objetivoDTO.getIdPessoa().isEmpty()*/){
@@ -339,7 +339,7 @@ public class PessoaServlet extends BaseServlet {
 
 	private GAResponse salvarDadosPessoa(String dados) {
 		
-		final PessoaDTO pessoaDTO = Utils.getInstance().fromJson(PessoaDTO.class, dados);
+		final PessoaDTO pessoaDTO = Utils.getInstance().fromJson(new PessoaDTO(), dados);
 		
 		if (pessoaDTO.getAtividades() != null){
 			
@@ -368,7 +368,7 @@ public class PessoaServlet extends BaseServlet {
 
 	private GAResponse buscarObjetivosPessoa(String dados) {
 		
-		final ObjetivoDTO objetivoDTO = Utils.getInstance().fromJson(ObjetivoDTO.class, dados);
+		final ObjetivoDTO objetivoDTO = Utils.getInstance().fromJson(new ObjetivoDTO(), dados);
 		
 		ObjetivoDTOResponse rs = null;
 		if (objetivoDTO == null || objetivoDTO.getIdPessoa() == null || objetivoDTO.getIdPessoa().isEmpty()){
@@ -399,7 +399,7 @@ public class PessoaServlet extends BaseServlet {
 
 	private GAResponse salvarObjetivosPessoa(String dados) {
 		
-		final ObjetivoDTO objetivoDTO = Utils.getInstance().fromJson(ObjetivoDTO.class, dados);
+		final ObjetivoDTO objetivoDTO = Utils.getInstance().fromJson(new ObjetivoDTO(), dados);
 		
 		final PessoaService pessoaService = new PessoaService();
 		
@@ -427,7 +427,7 @@ public class PessoaServlet extends BaseServlet {
 
 	private GAResponse buscarHistPatologicaPessoa(String dados) {
 		
-		final HistoriaPatologicaDTO historiaPatologicaDTO = Utils.getInstance().fromJson(HistoriaPatologicaDTO.class, dados);
+		final HistoriaPatologicaDTO historiaPatologicaDTO = Utils.getInstance().fromJson(new HistoriaPatologicaDTO(), dados);
 		
 		HistoriaPatologicaDTOResponse rs = null;
 		if (historiaPatologicaDTO == null || 
@@ -460,7 +460,7 @@ public class PessoaServlet extends BaseServlet {
 
 	private GAResponse salvarHistPatologicaPessoa(String dados) {
 		
-		final HistoriaPatologicaDTO historiaPatologicaDTO = Utils.getInstance().fromJson(HistoriaPatologicaDTO.class, dados);
+		final HistoriaPatologicaDTO historiaPatologicaDTO = Utils.getInstance().fromJson(new HistoriaPatologicaDTO(), dados);
 		
 		final PessoaService pessoaService = new PessoaService();
 		
@@ -488,7 +488,7 @@ public class PessoaServlet extends BaseServlet {
 
 	private GAResponse buscarHabitosPessoa(String dados) {
 		
-		final HabitosDTO habitosDTO = Utils.getInstance().fromJson(HabitosDTO.class, dados);
+		final HabitosDTO habitosDTO = Utils.getInstance().fromJson(new HabitosDTO(), dados);
 		
 		HabitosDTOResponse rs = new HabitosDTOResponse();
 		if (habitosDTO == null || habitosDTO.getIdPessoa() == null || habitosDTO.getIdPessoa().isEmpty()){
@@ -517,7 +517,7 @@ public class PessoaServlet extends BaseServlet {
 
 	private GAResponse salvarHabitosPessoa(String dados) {
 		
-		final HabitosDTO habitosDTO = Utils.getInstance().fromJson(HabitosDTO.class, dados);
+		final HabitosDTO habitosDTO = Utils.getInstance().fromJson(new HabitosDTO(), dados);
 		
 		final PessoaService pessoaService = new PessoaService();
 		
@@ -545,7 +545,7 @@ public class PessoaServlet extends BaseServlet {
 
 	private GAResponse buscarMedidasPessoa(String dados) {
 		
-		final MedidaDTO medidaDTO = Utils.getInstance().fromJson(MedidaDTO.class, dados);
+		final MedidaDTO medidaDTO = Utils.getInstance().fromJson(new MedidaDTO(), dados);
 		
 		MedidaDTOResponse rs = null;
 		
@@ -613,7 +613,7 @@ public class PessoaServlet extends BaseServlet {
 	
 	private GAResponse adicionarNovaDataMedida(String dados) {
 		
-		final MedidaDTO medidaDTO = Utils.getInstance().fromJson(MedidaDTO.class, dados);
+		final MedidaDTO medidaDTO = Utils.getInstance().fromJson(new MedidaDTO(), dados);
 		
 		final MedidaService medidaService = new MedidaService();
 		

@@ -23,6 +23,23 @@ public class ObjetivoDTOResponse extends GAResponse {
 		return json.toString();
 	}
 	
+	@Override
+	public <T extends JsonSerializer> T fromJson(T t, String jsonString) {
+		
+		final ObjetivoDTOResponse dto = (ObjetivoDTOResponse) t;
+		
+		dto.setSucesso(Boolean.valueOf(Utils.getInstance().getValorFromJsonString("sucesso", jsonString)));
+		dto.setSessionId(Utils.getInstance().getValorFromJsonString("sessionId", jsonString));
+		dto.setMsg(Utils.getInstance().getValorFromJsonString("msg", jsonString));
+		
+		ObjetivoDTO hab = new ObjetivoDTO();
+		hab.fromJson(hab, jsonString);
+		
+		dto.setObjetivoDTO(hab);
+		
+		return t;
+	}
+	
 	public ObjetivoDTO getObjetivoDTO() {
 		return objetivoDTO;
 	}

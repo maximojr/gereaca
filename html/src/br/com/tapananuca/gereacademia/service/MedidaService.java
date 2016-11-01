@@ -36,7 +36,6 @@ import br.com.tapananuca.gereacademia.model.Pessoa;
 import br.com.tapananuca.gereacademia.model.Usuario;
 import br.com.tapananuca.gereacademia.servlet.ReportHelper;
 
-import com.badlogic.gdx.utils.Array;
 import com.sendgrid.SendGrid;
 import com.sendgrid.SendGridException;
 
@@ -80,7 +79,7 @@ public class MedidaService extends Service {
 			
 			query.setParameter("id", idPessoa);
 			
-			final Array<String> dts = this.getArrayFromList(query.getResultList());
+			final List<String> dts = query.getResultList();
 			
 			final Calendar calendar = Calendar.getInstance();
 			calendar.setTime(dataRef);
@@ -88,7 +87,7 @@ public class MedidaService extends Service {
 			String dtStr = 
 					calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
 			
-			if (!dts.contains(dtStr, false)){
+			if (!dts.contains(dtStr)){
 				
 				dts.add(dtStr);
 			}
@@ -97,7 +96,7 @@ public class MedidaService extends Service {
 			dtStr = 
 					calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
 			
-			if (!dts.contains(dtStr, false)){
+			if (!dts.contains(dtStr)){
 				
 				dts.add(dtStr);
 			}
@@ -251,7 +250,7 @@ public class MedidaService extends Service {
 			
 			query.setParameter("id", idPessoa);
 			
-			res.setDatasMedidas(this.getArrayFromList(query.getResultList()));
+			res.setDatasMedidas(query.getResultList());
 			
 			this.buscarDadosAulasPersonal(pessoaDTO, res, em);
 			
@@ -307,7 +306,7 @@ public class MedidaService extends Service {
 		query.setParameter("mes", Integer.valueOf(data[0]));
 		query.setParameter("ano", Integer.valueOf(data[1]));
 		
-		dto.setDias(this.getArrayFromList(query.getResultList()));
+		dto.setDias(query.getResultList());
 		
 		final Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.MONTH, Integer.valueOf(data[0]) - 1);
@@ -516,7 +515,7 @@ public class MedidaService extends Service {
 		final ReportHelper res = new ReportHelper();
 		
 		if (medidaPersonalDTO == null || medidaPersonalDTO.getIdPessoa() == null || 
-				medidaPersonalDTO.getDatasMedidas() == null || medidaPersonalDTO.getDatasMedidas().size == 0 ||
+				medidaPersonalDTO.getDatasMedidas() == null || medidaPersonalDTO.getDatasMedidas().size() == 0 ||
 				medidaPersonalDTO.getDobra() == null){
 			
 			res.setMsg("Dados insuficientes para efetuar cálculos");

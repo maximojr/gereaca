@@ -80,7 +80,7 @@ public class PagamentoServlet extends BaseServlet {
 	
 	private GAResponse darBaixaPagamento(String dados, Long idUusuarioLogado) {
 		
-		final DadosBaixa dadosBaixa = Utils.getInstance().fromJson(DadosBaixa.class, dados);
+		final DadosBaixa dadosBaixa = Utils.getInstance().fromJson(new DadosBaixa(), dados);
 		
 		final PagamentoService pagamentoService = new PagamentoService();
 		
@@ -110,7 +110,7 @@ public class PagamentoServlet extends BaseServlet {
 
 	private GAResponse buscarPagamentosAReceber(String dados) {
 		
-		final AReceberDTO aReceberDTO = Utils.getInstance().fromJson(AReceberDTO.class, dados);
+		final AReceberDTO aReceberDTO = Utils.getInstance().fromJson(new AReceberDTO(), dados);
 		
 		final PagamentoService pagamentoService = new PagamentoService();
 		

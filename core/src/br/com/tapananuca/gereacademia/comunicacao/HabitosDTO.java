@@ -54,7 +54,25 @@ public class HabitosDTO implements GARequest {
 		
 		return json.toString();
 	}
-
+	
+	@Override
+	public <T extends JsonSerializer> T fromJson(T t, String jsonString) {
+		
+		final HabitosDTO dto = (HabitosDTO) t;
+		
+		dto.setIdPessoa(Utils.getInstance().getValorFromJsonString("idPessoa", jsonString));
+		
+		String dieta = Utils.getInstance().getValorFromJsonString("dieta", jsonString);
+		if (dieta != null && !dieta.isEmpty()){
+			dto.setDieta(Dieta.valueOf(dieta));
+		}
+		dto.setPraticaAtivFisica(Utils.getInstance().getValorFromJsonString("praticaAtivFisica", jsonString));
+		dto.setDataUltimoExameMedico(Utils.getInstance().getValorFromJsonString("dataUltimoExameMedico", jsonString));
+		dto.setPeriodExameMedico(Utils.getInstance().getValorFromJsonString("periodExameMedico", jsonString));
+		
+		return t;
+	}
+	
 	public String getIdPessoa() {
 		return idPessoa;
 	}
@@ -94,5 +112,4 @@ public class HabitosDTO implements GARequest {
 	public void setPeriodExameMedico(String periodExameMedico) {
 		this.periodExameMedico = periodExameMedico;
 	}
-
 }

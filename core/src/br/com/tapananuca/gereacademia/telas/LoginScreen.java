@@ -104,7 +104,7 @@ public class LoginScreen extends Tela {
 				
 				try {
 					
-					final GAResponse resp = utilsInstance.fromJson(GAResponse.class, httpResponse.getResultAsString());
+					final GAResponse resp = utilsInstance.fromJson(new GAResponse(), httpResponse.getResultAsString());
 					
 					if (resp.isSucesso()){
 						

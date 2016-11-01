@@ -25,6 +25,18 @@ public class Baixa implements JsonSerializer {
 		
 		return json.toString();
 	}
+	
+	@Override
+	public <T extends JsonSerializer> T fromJson(T t, String jsonString) {
+		
+		final Baixa dto = (Baixa) t;
+		
+		dto.setId(Utils.getInstance().getValorFromJsonString("id", jsonString));
+		dto.setValor(Utils.getInstance().getValorFromJsonString("valor", jsonString));
+		dto.setMulta(Utils.getInstance().getValorFromJsonString("multa", jsonString));
+		
+		return t;
+	}
 
 	public String getId() {
 		return id;
@@ -49,5 +61,4 @@ public class Baixa implements JsonSerializer {
 	public void setMulta(String multa) {
 		this.multa = multa;
 	}
-
 }

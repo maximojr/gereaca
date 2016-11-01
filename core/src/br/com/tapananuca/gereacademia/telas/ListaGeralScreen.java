@@ -99,11 +99,11 @@ public class ListaGeralScreen extends Tela {
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				
-				final AReceberPaginaDTO aReceberPaginaDTO = utils.fromJson(AReceberPaginaDTO.class, httpResponse.getResultAsString());
+				final AReceberPaginaDTO aReceberPaginaDTO = utils.fromJson(new AReceberPaginaDTO(), httpResponse.getResultAsString());
 				
 				if (aReceberPaginaDTO.isSucesso()){
 					
-					if (aReceberPaginaDTO.getaReceber() != null && aReceberPaginaDTO.getaReceber().size != 0){
+					if (aReceberPaginaDTO.getaReceber() != null && aReceberPaginaDTO.getaReceber().size() != 0){
 						
 						nomes.clearChildren();
 						
