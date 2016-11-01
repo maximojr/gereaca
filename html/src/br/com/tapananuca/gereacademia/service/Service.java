@@ -4,7 +4,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
@@ -14,8 +13,6 @@ import javax.persistence.Persistence;
 
 import br.com.tapananuca.gereacademia.Util;
 
-import com.badlogic.gdx.utils.Array;
-
 public abstract class Service {
 
 	private static final String UNIT_NAME = "PU";
@@ -23,18 +20,18 @@ public abstract class Service {
 	private static EntityManagerFactory emf;
 	
 	private static final Queue<EntityManager> emPoll = new LinkedList<EntityManager>();
-	
-	<T extends Object> Array<T> getArrayFromList(List<T> lista){
-		
-		final Array<T> ret = new Array<T>();
-		
-		for (T objeto : lista){
-			
-			ret.add(objeto);
-		}
-		
-		return ret;
-	}
+//	
+//	<T extends Object> List<T> getArrayFromList(List<T> lista){
+//		
+//		final Array<T> ret = new Array<T>();
+//		
+//		for (T objeto : lista){
+//			
+//			ret.add(objeto);
+//		}
+//		
+//		return ret;
+//	}
 	
 	public static void iniciarPool(int poolSize){
 		

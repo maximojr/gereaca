@@ -137,7 +137,7 @@ public class HabitosTab extends Tab {
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				System.out.println("");
 				final HabitosDTOResponse resp = 
-						utils.fromJson(HabitosDTOResponse.class, httpResponse.getResultAsString());
+						utils.fromJson(new HabitosDTOResponse(), httpResponse.getResultAsString());
 				
 				if (resp.isSucesso()){
 					
@@ -148,6 +148,9 @@ public class HabitosTab extends Tab {
 						if (dto.getDieta() != null){
 							
 							dieta.setSelected(dto.getDieta().getDescricao());
+						} else {
+							
+							dieta.setSelected(Dieta.NAO_FAZ_DIETA.getDescricao());
 						}
 						
 						if (dto.getPraticaAtivFisica() == null || dto.getPraticaAtivFisica().isEmpty()){
@@ -237,7 +240,7 @@ public class HabitosTab extends Tab {
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				
-				final GAResponse resp = utils.fromJson(GAResponse.class, httpResponse.getResultAsString());
+				final GAResponse resp = utils.fromJson(new GAResponse(), httpResponse.getResultAsString());
 				
 				if (resp.isSucesso()){
 					

@@ -60,6 +60,26 @@ public class ObjetivoDTO implements GARequest {
 		return json.toString();
 	}
 	
+	@Override
+	public <T extends JsonSerializer> T fromJson(T t, String jsonString) {
+		
+		final Utils utils = Utils.getInstance();
+		
+		final ObjetivoDTO dto = (ObjetivoDTO) t;
+		
+		dto.setIdPessoa(utils.getValorFromJsonString("idPessoa", jsonString));
+		dto.setEstetica(utils.valueOfFalse((utils.getValorFromJsonString("estetica", jsonString))));
+		dto.setLazer(utils.valueOfFalse((utils.getValorFromJsonString("lazer", jsonString))));
+		dto.setSaude(utils.valueOfFalse((utils.getValorFromJsonString("saude", jsonString))));
+		dto.setTerapeutico(utils.valueOfFalse((utils.getValorFromJsonString("terapeutico", jsonString))));
+		dto.setCondFisico(utils.valueOfFalse((utils.getValorFromJsonString("condFisico", jsonString))));
+		dto.setPrepFisica(utils.valueOfFalse((utils.getValorFromJsonString("prepFisica", jsonString))));
+		dto.setAutoRend(utils.valueOfFalse((utils.getValorFromJsonString("autoRend", jsonString))));
+		dto.setHipertrofia(utils.valueOfFalse((utils.getValorFromJsonString("hipertrofia", jsonString))));
+		
+		return t;
+	}
+	
 	public String getIdPessoa() {
 		return idPessoa;
 	}

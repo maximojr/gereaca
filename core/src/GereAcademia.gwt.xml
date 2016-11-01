@@ -11,6 +11,6 @@
 	<extend-configuration-property name="gdx.reflect.include" value="br.com.tapananuca.gereacademia.comunicacao" />
 	
 	<!-- cria projeto apenas para o chrome, remover depois 
-	-->
 	<set-property name="user.agent" value="safari" />
+	-->
 </module>

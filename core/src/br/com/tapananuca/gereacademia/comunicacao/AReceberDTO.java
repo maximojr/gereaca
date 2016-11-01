@@ -64,6 +64,22 @@ public class AReceberDTO implements JsonSerializer {
 		
 		return json.toString();
 	}
+	
+	@Override
+	public <T extends JsonSerializer> T fromJson(T t, String jsonString) {
+		
+		final AReceberDTO dto = (AReceberDTO) t;
+		
+		dto.setId(Utils.getInstance().getValorFromJsonString("id", jsonString));
+		dto.setNome(Utils.getInstance().getValorFromJsonString("nome", jsonString));
+		dto.setValor(Utils.getInstance().getValorFromJsonString("valor", jsonString));
+		dto.setDataRef(Utils.getInstance().getValorFromJsonString("dataRef", jsonString));
+		dto.setPaginaAtual(Utils.getInstance().getValorFromJsonString("paginaAtual", jsonString));
+		dto.setMulta(Utils.getInstance().getValorFromJsonString("multa", jsonString));
+		dto.setTipoAtv(Utils.getInstance().getValorFromJsonString("tipoAtv", jsonString));
+		
+		return t;
+	}
 
 	public String getId() {
 		return id;
@@ -120,5 +136,4 @@ public class AReceberDTO implements JsonSerializer {
 	public void setTipoAtv(String tipoAtv) {
 		this.tipoAtv = tipoAtv;
 	}
-
 }

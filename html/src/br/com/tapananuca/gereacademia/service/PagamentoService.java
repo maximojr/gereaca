@@ -1,6 +1,7 @@
 package br.com.tapananuca.gereacademia.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -16,8 +17,6 @@ import br.com.tapananuca.gereacademia.comunicacao.DadosBaixa;
 import br.com.tapananuca.gereacademia.model.Pagamento;
 import br.com.tapananuca.gereacademia.model.Pessoa;
 import br.com.tapananuca.gereacademia.model.Usuario;
-
-import com.badlogic.gdx.utils.Array;
 
 public class PagamentoService extends Service {
 
@@ -146,7 +145,7 @@ public class PagamentoService extends Service {
 		
 		final AReceberPaginaDTO dto = new AReceberPaginaDTO();
 		
-		dto.setaReceber(this.getArrayFromList(query.getResultList()));
+		dto.setaReceber(query.getResultList());
 		
 		hql = new StringBuilder("select ");
 		hql.append(" count(pag.id) ")
@@ -215,14 +214,14 @@ public class PagamentoService extends Service {
 		
 		final List<Date> dts = query.getResultList();
 		
-		final Array<String> sDts = new Array<String>();
+		final List<String> sDts = new ArrayList<String>();
 		
 		for (Date d : dts){
 			
 			calendar.setTime(d);
 			String strData = (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
 			
-			if (!sDts.contains(strData, false)){
+			if (!sDts.contains(strData)){
 				
 				sDts.add(strData);
 			}
@@ -237,7 +236,7 @@ public class PagamentoService extends Service {
 	
 	public String efetuarBaixa(DadosBaixa dadosBaixa, Long idUsuarioLogado){
 		
-		if (dadosBaixa == null || dadosBaixa.getBaixas() == null || dadosBaixa.getBaixas().size == 0){
+		if (dadosBaixa == null || dadosBaixa.getBaixas() == null || dadosBaixa.getBaixas().size() == 0){
 			
 			return "Dados insuficientes para efetuar baixa.";
 		}

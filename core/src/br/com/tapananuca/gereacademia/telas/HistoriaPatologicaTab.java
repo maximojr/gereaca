@@ -154,7 +154,7 @@ public class HistoriaPatologicaTab extends Tab {
 			@Override
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				
-				final GAResponse resp = utils.fromJson(GAResponse.class, httpResponse.getResultAsString());
+				final GAResponse resp = utils.fromJson(new GAResponse(), httpResponse.getResultAsString());
 				
 				if (resp.isSucesso()){
 					
@@ -201,7 +201,7 @@ public class HistoriaPatologicaTab extends Tab {
 			public void handleHttpResponse(HttpResponse httpResponse) {
 				
 				final HistoriaPatologicaDTOResponse resp = 
-						utils.fromJson(HistoriaPatologicaDTOResponse.class, httpResponse.getResultAsString());
+						utils.fromJson(new HistoriaPatologicaDTOResponse(), httpResponse.getResultAsString());
 				
 				if (resp.isSucesso()){
 					
