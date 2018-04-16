@@ -446,15 +446,21 @@ public class MedidaService extends Service {
 		}
 		
 		String enderecoEmail = null;
+		Usuario avaliador = null;
 		
 		final EntityManager em = this.getEm();
 		
 		try {
 			
-			final Query query = em.createQuery("select p.email from Pessoa p where p.id = :id");
+			Query query = em.createQuery("select p.email from Pessoa p where p.id = :id");
 			query.setParameter("id", Long.valueOf(medidaPersonalDTO.getIdPessoa()));
 			
 			enderecoEmail = (String) query.getSingleResult();
+			
+			query = em.createQuery("select u from Usuario u where u.id = :id");
+			query.setParameter("id", idUsuario);
+			
+			avaliador = (Usuario) query.getSingleResult();
 			
 		} catch(NoResultException e){
 			
@@ -468,7 +474,7 @@ public class MedidaService extends Service {
 			return "Pessoa não possui email cadastrado";
 		}
 		
-		final ReportHelper rh = this.avaliarComposicaoCorporal(medidaPersonalDTO, idUsuario);
+		final ReportHelper rh = this.avaliarComposicaoCorporal(medidaPersonalDTO, avaliador.getNome());
 		
 		if (rh.getMsg() != null){
 			
@@ -485,7 +491,7 @@ public class MedidaService extends Service {
 		
 		final SendGrid.Email email = new SendGrid.Email();
 		email.addTo(enderecoEmail);
-		email.setFrom("academia@ortobem.com.br");
+		email.setFrom(avaliador.getEmail());
 		email.setSubject("Avaliação Física");
 		email.setText("Olá, segue em anexo sua avaliação física. É uma mensagem automática, não responda esse email.");
 		
@@ -510,7 +516,7 @@ public class MedidaService extends Service {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public ReportHelper avaliarComposicaoCorporal(MedidaPersonalDTO medidaPersonalDTO, Long idUsuario){
+	public ReportHelper avaliarComposicaoCorporal(MedidaPersonalDTO medidaPersonalDTO, String avaliador){
 		
 		final ReportHelper res = new ReportHelper();
 		
@@ -581,11 +587,6 @@ public class MedidaService extends Service {
 			query.setParameter("datas", datas);
 			
 			final List<Medida> lista = query.getResultList();
-			
-			query = em.createQuery("select u.nome from Usuario u where u.id = :id");
-			query.setParameter("id", idUsuario);
-			
-			final String avaliador = (String) query.getSingleResult();
 			
 			if (aduto){
 				

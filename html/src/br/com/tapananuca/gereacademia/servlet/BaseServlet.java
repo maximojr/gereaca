@@ -27,7 +27,8 @@ public class BaseServlet extends HttpServlet {
 		
 		if (session == null && 
 				!request.getRequestURI().endsWith(Utils.URL_LOGIN) && 
-				!request.getRequestURI().endsWith(Utils.URL_LOGOUT)){
+				!request.getRequestURI().endsWith(Utils.URL_LOGOUT) &&
+				!request.getRequestURI().contains(Utils.URL_PERSONAL_ABRIR_RELATORIO)){
 			
 			final GAResponse ga = new GAResponse();
 			ga.setSucesso(false);
