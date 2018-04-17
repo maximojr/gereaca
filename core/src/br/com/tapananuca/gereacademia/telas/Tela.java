@@ -3,6 +3,8 @@ package br.com.tapananuca.gereacademia.telas;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.tapananuca.gereacademia.GereAcademia;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
@@ -12,11 +14,8 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-
-import br.com.tapananuca.gereacademia.GereAcademia;
 
 public abstract class Tela implements Screen, InputProcessor {
 
