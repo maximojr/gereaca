@@ -515,6 +515,28 @@ public class MedidaService extends Service {
 		return null;
 	}
 	
+	public ReportHelper avaliarComposicaoCorporal(MedidaPersonalDTO medidaPersonalDTO, Long idUsuario){
+		
+		final EntityManager em = this.getEm();
+		String avaliador = null;
+		
+		try {
+			
+			final Query query =  em.createQuery("select u.nome from Usuario u where u.id = :id");
+			query.setParameter("id", idUsuario);
+			
+			avaliador = (String) query.getSingleResult();
+			
+		} catch(NoResultException e){
+			
+		} finally {
+			
+			this.returnEm(em);
+		}
+		
+		return this.avaliarComposicaoCorporal(medidaPersonalDTO, avaliador);
+	}
+	
 	@SuppressWarnings("unchecked")
 	public ReportHelper avaliarComposicaoCorporal(MedidaPersonalDTO medidaPersonalDTO, String avaliador){
 		
