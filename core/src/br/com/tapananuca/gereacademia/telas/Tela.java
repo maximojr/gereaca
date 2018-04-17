@@ -3,8 +3,7 @@ package br.com.tapananuca.gereacademia.telas;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.tapananuca.gereacademia.GereAcademia;
-
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -14,7 +13,10 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+
+import br.com.tapananuca.gereacademia.GereAcademia;
 
 public abstract class Tela implements Screen, InputProcessor {
 
@@ -22,11 +24,21 @@ public abstract class Tela implements Screen, InputProcessor {
 	protected Stage stage;
 	protected List<Actor> elementosFocaveis = new ArrayList<Actor>();
 	
+	public static int width = 530;
+	public static int height = 1000;
+	
 	private boolean shiftDown = false;
 	
 	public Tela(GereAcademia applicationListener){
 		this.applicationListener = applicationListener;
-		this.stage = new Stage(new ScreenViewport());
+		
+		if (Gdx.app.getType().equals(Application.ApplicationType.Android)){
+			this.stage = new Stage(new FitViewport(width, height));
+		} else {
+			width = Gdx.graphics.getWidth();
+			height = Gdx.graphics.getHeight();
+			this.stage = new Stage(new ScreenViewport());
+		}
 		
 		final InputMultiplexer in = new InputMultiplexer();
 		in.addProcessor(this);
@@ -43,7 +55,9 @@ public abstract class Tela implements Screen, InputProcessor {
 	}
 
 	@Override
-	public void resize(int width, int height) {}
+	public void resize(int width, int height) {
+		stage.getViewport().update(width, height, false);
+	}
 
 	@Override
 	public void show() {}

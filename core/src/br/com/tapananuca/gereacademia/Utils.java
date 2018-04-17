@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import br.com.tapananuca.gereacademia.comunicacao.JsonSerializer;
+import br.com.tapananuca.gereacademia.telas.Tela;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
@@ -236,8 +237,8 @@ public class Utils {
 			final Skin skin, final HttpResponseListener callback){
 		
 		final Window telaBloqueio = new Window("", skin);
-		telaBloqueio.setHeight(Gdx.graphics.getHeight());
-		telaBloqueio.setWidth(Gdx.graphics.getWidth());
+		telaBloqueio.setHeight(Tela.height);
+		telaBloqueio.setWidth(Tela.width);
 		telaBloqueio.setColor(telaBloqueio.getColor().r, telaBloqueio.getColor().g, telaBloqueio.getColor().b, 0.7f);
 		telaBloqueio.add("Aguarde...").center();
 		stage.addActor(telaBloqueio);
@@ -356,11 +357,11 @@ public class Utils {
 		window.add(ok);
 		
 		window.pack();
-		window.setWidth(Gdx.graphics.getWidth());
+		window.setWidth(Tela.width);
 		
 		window.setPosition(
-				(int)((Gdx.graphics.getWidth() / 2) - (window.getWidth() / 2)) ,
-				(int)((Gdx.graphics.getHeight() / 2) - (window.getHeight() / 2)));
+				(int)((Tela.width / 2) - (window.getWidth() / 2)) ,
+				(int)((Tela.height / 2) - (window.getHeight() / 2)));
 		
 		stage.addActor(window);
 	}
